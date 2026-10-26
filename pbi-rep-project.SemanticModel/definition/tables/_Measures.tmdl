@@ -26,7 +26,7 @@ table _Measures
 		displayFolder: 01 Base\Framsikt
 		lineageTag: c6433846-90a0-45b4-b9a4-debb7551fee3
 
-	measure 'Framsikt Årsbudsjett' = [EOY Årsbudsjett]
+	measure 'Framsikt Årsbudsjett' = BLANK ()
 		formatString: #,##0.00
 		displayFolder: 01 Base\Framsikt
 		lineageTag: 027d5ed6-389d-4fec-8cd5-9d26ef80a8dc
@@ -112,12 +112,12 @@ table _Measures
 		displayFolder: 03 Status
 		lineageTag: ff90a6c3-67aa-413a-8e41-5b452eab7ec7
 
-	measure 'ERP Regnskap PM' = CALCULATE ( [ERP Regnskap], DATEADD ( ''dim_date''[Dato], -1, MONTH ) )
+	measure 'ERP Regnskap PM' = CALCULATE ( [ERP Regnskap], DATEADD ( 'dim_date'[Dato], -1, MONTH ) )
 		formatString: #,##0.00
 		displayFolder: 04 Time Intelligence\Previous
 		lineageTag: b69eaeea-756f-46df-8306-7a13d7f2143e
 
-	measure 'ERP Budsjett PM' = CALCULATE ( [ERP Budsjett], DATEADD ( ''dim_date''[Dato], -1, MONTH ) )
+	measure 'ERP Budsjett PM' = CALCULATE ( [ERP Budsjett], DATEADD ( 'dim_date'[Dato], -1, MONTH ) )
 		formatString: #,##0.00
 		displayFolder: 04 Time Intelligence\Previous
 		lineageTag: 3c540848-51fc-498d-8ff3-97e88c021227
@@ -132,7 +132,7 @@ table _Measures
 		displayFolder: 04 Time Intelligence\Change
 		lineageTag: 06c531d2-1701-4006-8e2b-467f4e6650c8
 
-	measure 'ERP Regnskap PY' = CALCULATE ( [ERP Regnskap], DATEADD ( ''dim_date''[Dato], -1, YEAR ) )
+	measure 'ERP Regnskap PY' = CALCULATE ( [ERP Regnskap], DATEADD ( 'dim_date'[Dato], -1, YEAR ) )
 		formatString: #,##0.00
 		displayFolder: 04 Time Intelligence\Previous
 		lineageTag: da62b6b7-c09d-4346-acce-f379a1e74174
@@ -147,12 +147,12 @@ table _Measures
 		displayFolder: 04 Time Intelligence\Change
 		lineageTag: 45a3a9ff-4113-4eed-a38c-96820f2b182f
 
-	measure 'ERP Regnskap YTD' = CALCULATE ( [ERP Regnskap], DATESYTD ( ''dim_date''[Dato] ) )
+	measure 'ERP Regnskap YTD' = CALCULATE ( [ERP Regnskap], DATESYTD ( 'dim_date'[Dato] ) )
 		formatString: #,##0.00
 		displayFolder: 04 Time Intelligence\YTD
 		lineageTag: ec14f5ed-70bc-4065-99e4-3160350289e0
 
-	measure 'ERP Budsjett YTD' = CALCULATE ( [ERP Budsjett], DATESYTD ( ''dim_date''[Dato] ) )
+	measure 'ERP Budsjett YTD' = CALCULATE ( [ERP Budsjett], DATESYTD ( 'dim_date'[Dato] ) )
 		formatString: #,##0.00
 		displayFolder: 04 Time Intelligence\YTD
 		lineageTag: a349a5b6-80a3-4869-b215-9a4e0c53fac7
@@ -168,23 +168,23 @@ table _Measures
 		lineageTag: c68a7e47-f602-46bb-84f7-13a9e8b6f2a4
 
 	measure 'ERP Regnskap Running' =
-			VAR MaxDate = MAX ( ''dim_date''[Dato] )
-			RETURN CALCULATE ( [ERP Regnskap], FILTER ( ALLSELECTED ( ''dim_date''[Dato] ), ''dim_date''[Dato] <= MaxDate ) )
+			VAR MaxDate = MAX ( 'dim_date'[Dato] )
+			RETURN CALCULATE ( [ERP Regnskap], FILTER ( ALLSELECTED ( 'dim_date'[Dato] ), 'dim_date'[Dato] <= MaxDate ) )
 		formatString: #,##0.00
 		displayFolder: 04 Time Intelligence\Running
 		lineageTag: a705dac3-bbda-4325-b58c-1eaa13c98eb9
 
 	measure 'ERP Budsjett Running' =
-			VAR MaxDate = MAX ( ''dim_date''[Dato] )
-			RETURN CALCULATE ( [ERP Budsjett], FILTER ( ALLSELECTED ( ''dim_date''[Dato] ), ''dim_date''[Dato] <= MaxDate ) )
+			VAR MaxDate = MAX ( 'dim_date'[Dato] )
+			RETURN CALCULATE ( [ERP Budsjett], FILTER ( ALLSELECTED ( 'dim_date'[Dato] ), 'dim_date'[Dato] <= MaxDate ) )
 		formatString: #,##0.00
 		displayFolder: 04 Time Intelligence\Running
 		lineageTag: e4a7c703-139f-4b1d-aaf1-01c0dd997ea5
 
 	measure 'ERP Regnskap Moving Avg 3M' =
-			VAR EndDate = MAX ( ''dim_date''[Dato] )
-			VAR PeriodDates = DATESINPERIOD ( ''dim_date''[Dato], EndDate, -3, MONTH )
-			RETURN DIVIDE ( CALCULATE ( [ERP Regnskap], PeriodDates ), CALCULATE ( DISTINCTCOUNT ( ''dim_date''[yyyy-mm] ), PeriodDates ) )
+			VAR EndDate = MAX ( 'dim_date'[Dato] )
+			VAR PeriodDates = DATESINPERIOD ( 'dim_date'[Dato], EndDate, -3, MONTH )
+			RETURN DIVIDE ( CALCULATE ( [ERP Regnskap], PeriodDates ), CALCULATE ( DISTINCTCOUNT ( 'dim_date'[yyyy-mm] ), PeriodDates ) )
 		formatString: #,##0.00
 		displayFolder: 04 Time Intelligence\Rolling
 		lineageTag: 23aa9439-14d2-4383-a73c-f986a6d8aadf
@@ -267,7 +267,7 @@ table _Measures
 
 	measure 'EOY Årsbudsjett' =
 			VAR FramsiktBudget = [Framsikt Årsbudsjett]
-			VAR ERPAnnualBudget = CALCULATE ( [ERP Budsjett], REMOVEFILTERS ( 'dim_date' ) )
+			VAR ERPAnnualBudget = [ERP Årsbudsjett]
 			RETURN IF ( NOT ISBLANK ( FramsiktBudget ) && FramsiktBudget > 0, FramsiktBudget, ERPAnnualBudget )
 		formatString: #,##0.00
 		displayFolder: 08 Forecast & Prediction\Base
@@ -447,7 +447,7 @@ table _Measures
 		displayFolder: 14 Conditional Formatting\Bars
 		lineageTag: 7cf1eebd-4e0f-4405-95ef-86d5c42251b1
 
-	measure 'Selected YYYY-MM' = SELECTEDVALUE ( ''dim_date''[yyyy-mm], "Flere perioder" )
+	measure 'Selected YYYY-MM' = SELECTEDVALUE ( 'dim_date'[yyyy-mm], "Flere perioder" )
 		displayFolder: 15 Selection Context
 		lineageTag: 41d701fb-0f7f-4354-875c-00080cafea31
 
@@ -536,12 +536,12 @@ table _Measures
 			
 			VAR Perioder =
 			    IF(
-			        ISFILTERED(''dim_date''[yyyy-mm]),
+			        ISFILTERED('dim_date'[yyyy-mm]),
 			        CONCATENATEX(
-			            VALUES(''dim_date''[yyyy-mm]),
-			            ''dim_date''[yyyy-mm],
+			            VALUES('dim_date'[yyyy-mm]),
+			            'dim_date'[yyyy-mm],
 			            ", ",
-			            ''dim_date''[yyyy-mm],
+			            'dim_date'[yyyy-mm],
 			            ASC
 			        ),
 			        "Alle perioder"
@@ -572,7 +572,7 @@ table _Measures
 			
 			VAR PeriodTxt =
 			    SELECTEDVALUE(
-			        ''dim_date''[yyyy-mm],
+			        'dim_date'[yyyy-mm],
 			        "Flere perioder"
 			    )
 			VAR OrgTxt =
@@ -592,7 +592,7 @@ table _Measures
 			
 			VAR YearTxt =
 			    SELECTEDVALUE(
-			        ''dim_date''[Ar],
+			        'dim_date'[Ar],
 			        "Flere år"
 			    )
 			VAR OrgTxt =
@@ -624,7 +624,7 @@ table _Measures
 			VAR LastActualDate =
 			    [ERP Siste Rapporterte Dato]
 			VAR CurrentDate =
-			    MAX ( ''dim_date''[Dato] )
+			    MAX ( 'dim_date'[Dato] )
 			RETURN
 			    IF (
 			        CurrentDate <= LastActualDate,
@@ -646,11 +646,11 @@ table _Measures
 			    CALCULATE (
 			        DIVIDE (
 			            [ERP Regnskap],
-			            DISTINCTCOUNT ( ''dim_date''[yyyy-mm] )
+			            DISTINCTCOUNT ( 'dim_date'[yyyy-mm] )
 			        ),
 			        REMOVEFILTERS ( 'dim_date' ),
 			        DATESBETWEEN (
-			            ''dim_date''[Dato],
+			            'dim_date'[Dato],
 			            StartDate,
 			            LastActualDate
 			        )
@@ -665,7 +665,7 @@ table _Measures
 			VAR LastActualDate =
 			    [ERP Siste Rapporterte Dato]
 			VAR CurrentDate =
-			    MAX ( ''dim_date''[Dato] )
+			    MAX ( 'dim_date'[Dato] )
 			RETURN
 			    IF (
 			        CurrentDate > LastActualDate,
@@ -682,7 +682,7 @@ table _Measures
 			VAR LastActualDate =
 			    [ERP Siste Rapporterte Dato]
 			VAR CurrentDate =
-			    MAX ( ''dim_date''[Dato] )
+			    MAX ( 'dim_date'[Dato] )
 			RETURN
 			    IF (
 			        CurrentDate <= LastActualDate,
@@ -723,8 +723,8 @@ table _Measures
 			    CALCULATE (
 			        [ERP Regnskap],
 			        REMOVEFILTERS ( 'dim_date' ),
-			        ''dim_date''[Dato] <= LastActualDate,
-			        YEAR ( ''dim_date''[Dato] ) = YEAR ( LastActualDate )
+			        'dim_date'[Dato] <= LastActualDate,
+			        YEAR ( 'dim_date'[Dato] ) = YEAR ( LastActualDate )
 			    )
 			VAR RemainingMonths =
 			    12 - LastActualMonth
@@ -745,15 +745,15 @@ table _Measures
 			    MONTH ( LastActualDate )
 			
 			VAR CurrentMonth =
-			    MAX ( ''dim_date''[Maned_Nummer] )
+			    MAX ( 'dim_date'[Maned_Nummer] )
 			
 			VAR SelectedYear =
-			    SELECTEDVALUE ( ''dim_date''[Ar] )
+			    SELECTEDVALUE ( 'dim_date'[Ar] )
 			
 			VAR HistoricalMonths =
 			    FILTER (
-			        ALL ( ''dim_date''[Maned_Nummer] ),
-			        ''dim_date''[Maned_Nummer] <= LastActualMonth
+			        ALL ( 'dim_date'[Maned_Nummer] ),
+			        'dim_date'[Maned_Nummer] <= LastActualMonth
 			    )
 			
 			VAR RegressionTable =
@@ -763,7 +763,7 @@ table _Measures
 			            CALCULATE (
 			                [ERP Regnskap],
 			                REMOVEFILTERS ( 'dim_date' ),
-			                ''dim_date''[Ar] = SelectedYear
+			                'dim_date'[Ar] = SelectedYear
 			            )
 			    )
 			
@@ -777,7 +777,7 @@ table _Measures
 			    LINESTX (
 			        ValidHistory,
 			        [@Actual],
-			        ''dim_date''[Maned_Nummer]
+			        'dim_date'[Maned_Nummer]
 			    )
 			
 			VAR Slope =
@@ -806,13 +806,13 @@ table _Measures
 			VAR LastActualDate =
 			    [ERP Siste Rapporterte Dato]
 			VAR SelectedYear =
-			    SELECTEDVALUE ( ''dim_date''[Ar] )
+			    SELECTEDVALUE ( 'dim_date'[Ar] )
 			RETURN
 			    CALCULATE (
 			        [ERP Budsjett] - [ERP Regnskap],
 			        REMOVEFILTERS ( 'dim_date' ),
-			        ''dim_date''[Ar] = SelectedYear,
-			        ''dim_date''[Dato] <= LastActualDate
+			        'dim_date'[Ar] = SelectedYear,
+			        'dim_date'[Dato] <= LastActualDate
 			    )
 		displayFolder: 09 Balance & Action\Current
 		lineageTag: c131b2ce-e31f-4e87-b024-5d9523783ab6
@@ -824,20 +824,20 @@ table _Measures
 			VAR AnnualBudget =
 			    CALCULATE (
 			        [ERP Budsjett],
-			        REMOVEFILTERS ( ''dim_date''[yyyy-mm] )
+			        REMOVEFILTERS ( 'dim_date'[yyyy-mm] )
 			    )
 			
 			VAR ActualYTD =
 			    VAR LastActualDate =
 			        [ERP Siste Rapporterte Dato]
 			    VAR SelectedYear =
-			        SELECTEDVALUE ( ''dim_date''[Ar] )
+			        SELECTEDVALUE ( 'dim_date'[Ar] )
 			    RETURN
 			        CALCULATE (
 			            [ERP Regnskap],
 			            REMOVEFILTERS ( 'dim_date' ),
-			            ''dim_date''[Ar] = SelectedYear,
-			            ''dim_date''[Dato] <= LastActualDate
+			            'dim_date'[Ar] = SelectedYear,
+			            'dim_date'[Dato] <= LastActualDate
 			        )
 			
 			RETURN
@@ -905,7 +905,7 @@ table _Measures
 			VAR T =
 			    FILTER (
 			        ADDCOLUMNS (
-			            VALUES ( ''dim_date''[yyyy-mm] ),
+			            VALUES ( 'dim_date'[yyyy-mm] ),
 			            "@Regnskap", CALCULATE ( [ERP Regnskap] ),
 			            "@Budsjett", CALCULATE ( [ERP Budsjett] )
 			        ),
@@ -954,7 +954,7 @@ table _Measures
 			VAR T =
 			    FILTER (
 			        ADDCOLUMNS (
-			            VALUES ( ''dim_date''[yyyy-mm] ),
+			            VALUES ( 'dim_date'[yyyy-mm] ),
 			            "@Regnskap", CALCULATE ( [ERP Regnskap] ),
 			            "@Avvik", CALCULATE ( [ERP Avvik] )
 			        ),
@@ -1040,7 +1040,7 @@ table _Measures
 			COUNTROWS (
 			    FILTER (
 			        ADDCOLUMNS (
-			            VALUES ( ''dim_date''[yyyy-mm] ),
+			            VALUES ( 'dim_date'[yyyy-mm] ),
 			            "@Regnskap", CALCULATE ( [ERP Regnskap] ),
 			            "@Budsjett", CALCULATE ( [ERP Budsjett] )
 			        ),
@@ -1087,13 +1087,13 @@ table _Measures
 
 	measure 'ERP Actual YTD To Latest' =
 			VAR LastActualDate = [ERP Siste Rapporterte Dato]
-			VAR SelectedYear = SELECTEDVALUE ( ''dim_date''[Ar] )
+			VAR SelectedYear = SELECTEDVALUE ( 'dim_date'[Ar] )
 			RETURN
 			    CALCULATE (
 			        [ERP Regnskap],
 			        REMOVEFILTERS ( 'dim_date' ),
-			        ''dim_date''[Ar] = SelectedYear,
-			        ''dim_date''[Dato] <= LastActualDate
+			        'dim_date'[Ar] = SelectedYear,
+			        'dim_date'[Dato] <= LastActualDate
 			    )
 		formatString: #,##0.00;-#,##0.00
 		displayFolder: 08 Forecast & Prediction\Base
@@ -1101,25 +1101,25 @@ table _Measures
 
 	measure 'ERP Budget YTD To Latest' =
 			VAR LastActualDate = [ERP Siste Rapporterte Dato]
-			VAR SelectedYear = SELECTEDVALUE ( ''dim_date''[Ar] )
+			VAR SelectedYear = SELECTEDVALUE ( 'dim_date'[Ar] )
 			RETURN
 			    CALCULATE (
 			        [ERP Budsjett],
 			        REMOVEFILTERS ( 'dim_date' ),
-			        ''dim_date''[Ar] = SelectedYear,
-			        ''dim_date''[Dato] <= LastActualDate
+			        'dim_date'[Ar] = SelectedYear,
+			        'dim_date'[Dato] <= LastActualDate
 			    )
 		formatString: #,##0.00;-#,##0.00
 		displayFolder: 08 Forecast & Prediction\Base
 		lineageTag: d93f76de-4336-4ef3-9d8d-f8bce67e6adf
 
 	measure 'ERP Årsbudsjett' =
-			VAR SelectedYear = SELECTEDVALUE ( ''dim_date''[Ar] )
+			VAR SelectedYear = SELECTEDVALUE ( 'dim_date'[Ar] )
 			RETURN
 			    CALCULATE (
 			        [ERP Budsjett],
 			        REMOVEFILTERS ( 'dim_date' ),
-			        ''dim_date''[Ar] = SelectedYear
+			        'dim_date'[Ar] = SelectedYear
 			    )
 		formatString: #,##0.00;-#,##0.00
 		displayFolder: 08 Forecast & Prediction\Base
@@ -1259,8 +1259,8 @@ table _Measures
 	measure 'Selected Forecast Context' =
 			VAR YearTxt =
 			    IF (
-			        ISFILTERED ( ''dim_date''[Ar] ),
-			        CONCATENATEX ( VALUES ( ''dim_date''[Ar] ), ''dim_date''[Ar], ", ", ''dim_date''[Ar], ASC ),
+			        ISFILTERED ( 'dim_date'[Ar] ),
+			        CONCATENATEX ( VALUES ( 'dim_date'[Ar] ), 'dim_date'[Ar], ", ", 'dim_date'[Ar], ASC ),
 			        "Alle år"
 			    )
 			VAR OrganizationTxt =
@@ -1330,15 +1330,15 @@ table _Measures
 		displayFolder: 14 Conditional Formatting\Bars
 		lineageTag: d328c796-9402-47dd-9349-d8e4cd1afcc0
 
-	measure 'ERP S-Kurve Budsjett Label' = IF ( MAX ( ''dim_date''[Maned_Nummer] ) = 12, "Budsjett: " & FORMAT ( [ERP Budsjett Running], "#,##0 MNOK" ), BLANK () )
+	measure 'ERP S-Kurve Budsjett Label' = IF ( MAX ( 'dim_date'[Maned_Nummer] ) = 12, "Budsjett: " & FORMAT ( [ERP Budsjett Running], "#,##0 MNOK" ), BLANK () )
 		displayFolder: 16 Titles & Labels
 		lineageTag: 948fb6b4-55a7-4f37-b0e8-13bcbefe838d
 
-	measure 'ERP S-Kurve Regnskap Label' = IF ( MAX ( ''dim_date''[Maned_Nummer] ) = MONTH ( [ERP Siste Rapporterte Dato] ), "Faktisk YTD: " & FORMAT ( [ERP Regnskap Running], "#,##0 MNOK" ), BLANK () )
+	measure 'ERP S-Kurve Regnskap Label' = IF ( MAX ( 'dim_date'[Maned_Nummer] ) = MONTH ( [ERP Siste Rapporterte Dato] ), "Faktisk YTD: " & FORMAT ( [ERP Regnskap Running], "#,##0 MNOK" ), BLANK () )
 		displayFolder: 16 Titles & Labels
 		lineageTag: 4acdc578-a714-4bde-aced-32cf6e1f1e8b
 
-	measure 'ERP S-Kurve EAC Label' = IF ( MAX ( ''dim_date''[Maned_Nummer] ) = 12, "EAC Prognose: " & FORMAT ( [ERP Forecast EOY], "#,##0 MNOK" ), BLANK () )
+	measure 'ERP S-Kurve EAC Label' = IF ( MAX ( 'dim_date'[Maned_Nummer] ) = 12, "EAC Prognose: " & FORMAT ( [ERP Forecast EOY], "#,##0 MNOK" ), BLANK () )
 		displayFolder: 16 Titles & Labels
 		lineageTag: d04de75d-a83f-49fb-ae74-74b0c0949c75
 
