@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v01_matrix_status",
   "position": {
-    "x": 449.55665024630542,
-    "y": 559.95073891625611,
-    "z": 8,
-    "height": 489.45812807881771,
-    "width": 1451.0837438423646,
-    "tabOrder": 8
+    "x": 970,
+    "y": 275,
+    "z": 10,
+    "width": 930,
+    "height": 785,
+    "tabOrder": 10
   },
   "visual": {
     "visualType": "tableEx",
@@ -15,21 +15,6 @@
       "queryState": {
         "Values": {
           "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Måltall"
-                    }
-                  },
-                  "Property": "RAG Ikon Avvik"
-                }
-              },
-              "queryRef": "_Måltall.RAG Ikon Avvik",
-              "nativeQueryRef": "RAG Ikon Avvik",
-              "active": true
-            },
             {
               "field": {
                 "Column": {
@@ -68,11 +53,11 @@
                       "Entity": "_Måltall"
                     }
                   },
-                  "Property": "Budsjett YTD"
+                  "Property": "Sum Budsjett"
                 }
               },
-              "queryRef": "_Måltall.Budsjett YTD",
-              "nativeQueryRef": "Budsjett YTD",
+              "queryRef": "_Måltall.Sum Budsjett",
+              "nativeQueryRef": "Sum Budsjett",
               "active": true
             },
             {
@@ -83,11 +68,11 @@
                       "Entity": "_Måltall"
                     }
                   },
-                  "Property": "Regnskap YTD"
+                  "Property": "Sum Regnskap"
                 }
               },
-              "queryRef": "_Måltall.Regnskap YTD",
-              "nativeQueryRef": "Regnskap YTD",
+              "queryRef": "_Måltall.Sum Regnskap",
+              "nativeQueryRef": "Sum Regnskap",
               "active": true
             },
             {
@@ -98,11 +83,11 @@
                       "Entity": "_Måltall"
                     }
                   },
-                  "Property": "Avvik YTD Kr"
+                  "Property": "Avvik Kr"
                 }
               },
-              "queryRef": "_Måltall.Avvik YTD Kr",
-              "nativeQueryRef": "Avvik YTD Kr",
+              "queryRef": "_Måltall.Avvik Kr",
+              "nativeQueryRef": "Avvik Kr",
               "active": true
             },
             {
@@ -113,11 +98,11 @@
                       "Entity": "_Måltall"
                     }
                   },
-                  "Property": "Avvik YTD %"
+                  "Property": "Avvik %"
                 }
               },
-              "queryRef": "_Måltall.Avvik YTD %",
-              "nativeQueryRef": "Avvik YTD %",
+              "queryRef": "_Måltall.Avvik %",
+              "nativeQueryRef": "Avvik %",
               "active": true
             },
             {
@@ -128,26 +113,11 @@
                       "Entity": "_Måltall"
                     }
                   },
-                  "Property": "EOY Estimat Lineær"
+                  "Property": "RAG Ikon Avvik"
                 }
               },
-              "queryRef": "_Måltall.EOY Estimat Lineær",
-              "nativeQueryRef": "EOY Estimat Lineær",
-              "active": true
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Måltall"
-                    }
-                  },
-                  "Property": "EOY Estimert Avvik Kr"
-                }
-              },
-              "queryRef": "_Måltall.EOY Estimert Avvik Kr",
-              "nativeQueryRef": "EOY Estimert Avvik Kr",
+              "queryRef": "_Måltall.RAG Ikon Avvik",
+              "nativeQueryRef": "RAG Ikon Avvik",
               "active": true
             }
           ]
@@ -168,14 +138,13 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'02  DETALJERT OPPFØLGINGSTABELL PER ANSVARSSTED (RAG Status & EOY Prognose)'"
+                  "Value": "'Tufte Statusmatrise med RAG-indikator'"
                 }
               }
             }
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

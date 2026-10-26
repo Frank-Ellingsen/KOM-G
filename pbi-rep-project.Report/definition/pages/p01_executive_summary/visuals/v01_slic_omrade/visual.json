@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v01_slic_omrade",
   "position": {
-    "x": 19.950738916256157,
-    "y": 74.482758620689651,
-    "z": 2,
-    "height": 476.1576354679803,
-    "width": 420.29556650246303,
-    "tabOrder": 2
+    "x": 1390,
+    "y": 15,
+    "z": 3,
+    "width": 250,
+    "height": 135,
+    "tabOrder": 3
   },
   "visual": {
     "visualType": "slicer",
@@ -34,13 +34,6 @@
         }
       }
     },
-    "objects": {
-      "general": [
-        {
-          "properties": {}
-        }
-      ]
-    },
     "visualContainerObjects": {
       "title": [
         {
@@ -55,7 +48,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Virksomhetsområde'"
+                  "Value": "'Velg Tjenesteområde'"
                 }
               }
             }

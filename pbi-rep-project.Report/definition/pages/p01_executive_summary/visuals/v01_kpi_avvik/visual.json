@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v01_kpi_avvik",
   "position": {
-    "x": 1150.4926108374384,
-    "y": 74.482758620689651,
-    "z": 5,
-    "height": 144.97536945812809,
-    "width": 339.16256157635468,
-    "tabOrder": 5
+    "x": 970,
+    "y": 165,
+    "z": 7,
+    "width": 450,
+    "height": 95,
+    "tabOrder": 7
   },
   "visual": {
     "visualType": "card",
@@ -34,47 +34,6 @@
         }
       }
     },
-    "objects": {
-      "categoryLabels": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "labels": [
-        {
-          "properties": {
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "22D"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "wordWrap": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
     "visualContainerObjects": {
       "title": [
         {
@@ -89,14 +48,13 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'AVVIK YTD KR'"
+                  "Value": "'Netto Avvik YTD'"
                 }
               }
             }
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

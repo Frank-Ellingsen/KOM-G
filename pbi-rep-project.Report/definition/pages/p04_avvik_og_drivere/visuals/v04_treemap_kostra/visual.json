@@ -1,0 +1,79 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "v04_treemap_kostra",
+  "position": {
+    "x": 965,
+    "y": 190,
+    "z": 7,
+    "width": 935,
+    "height": 425,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "treemap",
+    "query": {
+      "queryState": {
+        "Group": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_kostra_funksjon"
+                    }
+                  },
+                  "Property": "KOSTRA_Funksjonsgruppe_Navn"
+                }
+              },
+              "queryRef": "dim_kostra_funksjon.KOSTRA_Funksjonsgruppe_Navn",
+              "nativeQueryRef": "KOSTRA_Funksjonsgruppe_Navn",
+              "active": true
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Sum Regnskap"
+                }
+              },
+              "queryRef": "_Måltall.Sum Regnskap",
+              "nativeQueryRef": "Sum Regnskap",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'FT Part-to-Whole: KOSTRA Funksjonsgrupper Treemap'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

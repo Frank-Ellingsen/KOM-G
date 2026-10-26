@@ -361,6 +361,41 @@ table _Måltall
 		displayFolder: 7. FT Visual Vocabulary
 		lineageTag: c918240b-419a-4129-910a-9128ca019214
 
+	measure FT_Time_Diverging_Surplus = IF([Avvik Kr] > 0, [Avvik Kr], BLANK())
+		formatString: #,##0 "kr";(#,##0 "kr");"-"
+		displayFolder: 7. FT Visual Vocabulary
+		lineageTag: b81290ca-419a-4b10-8812-cb918240ba15
+
+	measure FT_Time_Diverging_Deficit = IF([Avvik Kr] < 0, [Avvik Kr], BLANK())
+		formatString: #,##0 "kr";(#,##0 "kr");"-"
+		displayFolder: 7. FT Visual Vocabulary
+		lineageTag: c81290ca-419a-4b10-8812-cb918240ba16
+
+	measure FT_Time_Cumulative_Actual = TOTALYTD([Sum Regnskap], 'dim_date'[Dato])
+		formatString: #,##0 "kr"
+		displayFolder: 7. FT Visual Vocabulary
+		lineageTag: d81290ca-419a-4b10-8812-cb918240ba17
+
+	measure FT_Time_Cumulative_Budget = TOTALYTD([Sum Budsjett], 'dim_date'[Dato])
+		formatString: #,##0 "kr"
+		displayFolder: 7. FT Visual Vocabulary
+		lineageTag: e81290ca-419a-4b10-8812-cb918240ba18
+
+	measure FT_Time_Cumulative_EAC = [EOY Estimat Trendjustert]
+		formatString: #,##0 "kr"
+		displayFolder: 7. FT Visual Vocabulary
+		lineageTag: f81290ca-419a-4b10-8812-cb918240ba19
+
+	measure FT_Corr_Scatter_Size = ABS([Avvik YTD Kr])
+		formatString: #,##0 "kr"
+		displayFolder: 7. FT Visual Vocabulary
+		lineageTag: a11290ca-419a-4b10-8812-cb918240ba20
+
+	measure FT_Pareto_80_Cutoff = 0.80
+		formatString: 0%
+		displayFolder: 7. FT Visual Vocabulary
+		lineageTag: b11290ca-419a-4b10-8812-cb918240ba21
+
 	column Placeholder
 		dataType: int64
 		isHidden

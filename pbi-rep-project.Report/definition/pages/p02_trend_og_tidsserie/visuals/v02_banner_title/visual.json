@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.3.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v02_banner_title",
   "position": {
     "x": 20,
     "y": 15,
     "z": 1,
-    "width": 1880,
-    "height": 55,
+    "width": 1460,
+    "height": 65,
     "tabOrder": 1
   },
   "visual": {
     "visualType": "card",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Values": {
@@ -21,60 +20,19 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Måltall"
+                      "Entity": "_Measures"
                     }
                   },
-                  "Property": "Dynamisk Rapporttittel"
+                  "Property": "Story Time Narrative"
                 }
               },
-              "queryRef": "_Måltall.Dynamisk Rapporttittel",
-              "nativeQueryRef": "Dynamisk Rapporttittel",
+              "queryRef": "_Measures.Story Time Narrative",
+              "nativeQueryRef": "Story Time Narrative",
               "active": true
             }
           ]
         }
       }
-    },
-    "objects": {
-      "categoryLabels": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "labels": [
-        {
-          "properties": {
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "13D"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "wordWrap": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            }
-          }
-        }
-      ]
     },
     "visualContainerObjects": {
       "title": [
@@ -90,7 +48,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'TIDSSERIE- OG TRENDANALYSE — 60 Ways to Visualize Time'"
+                  "Value": "'Tidsserieinnsikt'"
                 }
               }
             }

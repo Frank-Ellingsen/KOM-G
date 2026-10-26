@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v02_slic_omrade",
   "position": {
-    "x": 19.950738916256157,
-    "y": 74.482758620689651,
+    "x": 1500,
+    "y": 15,
     "z": 2,
-    "height": 505.41871921182263,
-    "width": 420.29556650246303,
+    "width": 400,
+    "height": 65,
     "tabOrder": 2
   },
   "visual": {
@@ -48,7 +48,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Virksomhetsområde'"
+                  "Value": "'Områdefilter'"
                 }
               }
             }

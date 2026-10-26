@@ -1,0 +1,135 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "v05_table_pareto_tiltak",
+  "position": {
+    "x": 20,
+    "y": 635,
+    "z": 9,
+    "width": 1880,
+    "height": 425,
+    "tabOrder": 9
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_kostra_kontoplan"
+                    }
+                  },
+                  "Property": "Kontonavn"
+                }
+              },
+              "queryRef": "dim_kostra_kontoplan.Kontonavn",
+              "nativeQueryRef": "Kontonavn",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "ERP Negativ Kostnadsdriver"
+                }
+              },
+              "queryRef": "_Measures.ERP Negativ Kostnadsdriver",
+              "nativeQueryRef": "ERP Negativ Kostnadsdriver",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "ERP Negativ Driver Andel %"
+                }
+              },
+              "queryRef": "_Measures.ERP Negativ Driver Andel %",
+              "nativeQueryRef": "ERP Negativ Driver Andel %",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "ERP Driver Tiltaksbehov Måned"
+                }
+              },
+              "queryRef": "_Measures.ERP Driver Tiltaksbehov Måned",
+              "nativeQueryRef": "ERP Driver Tiltaksbehov Måned",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "ERP Driver Tiltaksbehov Restår"
+                }
+              },
+              "queryRef": "_Measures.ERP Driver Tiltaksbehov Restår",
+              "nativeQueryRef": "ERP Driver Tiltaksbehov Restår",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "ERP Driver Tiltaksgrad %"
+                }
+              },
+              "queryRef": "_Measures.ERP Driver Tiltaksgrad %",
+              "nativeQueryRef": "ERP Driver Tiltaksgrad %",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Prioritert Tiltaksbehov for Kostnadsdrivere'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

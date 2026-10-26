@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v02_col_mom",
   "position": {
-    "x": 430.935960591133,
-    "y": 590.54187192118229,
-    "z": 8,
-    "height": 458.86699507389159,
-    "width": 775.41871921182258,
-    "tabOrder": 8
+    "x": 20,
+    "y": 630,
+    "z": 9,
+    "width": 925,
+    "height": 430,
+    "tabOrder": 9
   },
   "visual": {
     "visualType": "columnChart",
@@ -67,14 +67,13 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'02  MÅNED-OVER-MÅNED VEKST I REGNSKAP (Time-Visuals #38 MoM Slope / Difference)'"
+                  "Value": "'Time Visuals 19-20: Månedsendring MoM Kr'"
                 }
               }
             }
           }
         }
       ]
-    },
-    "drillFilterOtherVisuals": true
+    }
   }
 }

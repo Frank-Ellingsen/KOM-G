@@ -1,0 +1,60 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "v05_banner_title",
+  "position": {
+    "x": 20,
+    "y": 15,
+    "z": 1,
+    "width": 1460,
+    "height": 65,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Forecast Action Summary"
+                }
+              },
+              "queryRef": "_Measures.Forecast Action Summary",
+              "nativeQueryRef": "Forecast Action Summary",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Tiltaks- og Prognosesammendrag'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
