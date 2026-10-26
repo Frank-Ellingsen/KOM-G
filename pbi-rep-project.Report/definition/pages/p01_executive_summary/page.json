@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "p01_executive_summary",
-  "displayName": "01. Hovedrapport (Kommune\u00f8konomi 2024)",
+  "displayName": "01. Hovedrapport (Kommuneøkonomi 2024)",
   "displayOption": "FitToPage",
   "height": 1080,
   "width": 1920

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "p_ft07_part_to_whole",
+  "displayName": "FT 07: Part-to-Whole (Del av Helhet)",
+  "displayOption": "FitToPage",
+  "height": 1080,
+  "width": 1920
+}

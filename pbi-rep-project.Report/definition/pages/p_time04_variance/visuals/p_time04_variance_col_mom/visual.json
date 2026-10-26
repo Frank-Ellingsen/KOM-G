@@ -1,0 +1,79 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "p_time04_variance_col_mom",
+  "position": {
+    "x": 20,
+    "y": 220,
+    "z": 7,
+    "width": 925,
+    "height": 840,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "columnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_date"
+                    }
+                  },
+                  "Property": "month"
+                }
+              },
+              "queryRef": "dim_date.month",
+              "nativeQueryRef": "month",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Regnskap MoM Endring Kr"
+                }
+              },
+              "queryRef": "_Måltall.Regnskap MoM Endring Kr",
+              "nativeQueryRef": "Regnskap MoM Endring Kr",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'#19-#20 Difference from Previous: Månedlig Endring (MoM)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

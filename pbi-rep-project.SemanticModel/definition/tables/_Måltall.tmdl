@@ -143,21 +143,6 @@ table _Måltall
 		displayFolder: 04. Prognose & EOY
 		lineageTag: 7e3e86e1-5887-487c-bca0-48dcf4e3ffe1
 
-	measure 'EOY Årsbudsjett' = [Årsbudsjett]
-		formatString: #,##0 NOK
-		displayFolder: 04. Prognose & EOY
-		lineageTag: a04d55ab-04f0-4616-9b1c-a744378e637b
-
-	measure 'EOY Run Rate Avvik' = [EOY Estimert Avvik Kr]
-		formatString: #,##0 NOK
-		displayFolder: 04. Prognose & EOY
-		lineageTag: 615f3466-406b-402d-aef2-d39dd42a405a
-
-	measure 'ERP EOY Run Rate' = [EOY Estimat Lineær]
-		formatString: #,##0 NOK
-		displayFolder: 04. Prognose & EOY
-		lineageTag: 7494373d-2810-4935-be35-11b10e193763
-
 	measure 'Bullet Target 80%' = [Budsjett YTD] * 0.80
 		formatString: #,##0 NOK
 		displayFolder: 04. Prognose & EOY
@@ -219,11 +204,6 @@ table _Måltall
 		displayFolder: 06. Driveranalyse
 		lineageTag: 3474814f-161b-4472-affc-8bcb0e528df2
 
-	measure 'Overforbruk Kr' = [Merforbruk Kr]
-		formatString: #,##0 NOK
-		displayFolder: 06. Driveranalyse
-		lineageTag: 408ece9a-67d7-4c3d-bd80-ec9985db7116
-
 	measure 'Mindreforbruk Kr' =
 			VAR _Avvik = [Avvik Kr]
 			RETURN
@@ -245,11 +225,6 @@ table _Måltall
 		formatString: 0.0 %
 		displayFolder: 06. Driveranalyse
 		lineageTag: ca155582-2c37-4f1a-897c-3fd9fd79727a
-
-	measure 'Pct Bidrag til Totalt Overforbruk' = [Pct Bidrag til Totalt Merforbruk]
-		formatString: 0.0 %
-		displayFolder: 06. Driveranalyse
-		lineageTag: b42c12d6-3c7b-4f90-9c08-3b51f53240c3
 
 	measure 'Pct Bidrag til Total Regnskap' =
 			VAR _TotalRegnskap =
@@ -280,11 +255,6 @@ table _Måltall
 		displayFolder: 06. Driveranalyse
 		lineageTag: 70f040f3-875a-4919-b5ed-6d1c0feb2543
 
-	measure 'Rangering Overforbruk' = [Rangering Merforbruk]
-		formatString: 0
-		displayFolder: 06. Driveranalyse
-		lineageTag: 9ba9c78f-cd0b-4964-921c-a5207dd8a904
-
 	measure 'Kostnad Vikarer Kr' =
 			CALCULATE (
 			    [Sum Regnskap],
@@ -302,6 +272,101 @@ table _Måltall
 		formatString: #,##0 NOK
 		displayFolder: 06. Driveranalyse
 		lineageTag: 50e3ef1b-983e-4187-835c-7c4f922c8e3f
+
+	measure 'Txt Valgt År' = SELECTEDVALUE ( 'dim_date'[Ar], "Alle År (2024)" )
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: b064909a-8596-4f5a-b395-a0003786747b
+
+	measure 'Txt Valgt Måned' =
+			IF (
+			    ISFILTERED ( 'dim_date'[Maned_Navn] ),
+			    CONCATENATEX ( VALUES ( 'dim_date'[Maned_Navn] ), 'dim_date'[Maned_Navn], ", " ),
+			    "Alle Måneder (Jan - Aug)"
+			)
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: 3d5631c6-5694-4d2e-9896-532a15160ad0
+
+	measure 'Txt Valgt Område' =
+			IF (
+			    ISFILTERED ( 'dim_ansvar'[Omrade_Navn] ),
+			    CONCATENATEX ( VALUES ( 'dim_ansvar'[Omrade_Navn] ), 'dim_ansvar'[Omrade_Navn], ", " ),
+			    "Alle Områder / Konsern"
+			)
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: 231137bd-c3d7-452b-af59-4a48a8e5caf2
+
+	measure 'Txt Valgt Ansvar' =
+			IF (
+			    ISFILTERED ( 'dim_ansvar'[Enhet_Navn] ),
+			    CONCATENATEX ( VALUES ( 'dim_ansvar'[Enhet_Navn] ), 'dim_ansvar'[Enhet_Navn], ", " ),
+			    "Alle Ansvarsenheter"
+			)
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: f59824f0-0cbe-4780-8459-8388c3b26051
+
+	measure 'Txt Master Selection Header' =
+			"KOSTRA Rapport | År: " & [Txt Valgt År] &
+			" | Periode: " & [Txt Valgt Måned] &
+			" | Område: " & [Txt Valgt Område] &
+			" | Enhet: " & [Txt Valgt Ansvar] &
+			" | Status: " & [Status Indikator]
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: c1458d7b-a576-40d1-95c7-dd04fa9e74d2
+
+	measure 'Simulert Kutt Hoveddrivere Kr' =
+			// 50% reduksjon i vikar og overtid (konto 102013, 102000, 104000)
+			CALCULATE (
+			    [Merforbruk Kr] * 0.50,
+			    'dim_kostra_kontoplan'[Kontokode_6Siffer] IN { "102013", "102000", "104000" }
+			)
+		formatString: #,##0 NOK
+		displayFolder: 08. What-If Simulering
+		lineageTag: abf7acc1-35e7-43df-b719-589230dcae28
+
+	measure 'Simulert Frigjort Mindreforbruk Kr' =
+			// Frigjør inntil 20% av mindreforbruk på ordinær lønn til omdisponering
+			CALCULATE (
+			    [Mindreforbruk Kr] * 0.20,
+			    'dim_kostra_kontoplan'[Kontokode_6Siffer] IN { "101000", "109000" }
+			)
+		formatString: #,##0 NOK
+		displayFolder: 08. What-If Simulering
+		lineageTag: 05ce83c1-43ab-41d9-90ae-ea2fe3de3719
+
+	measure 'Simulert EOY Avvik Etter Tiltak Kr' = [EOY Estimert Avvik Kr] + [Simulert Totale Tiltak Kr]
+		formatString: #,##0 NOK
+		displayFolder: 08. What-If Simulering
+		lineageTag: 855b7984-a6ab-4028-b394-338dd54e75b7
+
+	measure 'EOY Årsbudsjett' = [Årsbudsjett]
+		formatString: #,##0 NOK
+		displayFolder: 04. Prognose & EOY
+		lineageTag: a04d55ab-04f0-4616-9b1c-a744378e637b
+
+	measure 'EOY Run Rate Avvik' = [EOY Estimert Avvik Kr]
+		formatString: #,##0 NOK
+		displayFolder: 04. Prognose & EOY
+		lineageTag: 615f3466-406b-402d-aef2-d39dd42a405a
+
+	measure 'ERP EOY Run Rate' = [EOY Estimat Lineær]
+		formatString: #,##0 NOK
+		displayFolder: 04. Prognose & EOY
+		lineageTag: 7494373d-2810-4935-be35-11b10e193763
+
+	measure 'Overforbruk Kr' = [Merforbruk Kr]
+		formatString: #,##0 NOK
+		displayFolder: 06. Driveranalyse
+		lineageTag: 408ece9a-67d7-4c3d-bd80-ec9985db7116
+
+	measure 'Pct Bidrag til Totalt Overforbruk' = [Pct Bidrag til Totalt Merforbruk]
+		formatString: 0.0 %
+		displayFolder: 06. Driveranalyse
+		lineageTag: b42c12d6-3c7b-4f90-9c08-3b51f53240c3
+
+	measure 'Rangering Overforbruk' = [Rangering Merforbruk]
+		formatString: 0
+		displayFolder: 06. Driveranalyse
+		lineageTag: 9ba9c78f-cd0b-4964-921c-a5207dd8a904
 
 	measure 'ERP Negativ Kostnadsdriver' = [Merforbruk Kr]
 		formatString: #,##0 NOK
@@ -343,46 +408,6 @@ table _Måltall
 		formatString: 0.0 %
 		displayFolder: 06. Driveranalyse
 		lineageTag: a566d05d-a9c3-4397-94d5-559d0528f5c8
-
-	measure 'Txt Valgt År' = SELECTEDVALUE ( 'dim_date'[Ar], "Alle År (2024)" )
-		displayFolder: 07. Dynamisk Tekst
-		lineageTag: b064909a-8596-4f5a-b395-a0003786747b
-
-	measure 'Txt Valgt Måned' =
-			IF (
-			    ISFILTERED ( 'dim_date'[Maned_Navn] ),
-			    CONCATENATEX ( VALUES ( 'dim_date'[Maned_Navn] ), 'dim_date'[Maned_Navn], ", " ),
-			    "Alle Måneder (Jan - Aug)"
-			)
-		displayFolder: 07. Dynamisk Tekst
-		lineageTag: 3d5631c6-5694-4d2e-9896-532a15160ad0
-
-	measure 'Txt Valgt Område' =
-			IF (
-			    ISFILTERED ( 'dim_ansvar'[Omrade_Navn] ),
-			    CONCATENATEX ( VALUES ( 'dim_ansvar'[Omrade_Navn] ), 'dim_ansvar'[Omrade_Navn], ", " ),
-			    "Alle Områder / Konsern"
-			)
-		displayFolder: 07. Dynamisk Tekst
-		lineageTag: 231137bd-c3d7-452b-af59-4a48a8e5caf2
-
-	measure 'Txt Valgt Ansvar' =
-			IF (
-			    ISFILTERED ( 'dim_ansvar'[Enhet_Navn] ),
-			    CONCATENATEX ( VALUES ( 'dim_ansvar'[Enhet_Navn] ), 'dim_ansvar'[Enhet_Navn], ", " ),
-			    "Alle Ansvarsenheter"
-			)
-		displayFolder: 07. Dynamisk Tekst
-		lineageTag: f59824f0-0cbe-4780-8459-8388c3b26051
-
-	measure 'Txt Master Selection Header' =
-			"KOSTRA Rapport | År: " & [Txt Valgt År] &
-			" | Periode: " & [Txt Valgt Måned] &
-			" | Område: " & [Txt Valgt Område] &
-			" | Enhet: " & [Txt Valgt Ansvar] &
-			" | Status: " & [Status Indikator]
-		displayFolder: 07. Dynamisk Tekst
-		lineageTag: c1458d7b-a576-40d1-95c7-dd04fa9e74d2
 
 	measure 'Dynamisk Rapporttittel' = [Txt Master Selection Header]
 		displayFolder: 07. Dynamisk Tekst
@@ -428,35 +453,10 @@ table _Måltall
 		displayFolder: 07. Dynamisk Tekst
 		lineageTag: cac33af4-0158-4b8b-ba7b-7a944fb3078d
 
-	measure 'Simulert Kutt Hoveddrivere Kr' =
-			// 50% reduksjon i vikar og overtid (konto 102013, 102000, 104000)
-			CALCULATE (
-			    [Merforbruk Kr] * 0.50,
-			    'dim_kostra_kontoplan'[Kontokode_6Siffer] IN { "102013", "102000", "104000" }
-			)
-		formatString: #,##0 NOK
-		displayFolder: 08. What-If Simulering
-		lineageTag: abf7acc1-35e7-43df-b719-589230dcae28
-
-	measure 'Simulert Frigjort Mindreforbruk Kr' =
-			// Frigjør inntil 20% av mindreforbruk på ordinær lønn til omdisponering
-			CALCULATE (
-			    [Mindreforbruk Kr] * 0.20,
-			    'dim_kostra_kontoplan'[Kontokode_6Siffer] IN { "101000", "109000" }
-			)
-		formatString: #,##0 NOK
-		displayFolder: 08. What-If Simulering
-		lineageTag: 05ce83c1-43ab-41d9-90ae-ea2fe3de3719
-
 	measure 'Simulert Totale Tiltak Kr' = [Simulert Kutt Hoveddrivere Kr] + [Simulert Frigjort Mindreforbruk Kr]
 		formatString: #,##0 NOK
 		displayFolder: 08. What-If Simulering
 		lineageTag: df461cde-08e0-4adc-8fe3-9372a6e08050
-
-	measure 'Simulert EOY Avvik Etter Tiltak Kr' = [EOY Estimert Avvik Kr] + [Simulert Totale Tiltak Kr]
-		formatString: #,##0 NOK
-		displayFolder: 08. What-If Simulering
-		lineageTag: 855b7984-a6ab-4028-b394-338dd54e75b7
 
 	measure 'Simulert EOY Status Indikator' =
 			VAR _NyttAvvik = [Simulert EOY Avvik Etter Tiltak Kr]
@@ -611,3 +611,4 @@ table _Måltall
 				    Source
 
 	annotation PBI_ResultType = Table
+

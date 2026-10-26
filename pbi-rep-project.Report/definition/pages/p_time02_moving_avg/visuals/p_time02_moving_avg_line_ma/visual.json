@@ -1,0 +1,94 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "p_time02_moving_avg_line_ma",
+  "position": {
+    "x": 20,
+    "y": 220,
+    "z": 7,
+    "width": 925,
+    "height": 840,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_date"
+                    }
+                  },
+                  "Property": "month"
+                }
+              },
+              "queryRef": "dim_date.month",
+              "nativeQueryRef": "month",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Sum Regnskap"
+                }
+              },
+              "queryRef": "_Måltall.Sum Regnskap",
+              "nativeQueryRef": "Sum Regnskap",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Regnskap 3M Moving Average"
+                }
+              },
+              "queryRef": "_Måltall.Regnskap 3M Moving Average",
+              "nativeQueryRef": "Regnskap 3M Moving Average",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'#11 & #18 Line + Moving Average: Utjevnet Kostnadstrend'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

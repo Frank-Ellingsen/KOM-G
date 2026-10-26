@@ -1,0 +1,120 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "p_time04_variance_table",
+  "position": {
+    "x": 965,
+    "y": 220,
+    "z": 8,
+    "width": 935,
+    "height": 840,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_date"
+                    }
+                  },
+                  "Property": "month"
+                }
+              },
+              "queryRef": "dim_date.month",
+              "nativeQueryRef": "month",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Sum Regnskap"
+                }
+              },
+              "queryRef": "_Måltall.Sum Regnskap",
+              "nativeQueryRef": "Sum Regnskap",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Regnskap MoM Endring Kr"
+                }
+              },
+              "queryRef": "_Måltall.Regnskap MoM Endring Kr",
+              "nativeQueryRef": "Regnskap MoM Endring Kr",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Regnskap MoM Endring %"
+                }
+              },
+              "queryRef": "_Måltall.Regnskap MoM Endring %",
+              "nativeQueryRef": "Regnskap MoM Endring %",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Regnskap Base 100"
+                }
+              },
+              "queryRef": "_Måltall.Regnskap Base 100",
+              "nativeQueryRef": "Regnskap Base 100",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'MoM Endringer & Indeks 100'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

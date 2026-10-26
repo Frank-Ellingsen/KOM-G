@@ -1,0 +1,94 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "p_ft05_time_stepped",
+  "position": {
+    "x": 20,
+    "y": 220,
+    "z": 7,
+    "width": 925,
+    "height": 840,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_date"
+                    }
+                  },
+                  "Property": "month"
+                }
+              },
+              "queryRef": "dim_date.month",
+              "nativeQueryRef": "month",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "FT_Time_Stepped_Budget"
+                }
+              },
+              "queryRef": "_Måltall.FT_Time_Stepped_Budget",
+              "nativeQueryRef": "FT_Time_Stepped_Budget",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Sum Regnskap"
+                }
+              },
+              "queryRef": "_Måltall.Sum Regnskap",
+              "nativeQueryRef": "Sum Regnskap",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Stepped Line: Periodisert Budsjett vs Faktisk Regnskap'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

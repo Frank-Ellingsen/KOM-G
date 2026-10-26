@@ -1,0 +1,79 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "p_ft03_ranking_ranked_bars",
+  "position": {
+    "x": 20,
+    "y": 220,
+    "z": 7,
+    "width": 925,
+    "height": 840,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_kostra_kontoplan"
+                    }
+                  },
+                  "Property": "Kontonavn"
+                }
+              },
+              "queryRef": "dim_kostra_kontoplan.Kontonavn",
+              "nativeQueryRef": "Kontonavn",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Merforbruk Kr"
+                }
+              },
+              "queryRef": "_Måltall.Merforbruk Kr",
+              "nativeQueryRef": "Merforbruk Kr",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Ordered Bar: KOSTRA-konti rangert etter merforbruk'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

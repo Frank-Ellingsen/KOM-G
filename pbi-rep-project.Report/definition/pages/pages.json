@@ -6,7 +6,26 @@
     "p04_avvik_og_drivere",
     "p03_tufte_scurve_og_prognose",
     "p05_pareto_og_korrelasjon",
-    "p06_scenario_simulering"
+    "p06_scenario_simulering",
+    "p_ft01_deviation",
+    "p_ft02_correlation",
+    "p_ft03_ranking",
+    "p_ft04_distribution",
+    "p_ft05_time",
+    "p_ft06_magnitude",
+    "p_ft07_part_to_whole",
+    "p_ft08_spatial",
+    "p_ft09_flow",
+    "p_time01_lines",
+    "p_time02_moving_avg",
+    "p_time03_areas",
+    "p_time04_variance",
+    "p_time05_running_totals",
+    "p_time06_bars_columns",
+    "p_time07_advanced_bars",
+    "p_time08_cycles_slopes",
+    "p_time09_dots_sparklines",
+    "p_time10_advanced_flows"
   ],
   "activePageName": "p01_executive_summary"
 }

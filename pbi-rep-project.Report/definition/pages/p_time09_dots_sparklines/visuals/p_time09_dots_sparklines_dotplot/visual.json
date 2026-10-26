@@ -1,0 +1,98 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "p_time09_dots_sparklines_dotplot",
+  "position": {
+    "x": 20,
+    "y": 220,
+    "z": 7,
+    "width": 925,
+    "height": 840,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "scatterChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_ansvar"
+                    }
+                  },
+                  "Property": "Enhet_Navn"
+                }
+              },
+              "queryRef": "dim_ansvar.Enhet_Navn",
+              "nativeQueryRef": "Enhet_Navn",
+              "active": true
+            }
+          ]
+        },
+        "X": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Sum Budsjett"
+                }
+              },
+              "queryRef": "_Måltall.Sum Budsjett",
+              "nativeQueryRef": "Sum Budsjett",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Sum Regnskap"
+                }
+              },
+              "queryRef": "_Måltall.Sum Regnskap",
+              "nativeQueryRef": "Sum Regnskap",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'#44 & #49 Connected Dot Plot: Enheter i Budsjett/Regnskap'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

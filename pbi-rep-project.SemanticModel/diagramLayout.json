@@ -85,6 +85,45 @@
             "width": 234
           },
           "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 1422,
+            "y": 276
+          },
+          "nodeIndex": "_Valg_Maltall",
+          "nodeLineageTag": "b4f15d2a-4f51-4122-bc51-e407185cc631",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1706,
+            "y": 276
+          },
+          "nodeIndex": "Kutt_Hoveddrivere_Pct",
+          "nodeLineageTag": "71b02842-9a01-4be1-9bc0-81f7d38ae011",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1990,
+            "y": 276
+          },
+          "nodeIndex": "Omdisponering_Pct",
+          "nodeLineageTag": "d4882109-1a02-45e8-b801-447cae819b33",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
         }
       ],
       "name": "All tables",

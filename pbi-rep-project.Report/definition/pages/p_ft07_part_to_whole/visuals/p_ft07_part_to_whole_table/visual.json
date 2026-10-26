@@ -1,0 +1,105 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "p_ft07_part_to_whole_table",
+  "position": {
+    "x": 965,
+    "y": 220,
+    "z": 8,
+    "width": 935,
+    "height": 840,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_kostra_kontoplan"
+                    }
+                  },
+                  "Property": "Hovedkategori_Navn"
+                }
+              },
+              "queryRef": "dim_kostra_kontoplan.Hovedkategori_Navn",
+              "nativeQueryRef": "Hovedkategori_Navn",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Sum Regnskap"
+                }
+              },
+              "queryRef": "_Måltall.Sum Regnskap",
+              "nativeQueryRef": "Sum Regnskap",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Pct Bidrag til Total Regnskap"
+                }
+              },
+              "queryRef": "_Måltall.Pct Bidrag til Total Regnskap",
+              "nativeQueryRef": "Pct Bidrag til Total Regnskap",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Avvik Kr"
+                }
+              },
+              "queryRef": "_Måltall.Avvik Kr",
+              "nativeQueryRef": "Avvik Kr",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Andelstabell per KOSTRA Hovedkategori'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

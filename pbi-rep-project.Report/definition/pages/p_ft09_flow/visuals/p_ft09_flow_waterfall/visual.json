@@ -1,0 +1,79 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "p_ft09_flow_waterfall",
+  "position": {
+    "x": 20,
+    "y": 220,
+    "z": 7,
+    "width": 925,
+    "height": 840,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "waterfallChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_kostra_funksjon"
+                    }
+                  },
+                  "Property": "KOSTRA_Funksjonsgruppe_Navn"
+                }
+              },
+              "queryRef": "dim_kostra_funksjon.KOSTRA_Funksjonsgruppe_Navn",
+              "nativeQueryRef": "KOSTRA_Funksjonsgruppe_Navn",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Avvik Kr"
+                }
+              },
+              "queryRef": "_Måltall.Avvik Kr",
+              "nativeQueryRef": "Avvik Kr",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Flow Waterfall: Avviksbro per KOSTRA-funksjonsgruppe'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

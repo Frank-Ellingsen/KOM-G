@@ -1,0 +1,60 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "v_p_time10_advanced_flows_kpi_3",
+  "position": {
+    "x": 970,
+    "y": 110,
+    "z": 5,
+    "width": 450,
+    "height": 95,
+    "tabOrder": 5
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Simulert EOY Avvik Etter Tiltak Kr"
+                }
+              },
+              "queryRef": "_Måltall.Simulert EOY Avvik Etter Tiltak Kr",
+              "nativeQueryRef": "Simulert EOY Avvik Etter Tiltak Kr",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Simulert Sluttavvik'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
