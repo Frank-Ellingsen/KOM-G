@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.3.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v01_kpi_avvik",
   "position": {
-    "x": 1150,
-    "y": 75,
+    "x": 1150.4926108374384,
+    "y": 74.482758620689651,
     "z": 5,
-    "width": 340,
-    "height": 75,
+    "height": 144.97536945812809,
+    "width": 339.16256157635468,
     "tabOrder": 5
   },
   "visual": {
     "visualType": "card",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Values": {
@@ -97,6 +96,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

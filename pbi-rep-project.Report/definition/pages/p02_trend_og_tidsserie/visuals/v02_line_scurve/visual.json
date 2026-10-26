@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.3.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v02_line_scurve",
   "position": {
-    "x": 970,
-    "y": 590,
+    "x": 1223.6453201970444,
+    "y": 590.54187192118229,
     "z": 9,
-    "width": 930,
-    "height": 460,
+    "height": 458.86699507389159,
+    "width": 676.99507389162557,
     "tabOrder": 9
   },
   "visual": {
     "visualType": "lineChart",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Category": {
@@ -75,6 +74,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

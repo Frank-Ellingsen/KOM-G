@@ -11,25 +11,10 @@ table _Måltall
 		displayFolder: 1. Basismåltall
 		lineageTag: f2e38c71-9257-4b7f-a633-8c460ff61d9a
 
-	measure Årsbudsjett =
-			CALCULATE (
-			    [Sum Budsjett],
-			    ALL ( 'dim_date' ),
-			    VALUES ( 'dim_date'[Ar] )
-			)
-		formatString: #,##0 "kr"
-		displayFolder: 1. Basismåltall
-		lineageTag: c5e19482-1a48-4cb2-910a-31ca78da0e44
-
 	measure 'Avvik Kr' = [Sum Budsjett] - [Sum Regnskap]
 		formatString: #,##0 "kr";(#,##0 "kr");"-"
 		displayFolder: 1. Basismåltall
 		lineageTag: bc2a0743-7f28-4445-8b89-a5e2f750c822
-
-	measure 'Avvik %' = DIVIDE([Avvik Kr], [Sum Budsjett], 0)
-		formatString: 0.0%
-		displayFolder: 1. Basismåltall
-		lineageTag: f8a1ca02-c104-4b10-82a1-da98cb103e55
 
 	measure 'Forbruk %' = DIVIDE([Sum Regnskap], [Sum Budsjett], 0)
 		formatString: 0.0%
@@ -55,6 +40,76 @@ table _Måltall
 		formatString: 0.0%
 		displayFolder: 2. Time Intelligence & Trender
 		lineageTag: a25db542-a169-42b7-a89e-21cb834f8101
+
+	measure 'RAG Farge Avvik' =
+			VAR _AvvikPct = [Avvik YTD %]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( [Sum Regnskap] ), BLANK (),
+			        _AvvikPct < -0.05, "#D13438",
+			        _AvvikPct < -0.01, "#FFB900",
+			        _AvvikPct <= 0.05, "#107C41",
+			        "#0078D4"
+			    )
+		displayFolder: 6. RAG & Visual Helpers
+		lineageTag: fc6be410-b98a-4933-875f-25c276ea9cb1
+
+	measure 'RAG Ikon Avvik' =
+			VAR _AvvikPct = [Avvik YTD %]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( [Sum Regnskap] ), BLANK (),
+			        _AvvikPct < -0.05, "🔴",
+			        _AvvikPct < -0.01, "🟡",
+			        _AvvikPct <= 0.05, "🟢",
+			        "🔵"
+			    )
+		displayFolder: 6. RAG & Visual Helpers
+		lineageTag: b49ef387-9b21-4f81-9b19-c12e5c83f912
+
+	measure 'Valgt Måltall Verdi' =
+			VAR _ValgtID = SELECTEDVALUE ( '_Valg_Maltall'[Maltall_ID], 1 )
+			RETURN
+			    SWITCH (
+			        _ValgtID,
+			        1, [Sum Regnskap],
+			        2, [Sum Budsjett],
+			        3, [Avvik Kr],
+			        4, [Avvik YTD %],
+			        [Sum Regnskap]
+			    )
+		displayFolder: 6. RAG & Visual Helpers
+		lineageTag: a7575239-1662-4f04-8b67-d86cf5b57f03
+
+	measure 'Dynamisk Rapporttittel' =
+			VAR _ValgtOmrade = SELECTEDVALUE ( 'dim_ansvar'[Omrade_Navn], "Alle Områder" )
+			VAR _ValgtAnsvar = SELECTEDVALUE ( 'dim_ansvar'[Enhet_Navn], BLANK () )
+			VAR _ValgtManed  = SELECTEDVALUE ( 'dim_date'[Maned_Navn], "Hele Året" )
+			VAR _ValgtMaltall = SELECTEDVALUE ( '_Valg_Maltall'[Maltall_Navn], "Regnskap" )
+			
+			RETURN
+			    "Rapport for " & _ValgtMaltall & " | " &
+			    IF ( NOT ISBLANK ( _ValgtAnsvar ), _ValgtAnsvar, _ValgtOmrade ) &
+			    " (" & _ValgtManed & ")"
+		displayFolder: 6. RAG & Visual Helpers
+		lineageTag: cb873910-fa24-4f8a-986c-48be993951f2
+
+	measure Årsbudsjett =
+			CALCULATE (
+			    [Sum Budsjett],
+			    ALL ( 'dim_date' ),
+			    VALUES ( 'dim_date'[Ar] )
+			)
+		formatString: #,##0 "kr"
+		displayFolder: 1. Basismåltall
+		lineageTag: c5e19482-1a48-4cb2-910a-31ca78da0e44
+
+	measure 'Avvik %' = DIVIDE([Avvik Kr], [Sum Budsjett], 0)
+		formatString: 0.0%
+		displayFolder: 1. Basismåltall
+		lineageTag: f8a1ca02-c104-4b10-82a1-da98cb103e55
 
 	measure 'Regnskap PM' =
 			CALCULATE (
@@ -252,61 +307,6 @@ table _Måltall
 		displayFolder: 5. What-If Scenario
 		lineageTag: 7128ca01-819a-4cb2-8812-ca918240ba05
 
-	measure 'RAG Farge Avvik' =
-			VAR _AvvikPct = [Avvik YTD %]
-			RETURN
-			    SWITCH (
-			        TRUE (),
-			        ISBLANK ( [Sum Regnskap] ), BLANK (),
-			        _AvvikPct < -0.05, "#D13438",
-			        _AvvikPct < -0.01, "#FFB900",
-			        _AvvikPct <= 0.05, "#107C41",
-			        "#0078D4"
-			    )
-		displayFolder: 6. RAG & Visual Helpers
-		lineageTag: fc6be410-b98a-4933-875f-25c276ea9cb1
-
-	measure 'RAG Ikon Avvik' =
-			VAR _AvvikPct = [Avvik YTD %]
-			RETURN
-			    SWITCH (
-			        TRUE (),
-			        ISBLANK ( [Sum Regnskap] ), BLANK (),
-			        _AvvikPct < -0.05, "🔴",
-			        _AvvikPct < -0.01, "🟡",
-			        _AvvikPct <= 0.05, "🟢",
-			        "🔵"
-			    )
-		displayFolder: 6. RAG & Visual Helpers
-		lineageTag: b49ef387-9b21-4f81-9b19-c12e5c83f912
-
-	measure 'Valgt Måltall Verdi' =
-			VAR _ValgtID = SELECTEDVALUE ( '_Valg_Maltall'[Maltall_ID], 1 )
-			RETURN
-			    SWITCH (
-			        _ValgtID,
-			        1, [Sum Regnskap],
-			        2, [Sum Budsjett],
-			        3, [Avvik Kr],
-			        4, [Avvik YTD %],
-			        [Sum Regnskap]
-			    )
-		displayFolder: 6. RAG & Visual Helpers
-		lineageTag: a7575239-1662-4f04-8b67-d86cf5b57f03
-
-	measure 'Dynamisk Rapporttittel' =
-			VAR _ValgtOmrade = SELECTEDVALUE ( 'dim_ansvar'[Omrade_Navn], "Alle Områder" )
-			VAR _ValgtAnsvar = SELECTEDVALUE ( 'dim_ansvar'[Enhet_Navn], BLANK () )
-			VAR _ValgtManed  = SELECTEDVALUE ( 'dim_date'[Maned_Navn], "Hele Året" )
-			VAR _ValgtMaltall = SELECTEDVALUE ( '_Valg_Maltall'[Maltall_Navn], "Regnskap" )
-			
-			RETURN
-			    "Rapport for " & _ValgtMaltall & " | " & 
-			    IF ( NOT ISBLANK ( _ValgtAnsvar ), _ValgtAnsvar, _ValgtOmrade ) & 
-			    " (" & _ValgtManed & ")"
-		displayFolder: 6. RAG & Visual Helpers
-		lineageTag: cb873910-fa24-4f8a-986c-48be993951f2
-
 	measure FT_Dev_Diverging_Avvik_Kr = [Avvik YTD Kr]
 		formatString: #,##0 "kr";(#,##0 "kr");"-"
 		displayFolder: 7. FT Visual Vocabulary
@@ -373,3 +373,4 @@ table _Måltall
 		source = #table(type table [Placeholder = Int64.Type], {{1}})
 
 	annotation PBI_ResultType = Table
+

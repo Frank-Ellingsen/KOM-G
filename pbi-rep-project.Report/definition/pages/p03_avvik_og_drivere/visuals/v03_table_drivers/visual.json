@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.3.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v03_table_drivers",
   "position": {
-    "x": 970,
-    "y": 600,
+    "x": 993.54679802955661,
+    "y": 662.36453201970437,
     "z": 9,
-    "width": 930,
-    "height": 450,
+    "height": 387.04433497536945,
+    "width": 510.73891625615761,
     "tabOrder": 9
   },
   "visual": {
     "visualType": "tableEx",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Values": {
@@ -116,6 +115,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

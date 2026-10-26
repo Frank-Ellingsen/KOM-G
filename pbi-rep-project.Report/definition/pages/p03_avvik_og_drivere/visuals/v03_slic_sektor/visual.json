@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.3.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v03_slic_sektor",
   "position": {
-    "x": 20,
-    "y": 75,
+    "x": 29.261083743842363,
+    "y": 159.60591133004925,
     "z": 2,
-    "width": 420,
-    "height": 75,
+    "height": 486.79802955665025,
+    "width": 420.29556650246303,
     "tabOrder": 2
   },
   "visual": {

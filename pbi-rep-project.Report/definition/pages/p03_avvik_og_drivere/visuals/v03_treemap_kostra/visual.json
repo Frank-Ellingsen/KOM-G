@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.3.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v03_treemap_kostra",
   "position": {
-    "x": 20,
-    "y": 600,
+    "x": 496.10837438423641,
+    "y": 646.4039408866995,
     "z": 8,
-    "width": 930,
-    "height": 450,
+    "height": 403.00492610837438,
+    "width": 464.18719211822656,
     "tabOrder": 8
   },
   "visual": {
     "visualType": "treemap",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Category": {
@@ -75,6 +74,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

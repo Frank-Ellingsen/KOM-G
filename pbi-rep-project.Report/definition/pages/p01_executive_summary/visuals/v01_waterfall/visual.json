@@ -2,16 +2,15 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v01_waterfall",
   "position": {
-    "x": 20,
-    "y": 160,
+    "x": 449.55665024630542,
+    "y": 228.76847290640393,
     "z": 7,
-    "width": 1880,
-    "height": 390,
+    "height": 321.871921182266,
+    "width": 1451.0837438423646,
     "tabOrder": 7
   },
   "visual": {
     "visualType": "waterfallChart",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Category": {
@@ -75,6 +74,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }
