@@ -1,22 +1,27 @@
 # Månedlig Avviks- og Prognoserapport 2024
-**Periodisk Tidsrekkeanalyse og Run-Rate EOY per August 2024**
+**Periodisk Tidsrekkeanalyse og Run-Rate EOY per Måned 08 (August 2024)**
 
 ---
 
 ## 1. Månedlig Utvikling (Januar – August 2024)
 
-Tabellen nedenfor viser den månedlige utviklingen for hele kommunen (konsolidert samlesum av Oppvekst/Skole (KomSkole) og Helse/Bomiljø (Bomiljø) justert til kNOK):
+Tabellen nedenfor viser den faktiske månedlige utviklingen for hele kommunen basert på datamodellens faktatabell (`fact_data` i [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip)), konsolidert for Oppvekst/Skole (`KomSkole`) og Helse/Bomiljø (`Bomiljø`):
 
-| Måned (2024) | Revidert Budsjett (kNOK) | Faktisk Regnskap (kNOK) | Månedsavvik Kr | Akkumulert YTD Avvik Kr | RAG Status |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Januar** | 2 988,0 | 2 822,0 | **+166,0** | +166,0 | 🟢 Mindreforbruk |
-| **Februar** | 2 988,0 | 3 118,0 | **-130,0** | +36,0 | 🟡 Mindre overforbruk |
-| **Mars** | 2 988,0 | 3 085,0 | **-97,0** | -61,0 | 🟡 Overforbruk |
-| **April** | 2 988,0 | 2 967,0 | **+21,0** | -40,0 | 🟢 I rute |
-| **Mai** | 3 024,0 | 3 088,0 | **-64,0** | -104,0 | 🟡 Overforbruk |
-| **Juni** | 2 040,0 | 2 280,0 | **-240,0** | -344,0 | 🔴 Sommerfravær |
-| **Juli** | 3 024,0 | 3 115,0 | **-91,0** | -435,0 | 🔴 Ferievikarer |
-| **August** | 3 024,0 | 3 038,0 | **-14,0** | **-449,0** | 🟢 I rute |
+> **Måleenhet:** Alle tall er oppgitt i **tusen kroner (kNOK)** med én desimal.  
+> *Avvik formel: $\text{Avvik} = \text{Budsjett} - \text{Regnskap}$. Negativt tall = Merforbruk (rød), Positivt tall = Mindreforbruk (grønn).*
+
+### Tabell 1: Konsolidert Månedsutvikling (kNOK)
+
+| Måned (2024) | Revidert Budsjett (kNOK) | Faktisk Regnskap (kNOK) | Månedsavvik Kr (kNOK) | Akkumulert YTD Avvik (kNOK) | Forbruk % | RAG Status |
+| :--- | ---: | ---: | ---: | ---: | ---: | :---: |
+| **01. Januar** | 3 648,1 | 3 377,5 | **+270,6** | +270,6 | 92,58 % | 🟢 Mindreforbruk |
+| **02. Februar** | 3 655,6 | 4 444,8 | **-789,2** | -518,6 | 121,59 % | 🔴 Merforbruk |
+| **03. Mars** | 3 587,1 | 3 903,9 | **-316,9** | -835,4 | 108,83 % | 🔴 Merforbruk |
+| **04. April** | 4 602,1 | 4 619,4 | **-17,3** | -852,8 | 100,38 % | 🟢 I rute |
+| **05. Mai** | 3 788,9 | 3 976,1 | **-187,2** | -1 040,0 | 104,94 % | 🟡 Merforbruk |
+| **06. Juni** | 2 486,4 | 2 882,0 | **-395,6** | -1 435,7 | 115,91 % | 🔴 Merforbruk |
+| **07. Juli** | 3 756,9 | 4 200,2 | **-443,3** | -1 879,0 | 111,80 % | 🔴 Ferieavvikling |
+| **08. August** | 3 770,1 | 4 120,8 | **-350,7** | **-2 229,6** | 109,30 % | 🔴 Merforbruk |
 
 Dataene er tilknyttet Power BI-rapporten [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip), side **04. Månedlig Avvik og Prognose** (`p03_tufte_scurve_og_prognose`).
 
@@ -31,14 +36,16 @@ Gjennomsnittlig månedlig regnskapsforbruk hittil i år fremskrives for de gjens
 
 $$\text{EOY Estimat Lineær} = \text{Regnskap YTD} + \left( \frac{\text{Regnskap YTD}}{8} \times 4 \right)$$
 
-* **Estimert Årsregnskap (EOY):** **47 287,4 kNOK**
-* **Opprinnelig Vedtatt Årsbudsjett:** **52 787,6 kNOK**
-* **Forventet Årsavvik (Lineær):** **+5 500,2 kNOK (Mindreforbruk)** 🟢
+* **Akkumulert Regnskap YTD (01–08):** **31 524,9 kNOK**
+* **Estimert Årsregnskap (EOY Lineær):** **47 287,4 kNOK**
+* **Periodisert Årsbudsjett (12 mnd):** **43 942,9 kNOK**
+* **Forventet Årsavvik (Lineær):** **-3 344,4 kNOK (Merforbruk)** 🔴
 
 ### Modell B: Trendjustert Run-Rate (3M Moving Average)
-Vekter de tre siste månedene (juni–august) tyngre for å fange opp reell sesongdynamikk (sommeravvikling, vikarbyråpriser og skolestart):
-
-* **Forventet Årsavvik (Trendjustert 3M):** **+3 980,5 kNOK (Mindreforbruk)** 🟢
+Vekter de tre siste månedene (juni, juli og august) tyngre for å fange opp reell sesongdynamikk (ferieavvikling, vikarbyråpriser og skolestart):
+* **Gjennomsnittlig forbruk siste 3 måneder:** **3 734,3 kNOK/mnd**
+* **Estimert Årsregnskap (3M MA):** **46 462,1 kNOK**
+* **Forventet Årsavvik (Trendjustert 3M):** **-3 815,7 kNOK (Merforbruk)** 🔴
 
 ---
 
@@ -46,9 +53,11 @@ Vekter de tre siste månedene (juni–august) tyngre for å fange opp reell seso
 
 Rapporten etablerer tre styringssoner for månedlig avviksoppfølging:
 
-* **Grønn sone (🟢):** Månedsavvik innenfor $\pm 2.0 \%$ av periodisert budsjett. Normal drift, ingen særskilte tiltak påkrevd.
-* **Gul sone (🟡):** Månedsavvik mellom $-2.0 \%$ og $-5.0 \%$ (merforbruk) eller over $+5.0 \%$ (vakanser). Krever skriftlig kommentar fra enhetsleder i tertialrapporten.
-* **Rød sone (🔴):** Månedsavvik mer negativt enn $-5.0 \%$ (merforbruk). Krever umiddelbar innføring av ansettelses-/innkjøpsstopp og handlingsplan godkjent av kommunalsjef innen 5 virkedager.
+* **Grønn sone (🟢):** Månedsavvik innenfor $\pm 2,0 \%$ av periodisert budsjett. Normal drift, ingen særskilte tiltak påkrevd.
+* **Gul sone (🟡):** Månedsavvik mellom $-2,0 \%$ og $-5,0 \%$ (merforbruk). Krever skriftlig avvikskommentar fra enhetsleder.
+* **Rød sone (🔴):** Månedsavvik overstiger $-5,0 \%$ (merforbruk). Krever umiddelbar innføring av innleie- og ansettelseskontroll samt tiltaksplan for reståret.
+
+I august (Måned 08) var avviket **-9,30 % (🔴 Merforbruk)** konsolidert, med -15,25 % i helse og -5,26 % i oppvekst.
 
 ---
 

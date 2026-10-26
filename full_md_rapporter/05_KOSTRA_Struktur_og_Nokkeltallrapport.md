@@ -1,5 +1,5 @@
 # KOSTRA Struktur- og Nøkkeltallrapport
-**Statlig Rapporteringsstruktur og Effektivitetsindikatorer**
+**Statlig Rapporteringsstruktur og Effektivitetsindikatorer per Måned 08 (August 2024)**
 
 ---
 
@@ -7,37 +7,50 @@
 
 KOSTRA (Kommune-Stat-Rapportering) er det nasjonale informasjonssystemet som gir samordnede, transparente og sammenlignbare styringsdata for norske kommuner og fylkeskommuner. 
 
-I datamodellen til [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip) kobles kommunens interne regnskapsposter fra `KomSkole` og `Bomiljø` (i `fact_data`) direkte mot:
+I datamodellen til [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip) kobles kommunens faktiske regnskaps- og budsjettposter fra `KomSkole` og `Bomiljø` (i `fact_data`) direkte mot:
 - **Funksjonskontoplan (`dim_kostra_funksjon`):** 4-sifrede standardiserte KOSTRA-tjenesteområder (f.eks. `2020 Grunnskoleundervisning`, `2140 SFO`, `2210 PPT`, `2540 Pleie og omsorg i institusjon/bolig`).
 - **Artskontoplan (`dim_kostra_kontoplan`):** 6-sifrede KOSTRA-standardkonti som skiller mellom faste lønnsarter (`101000`), variable vikarutgifter (`102000`/`102013`), overtid (`104000`), vikarbyråkjøp (`127040`) og statlige refusjoner (`171000`/`171005`).
 
 Rapporten er tilknyttet side **05. KOSTRA Struktur og Nøkkeltall** (`p05_pareto_og_korrelasjon`) i Power BI.
 
+> **Måleenhet:** Alle beløp er oppgitt i **tusen kroner (kNOK)** med én desimal.
+
 ---
 
 ## 2. Nøkkeltallsanalyse per KOSTRA Tjenesteområde
 
-Tabellen oppsummerer styringsnøkkeltall fordelt på de sentrale KOSTRA-tjenesteområdene per 31.08.2024:
+### Tabell 1: Siste Avsluttede Måned (Måned 08 / August 2024)
 
-| KOSTRA Tjenesteområde | Relevante KOSTRA-Funksjoner | Budsjett YTD (kNOK) | Regnskap YTD (kNOK) | Avvik Kr (Buds - Regn) | Forbruk % |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **01. Grunnskole** | 2020, 2030, 2040 | 13 620,0 | 14 167,0 | **-547,0 kNOK** | 104,02 % |
-| **02. SFO & Fritid** | 2110, 2140, 2150 | 2 496,0 | 2 792,0 | **-296,0 kNOK** | 111,86 % |
-| **03. PPT & Spesialpedagogikk** | 2210, 2220, 2230 | 1 329,0 | 1 452,0 | **-123,0 kNOK** | 109,25 % |
-| **04. Pleie & Omsorg (Bomiljø)** | 2530, 2540, 2570 | 17 233,7 | 12 622,9 | **+4 610,8 kNOK** | 73,25 % |
+| KOSTRA Tjenesteområde | Funksjonskoder | Budsjett Måned 08 (kNOK) | Regnskap Måned 08 (kNOK) | Avvik Kr (kNOK) | Forbruk % | Status |
+| :--- | :---: | ---: | ---: | ---: | ---: | :---: |
+| **01. Grunnskole** | 2020, 2030, 2040 | 1 702,8 | 1 770,9 | **-68,1** | 104,00 % | 🔴 Merforbruk |
+| **02. SFO, Voksenoppl. & Skyss** | 2130, 2140, 2150 | 376,0 | 410,6 | **-34,6** | 109,20 % | 🔴 Merforbruk |
+| **03. PPT & Spesialpedagogikk** | 2210, 2220, 2230 | 166,2 | 181,6 | **-15,4** | 109,27 % | 🔴 Merforbruk |
+| **04. Pleie & Omsorg (Bomiljø)** | 2540 | 1 525,2 | 1 757,7 | **-232,6** | 115,25 % | 🔴 Merforbruk |
+| **KONSOLIDERT MÅNED 08** | **Alle** | **3 770,1** | **4 120,8** | **-350,7** | **109,30 %** | 🔴 Samlet merforbruk |
+
+### Tabell 2: Akkumulert YTD per Måned 08 (Januar–August 2024)
+
+| KOSTRA Tjenesteområde | Funksjonskoder | Budsjett YTD (kNOK) | Regnskap YTD (kNOK) | Avvik Kr YTD (kNOK) | Forbruk % | Status |
+| :--- | :---: | ---: | ---: | ---: | ---: | :---: |
+| **01. Grunnskole** | 2020, 2030, 2040 | 13 620,0 | 14 167,0 | **-547,0** | 104,02 % | 🔴 Merforbruk |
+| **02. SFO, Voksenoppl. & Skyss** | 2130, 2140, 2150 | 3 009,0 | 3 283,0 | **-274,0** | 109,11 % | 🔴 Merforbruk |
+| **03. PPT & Spesialpedagogikk** | 2210, 2220, 2230 | 1 329,0 | 1 452,0 | **-123,0** | 109,25 % | 🔴 Merforbruk |
+| **04. Pleie & Omsorg (Bomiljø)** | 2540 | 11 337,2 | 12 622,9 | **-1 285,6** | 111,34 % | 🔴 Merforbruk |
+| **KONSOLIDERT YTD TOTALT** | **Alle** | **29 295,2** | **31 524,9** | **-2 229,6** | **107,61 %** | 🔴 Samlet merforbruk |
 
 ---
 
 ## 3. KOSTRA Sammenligningsindikatorer
 
 1. **Lønnsandel av brutto driftsutgifter:**
-   * **Skolesektoren:** **87,4 %** av samlede driftskostnader utgjøres av lønn, vikarer og sosiale avgifter (Konto `101000–109999`). Tjenesteproduksjonen er ekstremt personellintensiv, noe som gjør sektoren sårbar for sykefravær og lønnsglidning.
-   * **Helse og Mestring (Bomiljø):** **88,2 %** av driftskostnadene er direkte knyttet til turnuspersonell, nattillegg og pensjonsforpliktelser.
-2. **Vikar- og Overtidsandel av Samlet Lønn:**
-   * **Skolesektoren:** Variable lønnskostnader (vikarer og overtid) utgjør **7,8 %** av samlet lønnsmasse. Dette er vesentlig over KOSTRA-snittet for sammenlignbare kommuner (5,2 %).
-   * **Helse og Mestring:** Eksterne vikarbyråkjøp og overtid utgjør **4,3 %** av samlede lønnsutgifter, men representerer en uforholdsmessig høy timekostnad.
+   * **Skolesektoren:** **87,4 %** av samlede driftskostnader utgjøres av lønn, vikarer og sosiale avgifter (Konto `101000–109999`). Tjenesteproduksjonen er personellintensiv, noe som gjør sektoren sårbar for sykefravær og vikarbehov.
+   * **Helse og Omsorg (Bomiljø):** **88,2 %** av driftskostnadene er direkte knyttet til turnuspersonell, nattillegg og ekstern vikarbyråinnleie.
+2. **Vikar- og Innleieandel:**
+   * **Skolesektoren:** Variable personalkostnader (ordinære vikarer, korttidsvikarer og overtid) utgjorde **163,6 kNOK** i august (6,9 % av månedsregnskapet).
+   * **Helse og Omsorg:** Ekstern vikarbyråinnleie (`127040`) utgjorde alene **253,2 kNOK** i august (14,4 % av månedsregnskapet).
 3. **Statistisk Korrelasjon Budsjett vs. Regnskap:**
-   * Pearson korrelasjonskoeffisient mellom periodisert budsjett og faktisk regnskap er målt til **r = 0,94** på tvers av samtlige KOSTRA-kontoer. Dette indikerer en overordnet sterk budsjettmodell, men med systematiske avvik på variable personalkonti.
+   * Pearson korrelasjonskoeffisient mellom periodisert budsjett og faktisk regnskap er målt til **r = 0,94** på tvers av KOSTRA-kontoene, noe som viser en stabil budsjettfordeling men med systematiske personellekstrabehov i ferie- og oppstartsperioder.
 
 ---
 

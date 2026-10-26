@@ -1,61 +1,83 @@
 # Hovedrapport for Økonomi og Virksomhetsstyring 2024
-**Kristiansand Kommune – Periodisk Rapport per August 2024**
+**Kristiansand Kommune – Periodisk Månedsrapport per August (Måned 08)**
 
 ---
 
 ## Executive Summary
 
-Denne hovedrapporten gir kommunedirektøren, formannskapet og bystyret en helhetlig status for kommunens økonomiske drift og budsjettgjennomføring per 31. august 2024. Rapporten bygger på konsoliderte faktadata fra sektorene **Oppvekst og Utdanning** (Ansvar KomSkole - Grunnskole) og **Helse og Mestring** (Ansvar Bomiljø - Pleie og Omsorg), strukturert i henhold til KOSTRA-standarden og kommunens ansvarsstruktur.
+Denne hovedrapporten gir kommunedirektøren, formannskapet og bystyret en helhetlig status for kommunens økonomiske drift og budsjettgjennomføring for **siste avsluttede regnskapsmåned (Måned 08 / August 2024)** samt **akkumulert hittil i år (YTD Måneder 01–08)**.
 
-Dataene er hentet direkte fra og fullt integrert med Power BI-prosjektet [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip), side **01. Hovedrapport (Kommuneøkonomi 2024)** (`p01_executive_summary`).
+Rapporten bygger utelukkende på konsoliderte faktiske data fra datamodellens faktatabell (`fact_data` i [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip)), strukturert etter KOSTRA-standarder og kommunens ansvarsstruktur.
 
-### Hovedtall per 31.08.2024 (i kNOK / tusen kroner)
+Dataene er direkte integrert med side **01. Hovedrapport (Kommuneøkonomi 2024)** (`p01_executive_summary`) i Power BI.
 
-| Sektor | Revidert Budsjett YTD | Faktisk Regnskap YTD | Avvik Kr (Budsjett - Regnskap) | Forbruk % | Status RAG |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Oppvekst og Utdanning (Skole)** | 17 958,0 | 18 902,0 | **-944,0** | 105,25 % | 🔴 Merforbruk |
-| **Helse og Mestring (Bomiljø/Omsorg)** | 17 233,7 | 12 622,9 | **+4 610,8** | 73,25 % | 🟢 Mindreforbruk |
-| **KONSOLIDERT TOTALT** | **35 191,7** | **31 524,9** | **+3 666,8** | **89,58 %** | 🟢 Totalbalanse |
+### Hovedtall for Siste Faktiske Måned (Måned 08 / August 2024) (i kNOK)
+
+| Sektor | Revidert Budsjett (kNOK) | Faktisk Regnskap (kNOK) | Avvik Kr (Budsjett - Regnskap) | Forbruk % | Status RAG |
+| :--- | ---: | ---: | ---: | ---: | :---: |
+| **Oppvekst og Utdanning (Skole)** | 2 245,0 | 2 363,0 | **-118,1** | 105,26 % | 🔴 Merforbruk |
+| **Helse og Omsorg (Bomiljø)** | 1 525,2 | 1 757,7 | **-232,6** | 115,25 % | 🔴 Merforbruk |
+| **KONSOLIDERT MÅNED 08** | **3 770,1** | **4 120,8** | **-350,7** | **109,30 %** | 🔴 Merforbruk |
+
+### Akkumulert Driftsstatus YTD per Måned 08 (Januar–August 2024) (i kNOK)
+
+| Sektor | Budsjett YTD (kNOK) | Regnskap YTD (kNOK) | Avvik Kr YTD (kNOK) | Forbruk % | Status RAG |
+| :--- | ---: | ---: | ---: | ---: | :---: |
+| **Oppvekst og Utdanning (Skole)** | 17 958,0 | 18 902,0 | **-944,0** | 105,26 % | 🔴 Merforbruk |
+| **Helse og Omsorg (Bomiljø)** | 11 337,2 | 12 622,9 | **-1 285,6** | 111,34 % | 🔴 Merforbruk |
+| **KONSOLIDERT TOTALT YTD** | **29 295,2** | **31 524,9** | **-2 229,6** | **107,61 %** | 🔴 Samlet merforbruk |
 
 > **Formel for avvik:** $\text{Avvik Kr} = \text{Budsjett} - \text{Regnskap}$.  
-> *Positivt avvik innebærer mindreforbruk (besparing), mens negativt avvik innebærer merforbruk (overskridelse).*
+> *Negativt avvik innebærer merforbruk (overskridelse), mens positivt avvik innebærer mindreforbruk (besparing).*
 
 ---
 
 ## 1. Overordnet Økonomisk Status
 
-Kommunen har samlet sett et **positivt driftsavvik på +3,67 mill. kr (+3 666,8 kNOK)** ved utgangen av august 2024. Bak dette konsoliderte tallet skjuler det seg imidlertid en **betydelig strukturell ubalanse mellom sektorene**:
+I siste avsluttede regnskapsmåned (august 2024) registrerte kommunen et **samlet månedlig merforbruk på -350,7 kNOK (109,30 % forbruk)**. Akkumulert hittil i år (måned 01–08) viser regnskapet et **konsolidert merforbruk på -2 229,6 kNOK (107,61 % forbruk)**.
 
-1. **Skolesektoren (Oppvekst og Utdanning - KomSkole):** Driver med et akkumulert merforbruk på **-944,0 kNOK (-5,25 %)**. Merforbruket skyldes uforholdsmessig høyt vikarforbruk, overtid og korttidsfravær som dekkes inn uten tilstrekkelig budsjettdekning.
-2. **Helse og Mestring (Bomiljø):** Viser et akkumulert mindreforbruk på **+4,61 mill. kr (+26,75 %)**. Dette skyldes i hovedsak vakanser og rekrutteringsutfordringer på ordinære fastlønnsstillinger, som gir lavere lønns- og pensjonsutgifter enn budsjettert.
+Begge sektorer opererer med merforbruk, men med ulik underliggende dynamikk:
 
-### Visualisering og Dashboard Layout i Power BI
-I Power BI-rapporten [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip) (Side 1: `p01_executive_summary`) presenteres denne statusen gjennom:
-- **Executive Card Row:** Direkte visning av `[Sum Budsjett]`, `[Sum Regnskap]`, `[Avvik Kr]`, og `[Forbruk %]`.
-- **Diverging Bar Chart:** Netto avvik per sektor med rød/grønn fargekoding basert på fortegn (`#D13438` for merforbruk, `#107C41` for mindreforbruk).
-- **Executive Narrative Box:** Drevet av DAX-måltallet `[Story Executive Summary]`, som automatisk genererer ledelsens månedsnotat.
+1. **Helse og Omsorg (Bomiljø):**  
+   - Måned 08 viser et merforbruk på **-232,6 kNOK (115,25 %)**.
+   - Akkumulert YTD viser et merforbruk på **-1 285,6 kNOK (111,34 %)**.
+   - Hovedårsak: Ekstern innleie av personell via vikarbyråer (Konto `127040 Kjøp av vikarbyråtjenester` utgjorde **253,2 kNOK** bare i august) samt ubudsjetterte vikar- og turnustillegg (`102031`).
+2. **Oppvekst og Utdanning (KomSkole):**  
+   - Måned 08 viser et merforbruk på **-118,1 kNOK (105,26 %)**.
+   - Akkumulert YTD viser et merforbruk på **-944,0 kNOK (105,26 %)**.
+   - Hovedårsak: Høyere grunnbemanning på fastlønn (`101000 Fastlønn`), korttidsvikarer ved skolestart (`102013`) og overtid (`104000`), delvis motvirket av statlige refusjoner (`2040`).
 
 ---
 
-## 2. Hovedrisikoer & Utviklingstrender
+## 2. Topp Kostnadsdrivere i Måned 08 (August 2024)
 
-* **Risiko 1: Rekrutteringssvikt skaper utilsiktet mindreforbruk i Helse.** Mindreforbruket i Helse og Mestring (+4,61 mill. kr) er ikke et resultat av bevisst effektivisering, men av at kommunen mangler fagpersonell (sykepleiere/vernepleiere). Dette skaper overbelastning på gjenværende stab og svekker tjenestekvaliteten over tid.
-* **Risiko 2: Vikar- og overtidsspiral i Skole.** Skolesektoren har et udekket vikar- og overforbruk på personalsiden (-1,41 mill. kr på fastlønn/vikarer) som truer med å spise opp rammene for høsten 2024 dersom det ikke iverksettes umiddelbare styringstiltak.
-* **Risiko 3: Mangel på fleksibilitet i budsjettrammene.** Uten formelle omdisponeringsvedtak mellom sektorene kan skolesektoren få et ufortjent merforbruksstempel selv om kommunen som helhet går i solid pluss.
+De største avvikskildene i august måned (i kNOK):
+
+| Kontokode | Kontonavn | Sektor | Budsjett (kNOK) | Regnskap (kNOK) | Avvik (kNOK) | Forbruk % |
+| :---: | :--- | :--- | ---: | ---: | ---: | ---: |
+| **127040** | Kjøp av vikarbyråtjenester | Helse | 0,0 | 253,2 | **-253,2** | Ubudsjettert |
+| **101000** | Fastlønn ordinære | Begge | 2 333,5 | 2 530,3 | **-196,8** | 108,43 % |
+| **102013** | Vikarer ved korttidsfravær | Begge | 12,7 | 61,9 | **-49,2** | 488,99 % |
+| **102031** | Vikar kvelds-/nattillegg | Helse | 0,0 | 45,9 | **-45,9** | Ubudsjettert |
+| **104000** | Overtid | Begge | 9,4 | 52,4 | **-43,0** | 557,79 % |
+| **102000** | Vikarer ordinære | Begge | 16,7 | 49,3 | **-32,7** | 296,04 % |
 
 ---
 
 ## 3. Strategiske Anbefalinger for Kommunedirektøren
 
-1. **Omdisponering av lønnsmidler:** Gjennomføre en formell administrativ omdisponering i tertialrapporten hvor **638,5 kNOK** flyttes fra Helse og Mestring til Oppvekst og Utdanning for å dekke inn uunngåelige vikarutgifter.
-2. **Vikar- og overtidsstopp i Skole:** Innføre strengere attestasjonsregler for overtidsbruk (Konto `104000 Overtid`) og korttidsvikarer (Konto `102013 Vikarer ved sykdom/korttidsfravær`).
-3. **Månedlig RAG-oppfølging:** Ta i bruk Power BI Control Cockpit med de automatiske DAX-måltallene fra tabell `_Måltall` i [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip) for ukentlig kontroll på enhetsledernivå.
+1. **Strammere innleiekontroll for vikarbyråer:**  
+   Vikarbyråtjenester (Konto `127040`) representerer det største enkeltavviket i august (-253,2 kNOK). Det må etableres strengere rammeavtaler og krav om godkjenning på kommunalsjefnivå før ekstern innleie iverksettes.
+2. **Kutt i overtid og korttidsvikarer ved skolestart:**  
+   Overtid (`104000`) og korttidsvikarer (`102013`) i skolesektoren må reduseres med 50 % i månedene september–desember gjennom intern omfordeling av undervisningsressurser.
+3. **Månedlig oppfølging i Power BI Cockpit:**  
+   Ukentlig oppfølging av `_Måltall` i [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip) med tidligvarsling dersom månedlig overforbruk overstiger toleransegrensen på 5,0 %.
 
 ---
 
 ## 4. Power BI Implementasjon & DAX-Måltall
 
-Følgende kjerne-måltall fra `_Måltall` i semantisk modell forsyner rapporten:
+I Power BI er side `p01_executive_summary` tilknyttet følgende DAX-måltall fra `_Måltall`:
 
 ```dax
 // 1. Totalregnskap YTD
@@ -79,16 +101,15 @@ SWITCH(
     "🟢"
 )
 
-// 6. Dynamisk ledelsesnotat
+// 6. Dynamisk ledelsesnotat for Måned 08
 Story Executive Summary = 
 VAR TotAvv = [Avvik Kr]
 VAR ForbrPct = [Forbruk %]
-VAR SektorTekst = 
+RETURN 
     IF(TotAvv >= 0, 
-        "Akkumulert regnskap per august viser et samlet mindreforbruk på " & FORMAT(TotAvv, "#,##0 kr") & " (" & FORMAT(ForbrPct, "0.0%") & " forbruk). Kommunens samlede likviditet er robust.",
-        "Akkumulert regnskap per august viser et samlet merforbruk på " & FORMAT(ABS(TotAvv), "#,##0 kr") & " (" & FORMAT(ForbrPct, "0.0%") & " forbruk). Det kreves korrigerende tiltak."
+        "Regnskapet viser et samlet mindreforbruk på " & FORMAT(TotAvv, "#,##0 kr") & " (" & FORMAT(ForbrPct, "0.0%") & " forbruk).",
+        "Regnskapet viser et samlet merforbruk på " & FORMAT(ABS(TotAvv), "#,##0 kr") & " (" & FORMAT(ForbrPct, "0.0%") & " forbruk). Hoveddrivere er vikarbyrå og overtid."
     )
-RETURN SektorTekst
 ```
 
 ---

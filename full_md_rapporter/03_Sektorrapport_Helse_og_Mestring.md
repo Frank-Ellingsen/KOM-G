@@ -1,60 +1,85 @@
 # Sektorrapport: Helse og Mestring / Bomiljø
-**Detaljert Analyserapport for Helse- og Omsorgssektoren per August 2024**
+**Detaljert Analyserapport for Helse- og Omsorgssektoren per Måned 08 (August 2024)**
 
 ---
 
 ## 1. Sektorstyring og Hovedtall
 
-Helse- og omsorgssektoren (Ansvar Bomiljø - Pleie og Omsorg) dekker pleie og omsorg i institusjon og bolig (KOSTRA-funksjon 2540), aktivitetssentre, avlastningsboliger og tilrettelagte botilbud.
+Helse- og omsorgssektoren (Ansvar `Bomiljø` - Pleie og Omsorg) dekker pleie og omsorg i institusjon og bolig (KOSTRA-funksjon 2540), aktivitetssentre, avlastningsboliger og tilrettelagte botilbud.
 
-Rapporten er tilknyttet Power BI-rapporten [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip), side **03. Sektor: Helse og Mestring** (`p04_avvik_og_drivere`).
+Rapporten bygger utelukkende på faktiske data fra datamodellens faktatabell (`fact_data` i [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip)), tilknyttet side **03. Sektor: Helse og Mestring** (`p04_avvik_og_drivere`).
 
-### Samlet Resultat per 31.08.2024 (i kroner)
+> **Måleenhet:** Alle økonomiske tall er oppgitt i **tusen kroner (kNOK)** med én desimal.
 
-| Måltall | Verdier YTD | Evaluering |
-| :--- | :---: | :--- |
-| **Revidert Budsjett YTD** | 17 233 691,00 kr | Tildelt driftsramme jan–aug |
-| **Faktisk Regnskap YTD** | 12 622 851,42 kr | Påløpte kostnader |
-| **Avvik Kr (Budsjett - Regnskap)** | **+4 610 839,58 kr** | 🟢 Mindreforbruk (+26,75 %) |
-| **Forbruk i % av Budsjett** | **73,25 %** | 26,75 % under budsjettramme |
+### Tabell 1: Driftsresultat Måned 08 (August 2024 isolert)
 
----
+| Måltall | Verdier Måned 08 (kNOK) | Evaluering |
+| :--- | ---: | :--- |
+| **Revidert Budsjett Måned 08** | 1 525,2 kNOK | Månedens tildelte ramme |
+| **Faktisk Regnskap Måned 08** | 1 757,7 kNOK | Påløpte kostnader |
+| **Avvik Kr (Budsjett - Regnskap)** | **-232,6 kNOK** | 🔴 Merforbruk (-15,25 %) |
+| **Forbruk i % av Budsjett** | **115,25 %** | 15,25 % over månedsramme |
 
-## 2. Kontoanalyse – Største Innsparinger vs. Avvikskilder
+### Tabell 2: Akkumulert Driftsstatus YTD per Måned 08 (Januar–August 2024)
 
-Sektoren kjennetegnes av betydelige besparelser på faste lønnsposter grunnet rekrutteringsutfordringer og ubesatte stillinger, men med enkelte kostnadseksplosjoner på innleie av eksterne vikarbyråtjenester for å sikre lovpålagt forsvarlig bemanning:
-
-### Top 5 Besparelseskontoer (Mindreforbruk 🟢)
-
-| Kontokode | Kontonavn | Budsjett (kr) | Regnskap (kr) | Mindreforbruk Kr | Forbruk % |
-| :---: | :--- | :---: | :---: | :---: | :---: |
-| **101000** | Fastlønn ordinære | 9 160 700,00 | 6 206 768,61 | **+2 953 931,39 kr** | 67,75 % |
-| **109000** | Pensjon fellesordningen (KLP) | 3 045 123,00 | 2 210 887,62 | **+834 235,38 kr** | 72,60 % |
-| **109999** | Arbeidsgiveravgift | 2 203 167,00 | 1 527 431,13 | **+675 735,87 kr** | 69,33 % |
-| **101031** | Fastlønn - kvelds-/nattillegg | 845 700,00 | 482 030,26 | **+363 669,74 kr** | 57,00 % |
-| **101030** | Fastlønn - lørdag-/søndagstillegg | 680 000,00 | 323 761,45 | **+356 238,55 kr** | 47,61 % |
-
-*Samlet representerer disse fem personallinjene en akkumulert besparelse på over **5,18 mill. kr**.*
-
-### Top 3 Merforbrukskontoer (Overskridelse 🔴)
-
-| Kontokode | Kontonavn | Budsjett (kr) | Regnskap (kr) | Merforbruk Kr | Årsak |
-| :---: | :--- | :---: | :---: | :---: | :--- |
-| **127040** | Kjøp av vikarbyråtjenester | 0,00 | 382 656,00 | **-382 656,00 kr** | Innleie fra Adecco/Dedicare ved akutt sykepleiemangel |
-| **102031** | Vikar - kvelds-/nattillegg | 0,00 | 259 304,09 | **-259 304,09 kr** | Turnustillegg til timelønnede vikarer ved helgevakter |
-| **171000** | Refusjoner fra staten | 0,00 | 173 607,00 | **-173 607,00 kr** | Periodiseringsforsinkelse i statlige refusjoner |
+| Måltall | Verdier YTD (kNOK) | Evaluering |
+| :--- | ---: | :--- |
+| **Revidert Budsjett YTD** | 11 337,2 kNOK | Tildelt driftsramme jan–aug |
+| **Faktisk Regnskap YTD** | 12 622,9 kNOK | Påløpte kostnader hittil |
+| **Avvik Kr YTD (Budsjett - Regnskap)** | **-1 285,6 kNOK** | 🔴 Merforbruk (-11,34 %) |
+| **Forbruk i % av Budsjett** | **111,34 %** | 11,34 % over budsjettramme |
 
 ---
 
-## 3. Årsaksforklaring & Strategisk Handlingsrom
+## 2. Kontoanalyse – Største Avvikskilder i Måned 08 (August 2024)
 
-1. **Rekrutteringsutfordringer og Vakanser:** Det store mindreforbruket på fastlønn (+2,95 mill. kr) og avledet pensjon (+0,83 mill. kr) skyldes at flere autoriserte sykepleier- og vernepleierstillinger har stått ubesatt i første halvår.
-2. **Kjøp av Vikarbyråtjenester:** For å opprettholde lovpålagt faglig forsvarlighet og turnusdekning har enheten måttet leie inn personell fra vikarbyråer (Konto `127040 Kjøp av vikarbyråtjenester`), noe som har kostet **382 656,00 kr**. Dette er timepriser som ligger vesentlig over ordinær kommunal tariff.
-3. **Frigjøring av rammemidler (Omdisponeringskilde):** Sektoren har et reelt, dokumentert mindreforbruk som ved årsslutt er anslått til over **+6,9 mill. kr**. Sektoren tåler derfor utmerket en administrativ overføring på **638,5 kNOK** til skolesektoren for å saldere kommunens samlede driftsresultat til 0-balanse.
+I august måned (Måned 08) er sektorens merforbruk på **-232,6 kNOK** primært drevet av massiv innleie av eksterne vikarbyråtjenester for å avvikle sommerturnusen, samt ubudsjetterte vikar- og turnustillegg:
+
+### Tabell 3: Topp Merforbrukskontoer i Måned 08 (kNOK)
+
+| Kontokode | Kontonavn | Budsjett (kNOK) | Regnskap (kNOK) | Avvik Kr (kNOK) | Årsak / Kommentar |
+| :---: | :--- | ---: | ---: | ---: | :--- |
+| **127040** | Kjøp av vikarbyråtjenester | 0,0 | 253,2 | **-253,2** | Ekstern innleie for å dekke lovpålagt sykepleierbemanning i sommerferien |
+| **102031** | Vikar kvelds-/nattillegg | 0,0 | 45,9 | **-45,9** | Ubudsjetterte turnustillegg til timelønnede vikarer |
+| **102030** | Vikar helgetillegg | 0,0 | 28,4 | **-28,4** | Helgetillegg knyttet til ekstravakter |
+| **101000** | Fastlønn ordinære | 857,2 | 877,3 | **-20,1** | Høyere grunnbemanning og lønnsoppgjørsvirkning |
+| **103050** | Ekstrahjelp | 0,0 | 19,9 | **-19,9** | Ubudsjettert timebasert ekstrahjelp |
+
+### Tabell 4: Topp Innsparingsposter / Mindreforbruk i Måned 08 (kNOK)
+
+| Kontokode | Kontonavn | Budsjett (kNOK) | Regnskap (kNOK) | Mindreforbruk (kNOK) | Kommentar |
+| :---: | :--- | ---: | ---: | ---: | :--- |
+| **112098** | Annet forbruksmateriell | 0,0 | -99,0 | **+99,0** | Periodisering / kreditering av fellesinnkjøp |
+| **102002** | Vikarer ferieavvikling | 23,7 | 0,0 | **+23,7** | Direkteinnleie erstattet av eksternt byrå (`127040`) |
+| **102011** | Vikarer sykefravær | 147,2 | 131,3 | **+16,0** | Lavere ordinær vikarpost grunnet byråbruk |
+| **171005** | Refusjoner sykelønn | -44,1 | -59,5 | **+15,4** | Høyere innbetalte NAV-refusjoner |
+| **101030** | Fastlønn helgetillegg | 56,6 | 44,0 | **+12,6** | Lavere fast helgetilleggsbruk |
 
 ---
 
-## 4. Power BI Implementasjon & DAX-Måltall
+## 3. Akkumulert YTD Driverbilde per Måned 08 (kNOK)
+
+Gjennom årets 8 første måneder utgjør de akkumulerte hoveddriverne:
+1. **`101000 Fastlønn ordinære`:** Budsjett **5 731,9 kNOK**, Regnskap **6 206,8 kNOK**, Avvik **-474,9 kNOK** (108,28 % forbruk).
+2. **`127040 Kjøp av vikarbyråtjenester`:** Budsjett **0,0 kNOK**, Regnskap **382,7 kNOK**, Avvik **-382,7 kNOK** (hvorav 253,2 kNOK kom i august).
+3. **`102031 Vikar kvelds-/nattillegg`:** Budsjett **0,0 kNOK**, Regnskap **259,3 kNOK**, Avvik **-259,3 kNOK**.
+4. **`104000 Overtid`:** Budsjett **56,5 kNOK**, Regnskap **242,1 kNOK**, Avvik **-185,6 kNOK** (428,42 % forbruk).
+5. **`103000 Ekstrabemanning`:** Budsjett **0,0 kNOK**, Regnskap **141,6 kNOK**, Avvik **-141,6 kNOK**.
+
+---
+
+## 4. Strategisk Handlingsrom og Tiltak
+
+1. **Stopp i bruk av eksterne vikarbyråer:**  
+   Vikarbyråtjenester (`127040`) alene utgjorde 253,2 kNOK i august. Det må etableres kommunal vikarpool og turnusomlegging for å fase ut byråinnleie i høstsemesteret.
+2. **Strammere godkjenningsrutiner for overtid og ekstratillegg:**  
+   Overtid (`104000`) og turnustillegg (`102031`) må forhåndsgodkjennes av enhetsleder for å unngå merforbruk ved ordinære vakter.
+3. **Tiltaksbehov Restår:**  
+   For å hente inn YTD-merforbruket på **-1 285,6 kNOK** kreves en månedlig innsparing på **321,4 kNOK** i månedene september–desember.
+
+---
+
+## 5. Power BI Implementasjon & DAX-Måltall
 
 I Power BI-modellen ([pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip)) er side `p04_avvik_og_drivere` konfigurert med følgende spesifikke tiltaks- og drivermåltall:
 

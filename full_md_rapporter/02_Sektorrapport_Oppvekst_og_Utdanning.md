@@ -1,83 +1,80 @@
 # Sektorrapport: Oppvekst og Utdanning
-**Detaljert Analyserapport for Skolesektoren per August 2024**
+**Detaljert Analyserapport for Skolesektoren per Måned 08 (August 2024)**
 
 ---
 
 ## 1. Sektorstyring og Hovedtall
 
-Skolesektoren (Ansvar KomSkole - 01 Grunnskole) omfatter ordinær grunnskoleundervisning (Funksjon 2020), SFO (Funksjon 2110/2140/2150), PPT (Funksjon 2210) og voksenopplæring (Funksjon 2130).
+Skolesektoren (Ansvar `KomSkole` - Grunnskole) omfatter ordinær grunnskoleundervisning (Funksjon 2020), SFO (Funksjon 2140), PPT (Funksjon 2210), voksenopplæring (Funksjon 2130) og spesialpedagogikk (Funksjon 2230).
 
-Rapporten er tilknyttet Power BI-rapporten [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip), side **02. Sektor: Oppvekst og Utdanning** (`p02_trend_og_tidsserie`).
+Rapporten bygger på faktiske data fra `fact_data` i datamodellen ([pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip)), tilknyttet side **02. Sektor: Oppvekst og Utdanning** (`p02_trend_og_tidsserie`).
 
-### Samlet Resultat per 31.08.2024 (kNOK)
+> **Måleenhet:** Alle tall er oppgitt i **tusen kroner (kNOK)** med én desimal.
 
-| Måltall | Verdier YTD | Evaluering |
-| :--- | :---: | :--- |
-| **Revidert Budsjett YTD** | 17 958,0 kNOK | Tildelt driftsramme jan–aug |
-| **Faktisk Regnskap YTD** | 18 902,0 kNOK | Påløpte kostnader |
-| **Avvik Kr (Budsjett - Regnskap)** | **-944,0 kNOK** | 🔴 Merforbruk (-5,25 %) |
-| **Forbruk i % av Budsjett** | **105,25 %** | 5,25 % over ramme |
+### Tabell 1: Driftsresultat Måned 08 (August 2024 isolert)
 
----
+| Måltall | Verdier Måned 08 (kNOK) | Evaluering |
+| :--- | ---: | :--- |
+| **Revidert Budsjett Måned 08** | 2 245,0 kNOK | Månedens tildelte ramme |
+| **Faktisk Regnskap Måned 08** | 2 363,0 kNOK | Påløpte kostnader |
+| **Avvik Kr (Budsjett - Regnskap)** | **-118,1 kNOK** | 🔴 Merforbruk (-5,26 %) |
+| **Forbruk i % av Budsjett** | **105,26 %** | 5,26 % over månedsramme |
 
-## 2. Driveranalyse per KOSTRA-Funksjon
+### Tabell 2: Akkumulert Driftsresultat YTD (Måneder 01–08)
 
-Tabellen under viser avviksfordelingen per KOSTRA-funksjon innen skolesektoren:
-
-| Funksjon Kode | Funksjonsnavn | Budsjett (kNOK) | Regnskap (kNOK) | Avvik Kr (Buds - Regn) | Forbruk % | Status |
-| :---: | :--- | :---: | :---: | :---: | :---: | :---: |
-| **2020** | Grunnskoleundervisning | 13 620,0 | 14 473,0 | **-853,0** | 106,26 % | 🔴 Merforbruk |
-| **2140** | Skolefritidsordning (SFO) | 2 496,0 | 2 760,0 | **-264,0** | 110,58 % | 🔴 Merforbruk |
-| **2210** | PPT og pedagogisk oppfølging | 813,0 | 983,0 | **-170,0** | 120,91 % | 🔴 Merforbruk |
-| **2150** | Skoleskyss / Leirskole | 0,0 | 32,0 | **-32,0** | - | 🔴 Ubudsjettert |
-| **2130** | Voksenopplæring | 513,0 | 491,0 | **+22,0** | 95,71 % | 🟢 Mindreforbruk |
-| **2230** | Spesialpedagogisk tiltak | 516,0 | 469,0 | **+47,0** | 90,89 % | 🟢 Mindreforbruk |
-| **2040** | Refusjoner / Statstilskudd | 0,0 | -307,0 | **+307,0** | - | 🟢 Merinntekt |
+| Måltall | Verdier YTD (kNOK) | Evaluering |
+| :--- | ---: | :--- |
+| **Revidert Budsjett YTD** | 17 958,0 kNOK | Ramme for jan–aug |
+| **Faktisk Regnskap YTD** | 18 902,0 kNOK | Påløpte kostnader hittil |
+| **Avvik Kr YTD (Budsjett - Regnskap)** | **-944,0 kNOK** | 🔴 Merforbruk (-5,26 %) |
+| **Forbruk i % av Budsjett** | **105,26 %** | 5,26 % over ramme |
 
 ---
 
-## 3. Top Kostnadsdrivere (Kontoanalyse)
+## 2. Driveranalyse per KOSTRA-Funksjon i Måned 08 (August)
 
-De største kostnadsdriverne som forårsaker merforbruket på -944,0 kNOK i skolesektoren er fordelt på følgende arter (6-sifrede KOSTRA-kontokoder):
+Fordeling av regnskap og budsjett per KOSTRA-funksjon i siste avsluttede måned (kNOK):
 
-### Hoveddrivere Merforbruk (Negative Avvik 🔴)
+| Funksjon | Funksjonsnavn | Budsjett (kNOK) | Regnskap (kNOK) | Avvik Kr (kNOK) | Forbruk % | Status |
+| :---: | :--- | ---: | ---: | ---: | ---: | :---: |
+| **2020** | Grunnskoleundervisning | 1 702,8 | 1 809,2 | **-106,4** | 106,25 % | 🔴 Merforbruk |
+| **2140** | Skolefritidsordning (SFO) | 311,9 | 345,2 | **-33,3** | 110,67 % | 🔴 Merforbruk |
+| **2210** | PPT og pedagogisk oppfølging | 101,7 | 122,9 | **-21,3** | 120,90 % | 🔴 Merforbruk |
+| **2150** | Skoleskyss / Leirskole | 0,0 | 4,0 | **-4,0** | Ubudsjettert | 🔴 Merforbruk |
+| **2130** | Voksenopplæring | 64,1 | 61,4 | **+2,7** | 95,82 % | 🟢 Mindreforbruk |
+| **2230** | Spesialpedagogiske tiltak | 64,5 | 58,7 | **+5,8** | 90,95 % | 🟢 Mindreforbruk |
+| **2040** | Statlige refusjoner | 0,0 | -38,4 | **+38,4** | Merinntekt | 🟢 Mindreforbruk |
 
-| Kontokode | Kontonavn | Budsjett (kNOK) | Regnskap (kNOK) | Avvik Kr (kNOK) | Forbruk % | Årsaksforklaring |
-| :---: | :--- | :---: | :---: | :---: | :---: | :--- |
-| **101000** | Fastlønn ordinære | 13 860,0 | 15 274,0 | **-1 414,0** | 110,20 % | Høyere grunnbemanning og lønnsoppgjørsvirkning |
-| **102013** | Vikarer ved korttidsfravær | 0,0 | 381,0 | **-381,0** | Ubudsjettert | Ingen opprinnelig avsetning; dekkes fortløpende |
-| **102000** | Vikarer ordinære | 200,0 | 472,0 | **-272,0** | 236,00 % | Vikarbruk ved langtidssykefravær og permisjoner |
-| **104000** | Overtid | 50,0 | 280,0 | **-230,0** | 560,00 % | Ekstraundervisning, eksamensavvikling og krisetiltak |
-| **142900** | Mva-kompensasjon driftsutgifter | 0,0 | 117,0 | **-117,0** | Ubudsjettert | Mva-kompensasjon som kreves refundert post-faktura |
+---
 
-### Kompenserende Merinntekter (Refusjoner 🟢)
+## 3. Topp Kostnadsdrivere i Måned 08 (August 2024)
 
-| Kontokode | Kontonavn | Budsjett (kNOK) | Regnskap (kNOK) | Avvik Kr (kNOK) | Kommentar |
-| :---: | :--- | :---: | :---: | :---: | :--- |
-| **171000** | Sykelønnsrefusjon fra NAV | 0,0 | -1 062,0 | **+1 062,0** | Innbetalinger fra NAV som motvirker vikarlønn |
-| **171005** | Refusjon foreldrepenger | 0,0 | -307,0 | **+307,0** | Refusjon ved fødsels- og adopsjonspermisjoner |
+Avvik per KOSTRA-artskonto i august måned:
+
+| Kontokode | Kontonavn | Budsjett (kNOK) | Regnskap (kNOK) | Avvik Kr (kNOK) | Forbruk % | Kommentar |
+| :---: | :--- | ---: | ---: | ---: | ---: | :--- |
+| **101000** | Fastlønn ordinære | 1 476,3 | 1 653,0 | **-176,7** | 111,97 % | Lønnsglidning og grunnbemanning ved skolestart |
+| **102013** | Vikarer ved korttidsfravær | 12,7 | 61,9 | **-49,2** | 488,99 % | Akutt vikarbehov ved semesterstart |
+| **104000** | Overtid | 9,4 | 52,4 | **-43,0** | 557,79 % | Planleggingsdager og ekstraarbeid |
+| **102000** | Vikarer ordinære | 16,7 | 49,3 | **-32,7** | 296,04 % | Langtidspermisjoner |
+| **142900** | Mva-kompensasjon driftsutgifter | 11,7 | 25,6 | **-13,9** | 219,30 % | Periodisering |
+| **2040/1710** | Refusjoner | 0,0 | -38,4 | **+38,4** | - | Innbetalte statlige refusjoner |
 
 ---
 
 ## 4. Konkret Tiltaksplan for Skolesektoren
 
-For å eliminere merforbruket på -944,0 kNOK innen 31.12.2024 iverksettes følgende tre styringstiltak:
-
-1. **50 % Reduksjon i Overtid og Vikarbruk:**  
-   Gjennomgang av vikardekning ved korttidsfravær (< 3 dager). Krav om rektorattestasjon før innleie. Målsetting: Innsparing på **+305,5 kNOK** (ved 50 % kutt i restårets overtid/vikarer).
-2. **Optimalisering av NAV-refusjonsrutiner (Konto 171000/171005):**  
-   Fremskynde digitale innsendelser av sykelønnskrav til NAV for å hente inn anslagsvis **+150,0 kNOK** i forsinkede refusjoner.
-3. **Intern administrativ omdisponering fra Helse/Bomiljø:**  
-   Søke formannskapet om rammemessig overføring på **+488,5 kNOK** til **+638,5 kNOK** fra ubenyttede lønnsmidler i helsesektoren for å oppnå 0-balanse.
+For å begrense merforbruket fram mot 31.12.2024 iverksettes:
+1. **50 % Reduksjon i Vikarer og Overtid:** Gjennomgang av vikarbehov ved fravær under 3 dager. Målsetting: innsparing på **+305,5 kNOK** i reståret.
+2. **Fremskyndet refusjonskrav fra NAV:** Sikre digital innsending for sykelønnsrefusjon (`171000`) for å realisere anslagsvis **+150,0 kNOK**.
+3. **Månedlig oppfølging i Power BI:** Ukentlig kontroll på enhetsledernivå med automatisk varsling i `p02_trend_og_tidsserie`.
 
 ---
 
 ## 5. Power BI Implementasjon & DAX-Måltall
 
-I Power BI-modellen ([pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip)) drives side `p02_trend_og_tidsserie` av følgende måltall fra `_Måltall`:
-
 ```dax
-// 1. Måned-over-Måned (MoM) Endring i Regnskap
+// Måned-over-måned regnskapsendring
 Regnskap MoM Endring Kr = 
 VAR CurrentMonth = SELECTEDVALUE(dim_date[month])
 VAR CurrentVal = [Sum Regnskap]
@@ -89,7 +86,7 @@ VAR PrevVal =
 RETURN 
     IF(ISBLANK(PrevVal), BLANK(), CurrentVal - PrevVal)
 
-// 2. Rangering av Kontoer etter Største Overforbruk
+// Rangering av overforbrukskontoer
 Rangering Overforbruk = 
 IF(
     [Avvik Kr] < 0,
@@ -102,34 +99,6 @@ IF(
     ),
     BLANK()
 )
-
-// 3. Prosentvis Bidrag til Samlet Merforbruk
-Pct Bidrag til Totalt Overforbruk = 
-VAR DetteAvvik = IF([Avvik Kr] < 0, [Avvik Kr], 0)
-VAR TotaltOverforbruk = 
-    CALCULATE(
-        SUMX(
-            VALUES(dim_kostra_kontoplan[Kontonavn]),
-            VAR Avv = [Avvik Kr]
-            RETURN IF(Avv < 0, Avv, 0)
-        ),
-        ALLSELECTED(dim_kostra_kontoplan)
-    )
-RETURN 
-    DIVIDE(DetteAvvik, TotaltOverforbruk, 0)
-
-// 4. Tidsserie Storytelling Narrative
-Story Time Narrative = 
-VAR MoM_Kr = [Regnskap MoM Endring Kr]
-VAR MoM_Pct = [Regnskap MoM Endring %]
-RETURN
-    IF(
-        ISBLANK(MoM_Kr),
-        "Velg en måned for å se månedsendring i regnskapsførsel.",
-        "Månedlig regnskapsutvikling viser en endring på " & 
-        FORMAT(MoM_Kr, "+#,##0 kr;-#,##0 kr;0 kr") & 
-        " (" & FORMAT(MoM_Pct, "+0.0%;-0.0%;0.0%") & ") fra forrige måned."
-    )
 ```
 
 ---

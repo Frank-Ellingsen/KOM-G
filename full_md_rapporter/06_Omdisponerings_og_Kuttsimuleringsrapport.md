@@ -1,53 +1,60 @@
 # What-If Scenario- og Balanserapport
-**Omdisponering og Kuttsimulering for EOY 0-Balanse**
+**Kuttsimulering i Hovedkostnadsdrivere og Rammestyring mot Årsslutt (EOY)**
 
 ---
 
 ## 1. Problemstilling og Formål
 
-Skolesektoren (Oppvekst og Utdanning) har per 31. august 2024 et akkumulert merforbruk på **-944,0 kNOK**, med en prognostisert årssluttoverskridelse på **-1 416,0 kNOK** dersom ingen tiltak iverksettes. Samtidig har helse- og omsorgssektoren (Bomiljø) et akkumulert mindreforbruk på **+4 610,8 kNOK** (prognostisert til over **+6,9 mill. kr** ved årsslutt) på grunn av vakanser.
+Per siste avsluttede regnskapsmåned (**Måned 08 / August 2024**) viser de faktiske dataene fra `fact_data` i [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip) en utfordrende driftssituasjon i begge sektorer:
+* **Oppvekst og Utdanning (`KomSkole`):** Akkumulert YTD-merforbruk på **-944,0 kNOK** (105,26 % forbruk). I august isolert var merforbruket **-118,1 kNOK**.
+* **Helse og Omsorg (`Bomiljø`):** Akkumulert YTD-merforbruk på **-1 285,6 kNOK** (111,34 % forbruk). I august isolert var merforbruket **-232,6 kNOK** (drevet av vikarbyråkjøp på 253,2 kNOK).
+* **Konsolidert Kommune YTD:** Samlet merforbruk på **-2 229,6 kNOK** (107,61 % forbruk), med en lineær årssluttoverskridelse (EOY) anslått til **-3 344,4 kNOK** dersom ingen kompenserende tiltak iverksettes.
 
-Formålet med denne rapporten er å simulere hvordan kommunen – ved hjelp av målrettede kutt i hovedkostnadsdriverne (vikarer og overtid) kombinert med en administrativ rammemessig omdisponering – kan oppnå **fullstendig 0-balanse (0,- kr i avvik) for skolesektoren ved årets slutt (EOY)**.
+Analysen viser at **71,4 % av kommunens samlede merforbruk** skyldes fire spesifikke variable kostnadsdrivere:
+1. `102000` Vikarer ordinære (YTD regnskap: 484,4 kNOK)
+2. `102013` Vikarer ved korttidsfravær (YTD regnskap: 543,5 kNOK)
+3. `104000` Overtid (YTD regnskap: 491,1 kNOK)
+4. `127040` Kjøp av vikarbyråtjenester (YTD regnskap: 382,7 kNOK)
+
+Formålet med denne rapporten er å simulere hvordan målrettede kutt i disse fire hoveddriverne kan gjenetablere budsjettbalanse ved årets slutt.
 
 Rapporten er direkte implementert i Power BI-prosjektet [pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip), side **06. What-If Scenario og Balanse** (`p06_scenario_simulering`).
 
+> **Måleenhet:** Alle tall er oppgitt i **tusen kroner (kNOK)** med én desimal.
+
 ---
 
-## 2. Tre Scenarier for EOY Resultat
+## 2. Tre Scenarier for EOY Resultat (kNOK)
 
-For å gi politisk og administrativ ledelse et solid beslutningsgrunnlag er det modellert tre distinkte handlingsalternativer:
-
-### Scenario A: Status Quo (Ingen operative eller budsjettmessige tiltak)
-* **Beskrivelse:** Driften fortsetter som i de første 8 månedene uten innstramminger i vikarbruk eller omdisponeringer.
+### Scenario A: Status Quo (Ingen innstramminger)
+* **Beskrivelse:** Driften og vikarbruken fortsetter som i årets 8 første måneder.
 * **Prognose Skole EOY:** **-1 416,0 kNOK** i merforbruk.
-* **Prognose Helse EOY:** **+6 916,2 kNOK** i mindreforbruk.
-* **Konsolidert Kommuneoverskudd:** **+5 500,2 kNOK**.
-* **Vurdering (❌ Frarådes):** Selv om kommunen samlet går i pluss, etterlater dette et uakseptabelt budsjettbrudd i skolesektoren som undergraver budsjettansvaret til rektorene.
+* **Prognose Helse EOY:** **-1 928,4 kNOK** i merforbruk.
+* **Konsolidert EOY Årsavvik:** **-3 344,4 kNOK (Merforbruk)** 🔴.
+* **Vurdering (❌ Frarådes):** Vil kreve udekket bruk av kommunens disposisjonsfond og bryter med formannskapets handlingsregler.
 
-### Scenario B: Rent Driftstiltak (50 % kutt i overtid og korttidsvikarer)
-* **Beskrivelse:** Det innføres streng attestasjonskontroll og 50 % reduksjon i innleie av vikarer og overtid i månedene september–desember. Dette gir en isolert besparing på **+777,5 kNOK** i skolen for reståret.
-* **Prognose Skole EOY:** **-638,5 kNOK** i gjenstående merforbruk.
-* **Konsolidert Kommuneoverskudd:** **+5 805,7 kNOK**.
-* **Vurdering (⚠️ Delvis godkjent):** Tiltaket er nødvendig, men strekker ikke til alene. Skolesektoren ender likevel året med et udekket underskudd på over 0,6 mill. kr.
+### Scenario B: 30 % Kutt i Variable Drivere (Moderat innstramming)
+* **Beskrivelse:** Innføring av forhåndsgodkjenning på vikartimer, 3-dagers regel for korttidsvikarer i skole og avvikling av vikarbyråavtaler i helse for perioden september–desember (reståret).
+* **Månedlig innsparing på drivere:** $\approx 125,1 \text{ kNOK/mnd}$ (totalt **+500,4 kNOK** i reståret).
+* **Konsolidert EOY Årsavvik:** Reduseres til **-2 844,0 kNOK**.
+* **Vurdering (⚠️ Delvis tilstrekkelig):** Begrenser veksten, men krever ytterligere tiltak for full balanse.
 
-### Scenario C: Kombinert Løsning (50 % kutt + Administrativ Omdisponering)
-* **Beskrivelse:** Skolesektoren gjennomfører 50 % kutt i variable personalkostnader (+777,5 kNOK). Samtidig vedtar formannskapet/bystyret en administrativ omdisponering på **638,5 kNOK** fra Helse og Mestring til Oppvekst og Utdanning i forbindelse med 2. tertialrapport.
-* **Prognose Skole EOY:** **Nøyaktig 0,0 kNOK (Fullstendig 0-balanse)**! 🟢
-* **Prognose Helse EOY:** **+5 167,2 kNOK** i gjenværende mindreforbruk (solid buffer).
-* **Konsolidert Kommuneoverskudd:** **+5 167,2 kNOK**.
-* **Vurdering (🟢 ANBEFALES):** Den eneste løsningen som sikrer full økonomisk balanse for begge sektorer og opprettholder budsjettdisiplin uten oppsigelser eller tjenestekutt.
+### Scenario C: 60 % Kutt i Drivere + Rammejustering (Omfattende tiltakspakke)
+* **Beskrivelse:** 
+  1. 60 % reduksjon i overtid og vikarbyråinnleie (+1 000,8 kNOK i reståret).
+  2. Tilbakeføring av ubrukte investeringsmidler og inndragning av vakansmidler i rammejustering 2. tertial (+2 343,6 kNOK).
+* **Konsolidert EOY Årsavvik:** **0,0 kNOK (Fullstendig 0-balanse)**! 🟢
+* **Vurdering (🟢 ANBEFALES):** Sikrer overholdelse av kommunelovens krav om budsjettbalanse uten oppsigelser av fast ansatte.
 
 ---
 
-## 3. Matrise for Beslutningsstøtte (Bystyre / Formannskap)
+## 3. Beslutningsmatrise for Bystyret / Formannskapet
 
-Tabellen oppsummerer de tre scenariene og deres konsekvenser for kommuneregnskapet 2024:
-
-| Handlingsalternativ | Tiltak i Skolesektor | Omdisponering fra Helse | Sluttresultat Skole | Sluttresultat Kommune Total | Anbefaling |
-| :--- | :--- | :--- | :---: | :---: | :---: |
-| **Scenario A** | Ingen endring (0 %) | 0 kr | -1 416,0 kNOK | +5 500,2 kNOK | ❌ Frarådes |
-| **Scenario B** | 50 % kutt overtid/vikar | 0 kr | -638,5 kNOK | +5 805,7 kNOK | ⚠️ Delvis godkjent |
-| **Scenario C** | 50 % kutt overtid/vikar | +638,5 kNOK | **0,0 kNOK** | **+5 167,2 kNOK** | **🟢 ANBEFALES** |
+| Handlingsalternativ | Tiltak i Variable Kostnadsdrivere | Tiltakseffekt Restår (kNOK) | Forventet Årsresultat (kNOK) | Anbefaling |
+| :--- | :--- | ---: | ---: | :---: |
+| **Scenario A (Status Quo)** | 0 % kutt (Ingen tiltak) | 0,0 | **-3 344,4** | ❌ Frarådes |
+| **Scenario B (Moderat kutt)** | 30 % kutt i vikar/overtid/byrå | +500,4 | **-2 844,0** | ⚠️ Delvis |
+| **Scenario C (Full balanse)** | 60 % kutt + Rammejustering 2. tertial | +3 344,4 | **0,0** | **🟢 ANBEFALES** |
 
 ---
 
@@ -99,9 +106,9 @@ VAR NyttAvvik = [Simulert EOY Avvik Etter Tiltak Kr]
 RETURN
     SWITCH(
         TRUE(),
-        NyttAvvik >= 0, "🟢 Balanse / Overskudd oppnådd (" & FORMAT(NyttAvvik, "+#,##0 kr") & ")",
-        NyttAvvik >= -200000, "🟡 Nær 0-balanse (Gjenstående: " & FORMAT(NyttAvvik, "#,##0 kr") & ")",
-        "🔴 Fortsatt underskudd (Gjenstående: " & FORMAT(NyttAvvik, "#,##0 kr") & ")"
+        NyttAvvik >= 0, "🟢 0-Balanse / Mindreforbruk oppnådd",
+        NyttAvvik >= -500000, "🟡 Moderat merforbruk gjenstår",
+        "🔴 Kritiske tilleggstiltak påkrevd"
     )
 ```
 
