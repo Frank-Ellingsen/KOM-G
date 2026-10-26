@@ -1,0 +1,10 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
+  "pageOrder": [
+    "p01_executive_summary",
+    "p02_trend_og_tidsserie",
+    "p03_avvik_og_drivere",
+    "p04_scenario_simulering"
+  ],
+  "activePageName": "p01_executive_summary"
+}

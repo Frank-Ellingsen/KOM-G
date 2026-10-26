@@ -1,0 +1,22 @@
+# Power BI Project (.pbip) - Local & User settings
+.pbi/localSettings.json
+**/localSettings.json
+**/cache.abf
+**/autoSave/
+
+# Temporary / Lock files
+*.tmp
+~$*.xlsx
+~$*.docx
+
+# OS metadata
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# IDE & Editor settings
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json

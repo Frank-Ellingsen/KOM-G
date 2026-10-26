@@ -1,0 +1,18 @@
+role Enhetsleder_Sikkerhet
+	modelPermission: read
+
+	tablePermission dim_ansvar =
+			VAR _User = USERPRINCIPALNAME()
+			VAR _Allowed =
+			    SELECTCOLUMNS(
+			        FILTER(
+			            'dim_sikkerhet',
+			            'dim_sikkerhet'[Epost] = _User
+			        ),
+			        "Ansvar_Kode", 'dim_sikkerhet'[Ansvar_Kode]
+			    )
+			RETURN
+			    "ALL" IN _Allowed || "*ALL*" IN _Allowed || [Ansvar_Kode] IN _Allowed
+
+	annotation PBI_Id = f59e93cb10a24e93892015fa2e89bb01
+

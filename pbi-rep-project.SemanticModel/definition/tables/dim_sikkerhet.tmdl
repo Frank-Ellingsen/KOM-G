@@ -1,0 +1,39 @@
+table dim_sikkerhet
+	lineageTag: 8a4c10ef-51a2-4a0b-93bf-4375b8e49f01
+
+	column Epost
+		dataType: string
+		lineageTag: 2bc0e5a9-45e2-4bd8-9b87-d4fa29630712
+		summarizeBy: none
+		sourceColumn: Epost
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ansvar_Kode
+		dataType: string
+		lineageTag: 981ecf42-43bb-4ad1-817c-c6b753f22081
+		summarizeBy: none
+		sourceColumn: Ansvar_Kode
+
+		annotation SummarizationSetBy = Automatic
+
+	column Omrade_Kode
+		dataType: string
+		lineageTag: f245d1ca-51bb-4573-a261-2287e07a39b3
+		summarizeBy: none
+		sourceColumn: Omrade_Kode
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_sikkerhet = m
+		mode: import
+		source =
+				let
+				  Source = Csv.Document(File.Contents("C:\Users\frank\Desktop\Kom\powerbi_kostra_datamodell\dimensjoner\dim_sikkerhet.csv"), [Delimiter = ",", Columns = 3, Encoding = 65001, QuoteStyle = QuoteStyle.None]),
+				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"Epost", type text}, {"Ansvar_Kode", type text}, {"Omrade_Kode", type text}})
+				in
+				  #"Changed column type"
+
+	annotation PBI_ResultType = Table
+
