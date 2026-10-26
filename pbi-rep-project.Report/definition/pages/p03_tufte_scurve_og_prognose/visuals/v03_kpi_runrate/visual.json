@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "ERP EOY Run Rate"
                 }
               },
-              "queryRef": "_Measures.ERP EOY Run Rate",
+              "queryRef": "_Måltall.ERP EOY Run Rate",
               "nativeQueryRef": "ERP EOY Run Rate",
               "active": true
             }

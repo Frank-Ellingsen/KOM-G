@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "ERP Største Kostnadsdriver Beløp"
                 }
               },
-              "queryRef": "_Measures.ERP Største Kostnadsdriver Beløp",
+              "queryRef": "_Måltall.ERP Største Kostnadsdriver Beløp",
               "nativeQueryRef": "ERP Største Kostnadsdriver Beløp",
               "active": true
             }

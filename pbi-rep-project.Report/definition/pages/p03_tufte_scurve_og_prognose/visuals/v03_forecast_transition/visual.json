@@ -39,13 +39,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "ERP Actual Historical"
                 }
               },
-              "queryRef": "_Measures.ERP Actual Historical",
+              "queryRef": "_Måltall.ERP Actual Historical",
               "nativeQueryRef": "ERP Actual Historical",
               "active": true
             },
@@ -54,13 +54,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "ERP Forecast Trend"
                 }
               },
-              "queryRef": "_Measures.ERP Forecast Trend",
+              "queryRef": "_Måltall.ERP Forecast Trend",
               "nativeQueryRef": "ERP Forecast Trend",
               "active": true
             },

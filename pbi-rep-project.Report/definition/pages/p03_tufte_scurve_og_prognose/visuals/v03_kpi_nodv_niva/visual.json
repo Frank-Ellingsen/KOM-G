@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "ERP Nødvendig Månedlig Nivå"
                 }
               },
-              "queryRef": "_Measures.ERP Nødvendig Månedlig Nivå",
+              "queryRef": "_Måltall.ERP Nødvendig Månedlig Nivå",
               "nativeQueryRef": "ERP Nødvendig Månedlig Nivå",
               "active": true
             }

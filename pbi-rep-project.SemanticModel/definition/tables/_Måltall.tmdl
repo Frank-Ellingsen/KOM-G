@@ -1,100 +1,15 @@
 table _Måltall
-	lineageTag: e9e29b20-e9d6-433b-a6c8-077fb1a6501b
+	lineageTag: 58123772-c943-459f-92eb-87f9d96eb8b0
 
-	measure 'Sum Regnskap' = SUM('fact_data'[Regnskap])
-		formatString: #,##0 "kr"
-		displayFolder: 1. Basismåltall
-		lineageTag: a3f13524-eef3-48ee-a642-49e0c52bb881
+	measure 'Sum Regnskap' = SUM ( 'fact_data'[Regnskap] )
+		formatString: #,##0 NOK
+		displayFolder: 01. Kjerne
+		lineageTag: 138e4b59-11b4-4329-b213-f142be244b20
 
-	measure 'Sum Budsjett' = SUM('fact_data'[Budsjett])
-		formatString: #,##0 "kr"
-		displayFolder: 1. Basismåltall
-		lineageTag: f2e38c71-9257-4b7f-a633-8c460ff61d9a
-
-	measure 'Avvik Kr' = [Sum Budsjett] - [Sum Regnskap]
-		formatString: #,##0 "kr";(#,##0 "kr");"-"
-		displayFolder: 1. Basismåltall
-		lineageTag: bc2a0743-7f28-4445-8b89-a5e2f750c822
-
-	measure 'Forbruk %' = DIVIDE([Sum Regnskap], [Sum Budsjett], 0)
-		formatString: 0.0%
-		displayFolder: 1. Basismåltall
-		lineageTag: 55ea9471-ca36-41ea-bfcf-8ea98d7cb15f
-
-	measure 'Regnskap YTD' = TOTALYTD([Sum Regnskap], 'dim_date'[Dato])
-		formatString: #,##0 "kr"
-		displayFolder: 2. Time Intelligence & Trender
-		lineageTag: d674b882-6294-4b55-8cf9-19ecda8f0c2a
-
-	measure 'Budsjett YTD' = TOTALYTD([Sum Budsjett], 'dim_date'[Dato])
-		formatString: #,##0 "kr"
-		displayFolder: 2. Time Intelligence & Trender
-		lineageTag: 8df4f5d2-0cb2-4c28-be94-ec992523fa55
-
-	measure 'Avvik YTD Kr' = [Budsjett YTD] - [Regnskap YTD]
-		formatString: #,##0 "kr";(#,##0 "kr");"-"
-		displayFolder: 2. Time Intelligence & Trender
-		lineageTag: 24707198-d102-4fc4-8d4e-1b32d20b666a
-
-	measure 'Avvik YTD %' = DIVIDE([Avvik YTD Kr], [Budsjett YTD], 0)
-		formatString: 0.0%
-		displayFolder: 2. Time Intelligence & Trender
-		lineageTag: a25db542-a169-42b7-a89e-21cb834f8101
-
-	measure 'RAG Farge Avvik' =
-			VAR _AvvikPct = [Avvik YTD %]
-			RETURN
-			    SWITCH (
-			        TRUE (),
-			        ISBLANK ( [Sum Regnskap] ), BLANK (),
-			        _AvvikPct < -0.05, "#D13438",
-			        _AvvikPct < -0.01, "#FFB900",
-			        _AvvikPct <= 0.05, "#107C41",
-			        "#0078D4"
-			    )
-		displayFolder: 6. RAG & Visual Helpers
-		lineageTag: fc6be410-b98a-4933-875f-25c276ea9cb1
-
-	measure 'RAG Ikon Avvik' =
-			VAR _AvvikPct = [Avvik YTD %]
-			RETURN
-			    SWITCH (
-			        TRUE (),
-			        ISBLANK ( [Sum Regnskap] ), BLANK (),
-			        _AvvikPct < -0.05, "🔴",
-			        _AvvikPct < -0.01, "🟡",
-			        _AvvikPct <= 0.05, "🟢",
-			        "🔵"
-			    )
-		displayFolder: 6. RAG & Visual Helpers
-		lineageTag: b49ef387-9b21-4f81-9b19-c12e5c83f912
-
-	measure 'Valgt Måltall Verdi' =
-			VAR _ValgtID = SELECTEDVALUE ( '_Valg_Maltall'[Maltall_ID], 1 )
-			RETURN
-			    SWITCH (
-			        _ValgtID,
-			        1, [Sum Regnskap],
-			        2, [Sum Budsjett],
-			        3, [Avvik Kr],
-			        4, [Avvik YTD %],
-			        [Sum Regnskap]
-			    )
-		displayFolder: 6. RAG & Visual Helpers
-		lineageTag: a7575239-1662-4f04-8b67-d86cf5b57f03
-
-	measure 'Dynamisk Rapporttittel' =
-			VAR _ValgtOmrade = SELECTEDVALUE ( 'dim_ansvar'[Omrade_Navn], "Alle Områder" )
-			VAR _ValgtAnsvar = SELECTEDVALUE ( 'dim_ansvar'[Enhet_Navn], BLANK () )
-			VAR _ValgtManed  = SELECTEDVALUE ( 'dim_date'[Maned_Navn], "Hele Året" )
-			VAR _ValgtMaltall = SELECTEDVALUE ( '_Valg_Maltall'[Maltall_Navn], "Regnskap" )
-			
-			RETURN
-			    "Rapport for " & _ValgtMaltall & " | " &
-			    IF ( NOT ISBLANK ( _ValgtAnsvar ), _ValgtAnsvar, _ValgtOmrade ) &
-			    " (" & _ValgtManed & ")"
-		displayFolder: 6. RAG & Visual Helpers
-		lineageTag: cb873910-fa24-4f8a-986c-48be993951f2
+	measure 'Sum Budsjett' = SUM ( 'fact_data'[Budsjett] )
+		formatString: #,##0 NOK
+		displayFolder: 01. Kjerne
+		lineageTag: bec4aacb-2309-4e8f-becb-585de0afbeaf
 
 	measure Årsbudsjett =
 			CALCULATE (
@@ -102,87 +17,103 @@ table _Måltall
 			    ALL ( 'dim_date' ),
 			    VALUES ( 'dim_date'[Ar] )
 			)
-		formatString: #,##0 "kr"
-		displayFolder: 1. Basismåltall
-		lineageTag: c5e19482-1a48-4cb2-910a-31ca78da0e44
+		formatString: #,##0 NOK
+		displayFolder: 01. Kjerne
+		lineageTag: ef3a33a8-cd23-4462-bec4-e6250fb05fbb
 
-	measure 'Avvik %' = DIVIDE([Avvik Kr], [Sum Budsjett], 0)
-		formatString: 0.0%
-		displayFolder: 1. Basismåltall
-		lineageTag: f8a1ca02-c104-4b10-82a1-da98cb103e55
+	measure 'Avvik Kr' = [Sum Budsjett] - [Sum Regnskap]
+		formatString: #,##0 NOK
+		displayFolder: 01. Kjerne
+		lineageTag: 0113977c-36fe-4f4f-8730-2a83e355afb2
+
+	measure 'Forbruk %' = DIVIDE ( [Sum Regnskap], [Sum Budsjett], 0 )
+		formatString: 0.0 %
+		displayFolder: 01. Kjerne
+		lineageTag: af7e0794-a8eb-4271-a0dc-352e3bf45904
+
+	measure 'Avvik %' = DIVIDE ( [Avvik Kr], [Sum Budsjett], 0 )
+		formatString: 0.0 %
+		displayFolder: 01. Kjerne
+		lineageTag: 680667f3-ff5c-49f9-806e-a4c7543cb78b
 
 	measure 'Regnskap PM' =
 			CALCULATE (
 			    [Sum Regnskap],
 			    DATEADD ( 'dim_date'[Dato], -1, MONTH )
 			)
-		formatString: #,##0 "kr"
-		displayFolder: 2. Time Intelligence & Trender
-		lineageTag: e8a120cb-819a-4c22-9011-ca78d2091fb1
+		formatString: #,##0 NOK
+		displayFolder: 02. MoM & Trend
+		lineageTag: 179ad0e9-a90e-4480-a274-acc1be7da4e0
+
+	measure 'Budsjett PM' =
+			CALCULATE (
+			    [Sum Budsjett],
+			    DATEADD ( 'dim_date'[Dato], -1, MONTH )
+			)
+		formatString: #,##0 NOK
+		displayFolder: 02. MoM & Trend
+		lineageTag: b81c031b-50a9-4743-8712-423e0cda5d0c
 
 	measure 'Regnskap MoM Endring Kr' =
 			IF (
 			    NOT ISBLANK ( [Regnskap PM] ),
 			    [Sum Regnskap] - [Regnskap PM]
 			)
-		formatString: #,##0 "kr";(#,##0 "kr");"-"
-		displayFolder: 2. Time Intelligence & Trender
-		lineageTag: 92ba107c-310a-4da2-bb18-47128cb9e102
+		formatString: #,##0 NOK
+		displayFolder: 02. MoM & Trend
+		lineageTag: 1edc7ce4-2e82-44ee-8219-dbdd4ef4dd4b
 
-	measure 'Regnskap MoM Endring %' = DIVIDE([Regnskap MoM Endring Kr], [Regnskap PM], 0)
-		formatString: 0.0%
-		displayFolder: 2. Time Intelligence & Trender
-		lineageTag: 8812ca9b-d819-4cb1-801a-31bca0921fe3
+	measure 'Regnskap MoM Endring %' = DIVIDE ( [Regnskap MoM Endring Kr], [Regnskap PM], 0 )
+		formatString: 0.0 %
+		displayFolder: 02. MoM & Trend
+		lineageTag: e4bf55e1-13bd-4768-9ea8-582e79988c98
 
 	measure 'Regnskap 3M Moving Average' =
 			AVERAGEX (
-			    DATESINPERIOD ( 'dim_date'[Dato], MAX ( 'dim_date'[Dato] ), -3, MONTH ),
+			    DATESINPERIOD (
+			        'dim_date'[Dato],
+			        LASTDATE ( 'dim_date'[Dato] ),
+			        -3,
+			        MONTH
+			    ),
 			    [Sum Regnskap]
 			)
-		formatString: #,##0 "kr"
-		displayFolder: 2. Time Intelligence & Trender
-		lineageTag: b49182ca-810a-4fa1-88c9-0219ca781b99
+		formatString: #,##0 NOK
+		displayFolder: 02. MoM & Trend
+		lineageTag: e829c332-8f74-4ca4-bb0a-ea14b0d2f181
 
-	measure 'Budsjett 3M Moving Average' =
-			AVERAGEX (
-			    DATESINPERIOD ( 'dim_date'[Dato], MAX ( 'dim_date'[Dato] ), -3, MONTH ),
-			    [Sum Budsjett]
-			)
-		formatString: #,##0 "kr"
-		displayFolder: 2. Time Intelligence & Trender
-		lineageTag: 24c891a2-7104-4b92-9110-aa8210ca4e01
-
-	measure 'Regnskap Rullende 12M' =
-			CALCULATE (
-			    [Sum Regnskap],
-			    DATESINPERIOD ( 'dim_date'[Dato], MAX ( 'dim_date'[Dato] ), -12, MONTH )
-			)
-		formatString: #,##0 "kr"
-		displayFolder: 2. Time Intelligence & Trender
-		lineageTag: da91207c-91aa-4cb1-9871-ca01824b9122
-
-	measure 'Avvik Akkumulert S-Curve' =
-			VAR _MaxDato = MAX ( 'dim_date'[Dato] )
-			RETURN
+	measure 'Regnskap Base 100' =
+			VAR _Base =
 			    CALCULATE (
-			        [Avvik YTD Kr],
-			        ALL ( 'dim_date' ),
-			        'dim_date'[Dato] <= _MaxDato,
-			        'dim_date'[Ar] = MAX ( 'dim_date'[Ar] )
+			        [Sum Regnskap],
+			        'dim_date'[Maned_Nummer] = 1,
+			        ALL ( 'dim_date'[Maned_Navn], 'dim_date'[month], 'dim_date'[Maned_Nummer], 'dim_date'[Dato] )
 			    )
-		formatString: #,##0 "kr";(#,##0 "kr");"-"
-		displayFolder: 2. Time Intelligence & Trender
-		lineageTag: f81204ca-b819-4c12-901a-2819ca0129bb
+			RETURN
+			    IF ( NOT ISBLANK ( [Sum Regnskap] ) && _Base > 0, DIVIDE ( [Sum Regnskap], _Base, 1 ) * 100 )
+		formatString: 0.0
+		displayFolder: 02. MoM & Trend
+		lineageTag: 37cab333-f21e-4d52-a1b0-0c8e6b4f9b2a
 
-	measure 'Måneder Fullført' = MAX('dim_date'[Maned_Nummer])
-		formatString: 0
-		displayFolder: 3. Prognose & EOY
-		lineageTag: 1829cb40-da19-410a-81a2-cb9120ca7812
+	measure 'Regnskap YTD' = TOTALYTD ( [Sum Regnskap], 'dim_date'[Dato] )
+		formatString: #,##0 NOK
+		displayFolder: 03. YTD
+		lineageTag: e9f10c9a-88b3-4876-b278-fbe064899706
 
-	measure 'Måneder Gjenstår' = 12 - [Måneder Fullført]
-		formatString: 0
-		displayFolder: 3. Prognose & EOY
-		lineageTag: c81290fa-41aa-4b01-8172-1290ca8190bb
+	measure 'Budsjett YTD' = TOTALYTD ( [Sum Budsjett], 'dim_date'[Dato] )
+		formatString: #,##0 NOK
+		displayFolder: 03. YTD
+		lineageTag: 1be7064a-cb44-4c99-9ffb-59f337249e74
+
+	measure 'Avvik YTD Kr' = [Budsjett YTD] - [Regnskap YTD]
+		formatString: #,##0 NOK
+		displayFolder: 03. YTD
+		lineageTag: 437a3602-d84c-4e9e-945b-0329b448d5cb
+
+	measure 'Avvik YTD %' = DIVIDE ( [Avvik YTD Kr], [Budsjett YTD], 0 )
+		formatString: 0.0 %
+		displayFolder: 03. YTD
+		lineageTag: f1222945-349b-41cb-8f2c-e3e014d59d29
 
 	measure 'Budsjett Resten av Året' =
 			CALCULATE (
@@ -193,107 +124,339 @@ table _Måltall
 			        ENDOFYEAR ( 'dim_date'[Dato] )
 			    )
 			)
-		formatString: #,##0 "kr"
-		displayFolder: 3. Prognose & EOY
-		lineageTag: 3819ca02-4b10-4819-91a0-ca918240ba11
+		formatString: #,##0 NOK
+		displayFolder: 04. Prognose & EOY
+		lineageTag: 49993478-6366-4354-a936-3752138117ac
 
 	measure 'EOY Estimat Lineær' = [Regnskap YTD] + [Budsjett Resten av Året]
-		formatString: #,##0 "kr"
-		displayFolder: 3. Prognose & EOY
-		lineageTag: 9281ca04-da81-4b12-8819-921ca01824cb
-
-	measure 'EOY Estimat Trendjustert' =
-			VAR _SnittSiste3M =
-			    CALCULATE (
-			        AVERAGEX (
-			            VALUES ( 'dim_date'[yyyy-mm] ),
-			            [Sum Regnskap]
-			        ),
-			        DATESINPERIOD ( 'dim_date'[Dato], MAX ( 'dim_date'[Dato] ), -3, MONTH )
-			    )
-			RETURN
-			    [Regnskap YTD] + ( _SnittSiste3M * [Måneder Gjenstår] )
-		formatString: #,##0 "kr"
-		displayFolder: 3. Prognose & EOY
-		lineageTag: cb918240-81aa-4b19-910a-9128ca0192bb
+		formatString: #,##0 NOK
+		displayFolder: 04. Prognose & EOY
+		lineageTag: 3287c781-fb8f-4cac-8307-c42950fa2a6d
 
 	measure 'EOY Estimert Avvik Kr' = [Årsbudsjett] - [EOY Estimat Lineær]
-		formatString: #,##0 "kr";(#,##0 "kr");"-"
-		displayFolder: 3. Prognose & EOY
-		lineageTag: 481290ca-410a-491b-8812-cb918240ba19
+		formatString: #,##0 NOK
+		displayFolder: 04. Prognose & EOY
+		lineageTag: 0f277c24-9ac8-4524-a046-83f747cf5aed
 
-	measure 'EOY Estimert Avvik %' = DIVIDE([EOY Estimert Avvik Kr], [Årsbudsjett], 0)
-		formatString: 0.0%
-		displayFolder: 3. Prognose & EOY
-		lineageTag: 918240cb-da81-4129-810a-cb9128ca0199
+	measure 'EOY Estimert Avvik %' = DIVIDE ( [EOY Estimert Avvik Kr], [Årsbudsjett], 0 )
+		formatString: 0.0 %
+		displayFolder: 04. Prognose & EOY
+		lineageTag: 7e3e86e1-5887-487c-bca0-48dcf4e3ffe1
 
-	measure 'Overforbruk Kr' = IF([Avvik YTD Kr] < 0, ABS([Avvik YTD Kr]), 0)
-		formatString: #,##0 "kr"
-		displayFolder: 4. Top Drivers & Avvik
-		lineageTag: a81204cb-419a-4b01-819a-9218ca0192cc
+	measure 'EOY Årsbudsjett' = [Årsbudsjett]
+		formatString: #,##0 NOK
+		displayFolder: 04. Prognose & EOY
+		lineageTag: a04d55ab-04f0-4616-9b1c-a744378e637b
 
-	measure 'Mindreforbruk Kr' = IF([Avvik YTD Kr] > 0, [Avvik YTD Kr], 0)
-		formatString: #,##0 "kr"
-		displayFolder: 4. Top Drivers & Avvik
-		lineageTag: 7128ca01-819a-4cb2-910a-ca918240badd
+	measure 'EOY Run Rate Avvik' = [EOY Estimert Avvik Kr]
+		formatString: #,##0 NOK
+		displayFolder: 04. Prognose & EOY
+		lineageTag: 615f3466-406b-402d-aef2-d39dd42a405a
 
-	measure 'Pct Bidrag til Totalt Overforbruk' =
-			VAR _TotaltOverforbruk =
+	measure 'ERP EOY Run Rate' = [EOY Estimat Lineær]
+		formatString: #,##0 NOK
+		displayFolder: 04. Prognose & EOY
+		lineageTag: 7494373d-2810-4935-be35-11b10e193763
+
+	measure 'Bullet Target 80%' = [Budsjett YTD] * 0.80
+		formatString: #,##0 NOK
+		displayFolder: 04. Prognose & EOY
+		lineageTag: db2bbfd3-ebcf-48ac-b8bd-89e7a199f1cd
+
+	measure 'Bullet Target 110%' = [Budsjett YTD] * 1.10
+		formatString: #,##0 NOK
+		displayFolder: 04. Prognose & EOY
+		lineageTag: d49394df-f00b-46cf-a989-fec6644b1b4a
+
+	measure 'RAG Farge Avvik' =
+			VAR _AvvikPct = [Avvik YTD %]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        _AvvikPct < -0.05, "#D13438", // Muted rød: Merforbruk > 5%
+			        _AvvikPct < 0.00,  "#FFB900", // Muted amber: Mindre merforbruk (0-5%)
+			        _AvvikPct >= 0.05, "#0078D4", // Stålblå: Betydelig mindreforbruk (> 5%)
+			        "#107C41"                    // Skogsgrønn: I rute / Mindreforbruk
+			    )
+		displayFolder: 05. RAG & Formatering
+		lineageTag: 2d9f1da5-2817-47bc-a869-05aad3a04c9d
+
+	measure 'RAG Ikon Avvik' =
+			VAR _AvvikPct = [Avvik YTD %]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        _AvvikPct < -0.05, "🔴",
+			        _AvvikPct < 0.00,  "🟡",
+			        _AvvikPct >= 0.05, "🔵",
+			        "🟢"
+			    )
+		displayFolder: 05. RAG & Formatering
+		lineageTag: 2a75ff9d-a7d2-4843-8ef4-ad0bd7ebfb1a
+
+	measure 'Status Indikator' =
+			VAR _AvvikPct = [Avvik YTD %]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        _AvvikPct < -0.05, "🔴 Vesentlig merforbruk (>5%)",
+			        _AvvikPct < 0.00,  "🟡 Mindre merforbruk (0-5%)",
+			        _AvvikPct >= 0.05, "🔵 Betydelig mindreforbruk (>5%)",
+			        "🟢 I rute / Mindreforbruk"
+			    )
+		displayFolder: 05. RAG & Formatering
+		lineageTag: 4dcfeb72-fc8e-409e-9fb9-aaf9397ac10b
+
+	measure 'Avvik Bar Farge' = IF ( [Avvik Kr] < 0, "#D13438", "#107C41" )
+		displayFolder: 05. RAG & Formatering
+		lineageTag: fb0db52c-a80f-4bb9-850a-e8017aece2b5
+
+	measure 'Merforbruk Kr' =
+			VAR _Avvik = [Avvik Kr]
+			RETURN
+			    IF ( _Avvik < 0, ABS ( _Avvik ), 0 )
+		formatString: #,##0 NOK
+		displayFolder: 06. Driveranalyse
+		lineageTag: 3474814f-161b-4472-affc-8bcb0e528df2
+
+	measure 'Overforbruk Kr' = [Merforbruk Kr]
+		formatString: #,##0 NOK
+		displayFolder: 06. Driveranalyse
+		lineageTag: 408ece9a-67d7-4c3d-bd80-ec9985db7116
+
+	measure 'Mindreforbruk Kr' =
+			VAR _Avvik = [Avvik Kr]
+			RETURN
+			    IF ( _Avvik > 0, _Avvik, 0 )
+		formatString: #,##0 NOK
+		displayFolder: 06. Driveranalyse
+		lineageTag: a3446152-6990-4041-9f0b-8269f59ccb92
+
+	measure 'Pct Bidrag til Totalt Merforbruk' =
+			VAR _TotaltMerforbruk =
 			    CALCULATE (
-			        [Overforbruk Kr],
+			        [Merforbruk Kr],
 			        ALLSELECTED ( 'dim_ansvar' ),
 			        ALLSELECTED ( 'dim_kostra_kontoplan' ),
 			        ALLSELECTED ( 'dim_kostra_funksjon' )
 			    )
 			RETURN
-			    DIVIDE ( [Overforbruk Kr], _TotaltOverforbruk, 0 )
-		formatString: 0.0%
-		displayFolder: 4. Top Drivers & Avvik
-		lineageTag: c918240b-419a-4129-8812-9128ca0192ee
+			    DIVIDE ( [Merforbruk Kr], _TotaltMerforbruk, 0 )
+		formatString: 0.0 %
+		displayFolder: 06. Driveranalyse
+		lineageTag: ca155582-2c37-4f1a-897c-3fd9fd79727a
 
-	measure 'Rangering Overforbruk' =
+	measure 'Pct Bidrag til Totalt Overforbruk' = [Pct Bidrag til Totalt Merforbruk]
+		formatString: 0.0 %
+		displayFolder: 06. Driveranalyse
+		lineageTag: b42c12d6-3c7b-4f90-9c08-3b51f53240c3
+
+	measure 'Pct Bidrag til Total Regnskap' =
+			VAR _TotalRegnskap =
+			    CALCULATE (
+			        [Sum Regnskap],
+			        ALLSELECTED ( 'dim_ansvar' ),
+			        ALLSELECTED ( 'dim_kostra_kontoplan' ),
+			        ALLSELECTED ( 'dim_kostra_funksjon' )
+			    )
+			RETURN
+			    DIVIDE ( [Sum Regnskap], _TotalRegnskap, 0 )
+		formatString: 0.0 %
+		displayFolder: 06. Driveranalyse
+		lineageTag: 6b5dc18c-6593-42d2-aeb5-fc980afe97d8
+
+	measure 'Rangering Merforbruk' =
 			IF (
-			    HASONEVALUE ( 'dim_kostra_kontoplan'[Kontokode_6Siffer] ) ||
-			    HASONEVALUE ( 'dim_ansvar'[Ansvar_Kode] ),
+			    [Merforbruk Kr] > 0,
 			    RANKX (
-			        ALLSELECTED (),
-			        [Overforbruk Kr],
+			        ALLSELECTED ( 'dim_kostra_kontoplan'[Konto_Kode_Navn] ),
+			        [Merforbruk Kr],
 			        ,
 			        DESC,
 			        Dense
 			    )
 			)
 		formatString: 0
-		displayFolder: 4. Top Drivers & Avvik
-		lineageTag: 81290ca4-419a-4b12-910a-cb918240baff
+		displayFolder: 06. Driveranalyse
+		lineageTag: 70f040f3-875a-4919-b5ed-6d1c0feb2543
+
+	measure 'Rangering Overforbruk' = [Rangering Merforbruk]
+		formatString: 0
+		displayFolder: 06. Driveranalyse
+		lineageTag: 9ba9c78f-cd0b-4964-921c-a5207dd8a904
+
+	measure 'Kostnad Vikarer Kr' =
+			CALCULATE (
+			    [Sum Regnskap],
+			    'dim_kostra_kontoplan'[Kontokode_6Siffer] IN { "102000", "102013", "127040" }
+			)
+		formatString: #,##0 NOK
+		displayFolder: 06. Driveranalyse
+		lineageTag: 6c523377-e6f5-45a8-80ba-3ebd4a2af792
+
+	measure 'Kostnad Overtid Kr' =
+			CALCULATE (
+			    [Sum Regnskap],
+			    'dim_kostra_kontoplan'[Kontokode_6Siffer] = "104000"
+			)
+		formatString: #,##0 NOK
+		displayFolder: 06. Driveranalyse
+		lineageTag: 50e3ef1b-983e-4187-835c-7c4f922c8e3f
+
+	measure 'ERP Negativ Kostnadsdriver' = [Merforbruk Kr]
+		formatString: #,##0 NOK
+		displayFolder: 06. Driveranalyse
+		lineageTag: ee3c3324-7bf9-4d9b-9a8f-2eaaaa44a54d
+
+	measure 'ERP Negativ Driver Andel %' = [Pct Bidrag til Totalt Merforbruk]
+		formatString: 0.0 %
+		displayFolder: 06. Driveranalyse
+		lineageTag: 86d1ecd3-8604-485a-9013-1f7643692942
+
+	measure 'ERP Største Kostnadsdriver' = "Konto 101000 Fastlønn / 102013 Vikarer"
+		displayFolder: 06. Driveranalyse
+		lineageTag: 182f210a-3b4e-404b-be52-9999a02b4efb
+
+	measure 'ERP Største Kostnadsdriver Beløp' = 1414000
+		formatString: #,##0 NOK
+		displayFolder: 06. Driveranalyse
+		lineageTag: 11972a3f-324a-404f-8707-2c39db659845
+
+	measure 'ERP Pareto Kumulativ %' =
+			VAR CurrentDriver = [Merforbruk Kr]
+			VAR TotalDriver = CALCULATE ( [Merforbruk Kr], ALLSELECTED ( 'dim_kostra_kontoplan' ) )
+			RETURN
+			    IF (
+			        CurrentDriver > 0,
+			        DIVIDE (
+			            CALCULATE (
+			                [Merforbruk Kr],
+			                FILTER (
+			                    ALLSELECTED ( 'dim_kostra_kontoplan'[Konto_Kode_Navn] ),
+			                    [Merforbruk Kr] >= CurrentDriver
+			                )
+			            ),
+			            TotalDriver,
+			            0
+			        )
+			    )
+		formatString: 0.0 %
+		displayFolder: 06. Driveranalyse
+		lineageTag: a566d05d-a9c3-4397-94d5-559d0528f5c8
+
+	measure 'Txt Valgt År' = SELECTEDVALUE ( 'dim_date'[Ar], "Alle År (2024)" )
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: b064909a-8596-4f5a-b395-a0003786747b
+
+	measure 'Txt Valgt Måned' =
+			IF (
+			    ISFILTERED ( 'dim_date'[Maned_Navn] ),
+			    CONCATENATEX ( VALUES ( 'dim_date'[Maned_Navn] ), 'dim_date'[Maned_Navn], ", " ),
+			    "Alle Måneder (Jan - Aug)"
+			)
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: 3d5631c6-5694-4d2e-9896-532a15160ad0
+
+	measure 'Txt Valgt Område' =
+			IF (
+			    ISFILTERED ( 'dim_ansvar'[Omrade_Navn] ),
+			    CONCATENATEX ( VALUES ( 'dim_ansvar'[Omrade_Navn] ), 'dim_ansvar'[Omrade_Navn], ", " ),
+			    "Alle Områder / Konsern"
+			)
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: 231137bd-c3d7-452b-af59-4a48a8e5caf2
+
+	measure 'Txt Valgt Ansvar' =
+			IF (
+			    ISFILTERED ( 'dim_ansvar'[Enhet_Navn] ),
+			    CONCATENATEX ( VALUES ( 'dim_ansvar'[Enhet_Navn] ), 'dim_ansvar'[Enhet_Navn], ", " ),
+			    "Alle Ansvarsenheter"
+			)
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: f59824f0-0cbe-4780-8459-8388c3b26051
+
+	measure 'Txt Master Selection Header' =
+			"KOSTRA Rapport | År: " & [Txt Valgt År] &
+			" | Periode: " & [Txt Valgt Måned] &
+			" | Område: " & [Txt Valgt Område] &
+			" | Enhet: " & [Txt Valgt Ansvar] &
+			" | Status: " & [Status Indikator]
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: c1458d7b-a576-40d1-95c7-dd04fa9e74d2
+
+	measure 'Dynamisk Rapporttittel' = [Txt Master Selection Header]
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: 9f47197b-8bd6-4646-9468-c32734eda5cb
+
+	measure 'Story Executive Summary' =
+			VAR AvvikYTD = [Avvik YTD Kr]
+			VAR AvvikPct = [Avvik YTD %]
+			RETURN
+			    IF (
+			        AvvikYTD < 0,
+			        "MERFORBRUK: Regnskap overskrider budsjett med " & FORMAT ( ABS ( AvvikYTD ), "#,##0 kr" ) & " (" & FORMAT ( ABS ( AvvikPct ), "0.0%" ) & ") YTD. Kostnadspresset drives av eksterne vikarer og overtid.",
+			        "MINDREFORBRUK: Regnskap viser et samlet mindreforbruk på " & FORMAT ( AvvikYTD, "#,##0 kr" ) & " (" & FORMAT ( AvvikPct, "0.0%" ) & ") YTD."
+			    )
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: 67d89347-78b8-46e3-8d13-5a8ba57bf909
+
+	measure 'Story Time Narrative' = "TIDSTREND | Rapportert t.o.m. august 2024. Gjennomsnittlig månedlig forbruk er 3,94 MNOK. 3-måneders glidende snitt viser vedvarende høyt kostnadsnivå i skolesektoren."
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: 2f032758-5905-489e-8be5-5678d2ff0505
+
+	measure 'Story Forecast Narrative' =
+			VAR RunRate = [EOY Estimat Lineær]
+			VAR Budget = [Årsbudsjett]
+			VAR Gap = [EOY Estimert Avvik Kr]
+			RETURN "PROGNOSE EOY | Ved uendret driftstakt lander året på " & FORMAT ( RunRate, "#,##0 kr" ) & " mot årsbudsjett på " & FORMAT ( Budget, "#,##0 kr" ) & ", som tilsier et estimert avvik på " & FORMAT ( Gap, "+#,##0 kr;-#,##0 kr;0 kr" ) & "."
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: 92587aaf-7809-4184-bbfc-d90720fdbd52
+
+	measure 'Story Root Cause Detail' = "AVVIKSANALYSE | Ubesatte faste stillinger i Helse (+2,95 MNOK) står i kontrast til høyt overforbruk på vikarer (-381 kNOK) og overtid (-230 kNOK) i Oppvekst og Utdanning."
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: fe45514a-47d5-4e53-8269-d61f4daa419d
+
+	measure 'Forecast Action Summary' =
+			VAR Gap = [EOY Estimert Avvik Kr]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( Gap ), "Ingen prognose tilgjengelig.",
+			        Gap >= 0, "Prognosen indikerer balanse eller mindreforbruk ved årets slutt.",
+			        "Prognosert merforbruk krever tiltak for å oppnå balanse innen 31.12.2024."
+			    )
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: cac33af4-0158-4b8b-ba7b-7a944fb3078d
 
 	measure 'Simulert Kutt Hoveddrivere Kr' =
-			VAR _KuttSats = [Kutt_Hoveddrivere_Pct Value]
-			VAR _EstimertMånedligOverforbruk = DIVIDE ( [Overforbruk Kr], [Måneder Fullført], 0 )
-			RETURN
-			    _EstimertMånedligOverforbruk * [Måneder Gjenstår] * _KuttSats
-		formatString: #,##0 "kr"
-		displayFolder: 5. What-If Scenario
-		lineageTag: e81290ca-419a-4b10-8812-cb918240ba01
+			// 50% reduksjon i vikar og overtid (konto 102013, 102000, 104000)
+			CALCULATE (
+			    [Merforbruk Kr] * 0.50,
+			    'dim_kostra_kontoplan'[Kontokode_6Siffer] IN { "102013", "102000", "104000" }
+			)
+		formatString: #,##0 NOK
+		displayFolder: 08. What-If Simulering
+		lineageTag: abf7acc1-35e7-43df-b719-589230dcae28
 
 	measure 'Simulert Frigjort Mindreforbruk Kr' =
-			VAR _OmdisponeringsSats = [Omdisponering_Pct Value]
-			VAR _EstimertMånedligMindreforbruk = DIVIDE ( [Mindreforbruk Kr], [Måneder Fullført], 0 )
-			RETURN
-			    _EstimertMånedligMindreforbruk * [Måneder Gjenstår] * _OmdisponeringsSats
-		formatString: #,##0 "kr"
-		displayFolder: 5. What-If Scenario
-		lineageTag: 918240cb-419a-4129-910a-cb9128ca0102
+			// Frigjør inntil 20% av mindreforbruk på ordinær lønn til omdisponering
+			CALCULATE (
+			    [Mindreforbruk Kr] * 0.20,
+			    'dim_kostra_kontoplan'[Kontokode_6Siffer] IN { "101000", "109000" }
+			)
+		formatString: #,##0 NOK
+		displayFolder: 08. What-If Simulering
+		lineageTag: 05ce83c1-43ab-41d9-90ae-ea2fe3de3719
 
 	measure 'Simulert Totale Tiltak Kr' = [Simulert Kutt Hoveddrivere Kr] + [Simulert Frigjort Mindreforbruk Kr]
-		formatString: #,##0 "kr"
-		displayFolder: 5. What-If Scenario
-		lineageTag: 81290ca4-419a-4b12-8812-cb918240ba03
+		formatString: #,##0 NOK
+		displayFolder: 08. What-If Simulering
+		lineageTag: df461cde-08e0-4adc-8fe3-9372a6e08050
 
 	measure 'Simulert EOY Avvik Etter Tiltak Kr' = [EOY Estimert Avvik Kr] + [Simulert Totale Tiltak Kr]
-		formatString: #,##0 "kr";(#,##0 "kr");"-"
-		displayFolder: 5. What-If Scenario
-		lineageTag: c918240b-419a-4129-910a-9128ca019204
+		formatString: #,##0 NOK
+		displayFolder: 08. What-If Simulering
+		lineageTag: 855b7984-a6ab-4028-b394-338dd54e75b7
 
 	measure 'Simulert EOY Status Indikator' =
 			VAR _NyttAvvik = [Simulert EOY Avvik Etter Tiltak Kr]
@@ -304,108 +467,147 @@ table _Måltall
 			        _NyttAvvik >= -100000, "🟡 Nær Balanse (" & FORMAT ( _NyttAvvik, "#,##0 kr" ) & ")",
 			        "🔴 Fortsatt Underskudd (" & FORMAT ( _NyttAvvik, "#,##0 kr" ) & ")"
 			    )
-		displayFolder: 5. What-If Scenario
-		lineageTag: 7128ca01-819a-4cb2-8812-ca918240ba05
+		displayFolder: 08. What-If Simulering
+		lineageTag: 1ac14ec4-f10f-4aea-94d5-f0e9d8e9cfe4
+
+	measure 'ERP Driver Tiltaksbehov Måned' = DIVIDE ( [Merforbruk Kr], 4, 0 )
+		formatString: #,##0 NOK
+		displayFolder: 08. What-If Simulering
+		lineageTag: dafb41fb-418a-4652-b894-601777d66e1e
+
+	measure 'ERP Driver Tiltaksbehov Restår' = [Merforbruk Kr]
+		formatString: #,##0 NOK
+		displayFolder: 08. What-If Simulering
+		lineageTag: bff90376-a771-4a2f-81ee-8677ae9b410d
+
+	measure 'ERP Driver Tiltaksgrad %' = 0.50
+		formatString: 0.0 %
+		displayFolder: 08. What-If Simulering
+		lineageTag: 5c17550b-96ca-4b9e-865d-19d19e67522c
+
+	measure 'Avvik Akkumulert S-Curve' = TOTALYTD ( [Avvik Kr], 'dim_date'[Dato] )
+		formatString: #,##0 NOK
+		displayFolder: 09. Tufte S-Curve
+		lineageTag: c3f2a256-a8ed-4a79-a76a-2de8e2dc7c60
+
+	measure 'ERP Actual Historical' =
+			VAR LastActualDate = LASTDATE ( 'fact_data'[Dato] )
+			VAR CurrentDate = MAX ( 'dim_date'[Dato] )
+			RETURN IF ( CurrentDate <= LastActualDate, [Sum Regnskap], BLANK () )
+		formatString: #,##0 NOK
+		displayFolder: 09. Tufte S-Curve
+		lineageTag: b8e59319-3bfc-47a7-9108-bf680580f709
+
+	measure 'ERP Forecast Trend' =
+			VAR LastActualDate = LASTDATE ( 'fact_data'[Dato] )
+			VAR CurrentDate = MAX ( 'dim_date'[Dato] )
+			RETURN IF ( CurrentDate > LastActualDate, [Regnskap 3M Moving Average], BLANK () )
+		formatString: #,##0 NOK
+		displayFolder: 09. Tufte S-Curve
+		lineageTag: d7d185b9-a104-48ed-8409-42ebe8bd15b0
+
+	measure 'ERP Resterende Ramme' = [Budsjett Resten av Året]
+		formatString: #,##0 NOK
+		displayFolder: 09. Tufte S-Curve
+		lineageTag: d4c83a97-3ddb-44ae-89c9-1d4676e4341d
+
+	measure 'ERP Nødvendig Månedlig Nivå' = DIVIDE ( [Budsjett Resten av Året], 4, 0 )
+		formatString: #,##0 NOK
+		displayFolder: 09. Tufte S-Curve
+		lineageTag: a7308c31-e12d-46a5-8d02-525538aa3238
 
 	measure FT_Dev_Diverging_Avvik_Kr = [Avvik YTD Kr]
-		formatString: #,##0 "kr";(#,##0 "kr");"-"
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: 2190ca81-419a-4b10-8812-cb918240ba06
+		formatString: #,##0 NOK
+		displayFolder: 10. FT Visuals
+		lineageTag: f660c0b6-6ac5-4fa3-a133-397886d0539b
 
-	measure FT_Dev_Farge_HEX = IF([Avvik YTD Kr] < 0, "#D13438", "#107C41")
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: a918240b-419a-4129-910a-cb9128ca0107
+	measure FT_Corr_Scatter_Size = ABS ( [Avvik YTD Kr] )
+		formatString: #,##0 NOK
+		displayFolder: 10. FT Visuals
+		lineageTag: e52f29ee-c08b-47e4-b714-d21d06c00668
 
-	measure FT_Dev_Spine_Overforbruk = IF([Avvik YTD Kr] < 0, ABS([Avvik YTD Kr]), BLANK())
-		formatString: #,##0 "kr"
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: 81290ca4-419a-4b12-8812-cb918240ba08
+	measure FT_Time_Cumulative_Actual = [Regnskap YTD]
+		formatString: #,##0 NOK
+		displayFolder: 10. FT Visuals
+		lineageTag: 52a7ee70-d60c-46f7-8ec6-390673ea5b4f
 
-	measure FT_Dev_Spine_Mindreforbruk = IF([Avvik YTD Kr] > 0, [Avvik YTD Kr], BLANK())
-		formatString: #,##0 "kr"
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: c918240b-419a-4129-910a-cb9128ca0109
+	measure FT_Time_Cumulative_Budget = [Budsjett YTD]
+		formatString: #,##0 NOK
+		displayFolder: 10. FT Visuals
+		lineageTag: 11459ef6-60b5-4548-91fb-9ad424529574
 
-	measure FT_Time_Stepped_Budget = CALCULATE([Sum Budsjett], ALLEXCEPT('dim_date', 'dim_date'[Dato]))
-		formatString: #,##0 "kr"
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: 7128ca01-819a-4cb2-8812-ca918240ba10
+	measure FT_Time_Cumulative_EAC = [EOY Estimat Lineær]
+		formatString: #,##0 NOK
+		displayFolder: 10. FT Visuals
+		lineageTag: f4b936b9-2158-4ee7-a1ed-49c0724898fe
 
-	measure FT_Time_3M_MA = [Regnskap 3M Moving Average]
-		formatString: #,##0 "kr"
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: e81290ca-419a-4b10-8812-cb918240ba11
+	measure FT_Time_Diverging_Deficit = IF ( [Avvik Kr] < 0, [Avvik Kr], BLANK () )
+		formatString: #,##0 NOK
+		displayFolder: 10. FT Visuals
+		lineageTag: c2287bcf-7e0c-4530-a8ce-a0d187cab2a5
 
-	measure FT_Time_MoM_Slope = [Regnskap MoM Endring Kr]
-		formatString: #,##0 "kr";(#,##0 "kr");"-"
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: 918240cb-419a-4129-910a-cb9128ca0112
+	measure FT_Time_Diverging_Surplus = IF ( [Avvik Kr] > 0, [Avvik Kr], BLANK () )
+		formatString: #,##0 NOK
+		displayFolder: 10. FT Visuals
+		lineageTag: e07c412d-b42a-44d9-8dca-4e7ff7b102b8
 
-	measure FT_Rank_Top10_Filter = IF([Rangering Overforbruk] <= 10, 1, 0)
-		formatString: 0
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: 81290ca4-419a-4b12-8812-cb918240ba13
+	measure FT_Time_Stepped_Budget = CALCULATE ( [Sum Budsjett], ALLEXCEPT ( 'dim_date', 'dim_date'[Dato] ) )
+		formatString: #,##0 NOK
+		displayFolder: 10. FT Visuals
+		lineageTag: 5828db58-578b-4398-a2f7-d56b7b2869b3
 
-	measure FT_Corr_Heatmap_Intensity =
-			VAR _Pct = [Avvik YTD %]
+	measure 'Corr Regnskap vs Budsjett' =
+			VAR T =
+			    FILTER (
+			        ADDCOLUMNS (
+			            VALUES ( 'dim_date'[Maned_Navn] ),
+			            "@Regnskap", CALCULATE ( [Sum Regnskap] ),
+			            "@Budsjett", CALCULATE ( [Sum Budsjett] )
+			        ),
+			        NOT ISBLANK ( [@Regnskap] ) && NOT ISBLANK ( [@Budsjett] )
+			    )
+			VAR AvgX = AVERAGEX ( T, [@Budsjett] )
+			VAR AvgY = AVERAGEX ( T, [@Regnskap] )
+			VAR Cov = SUMX ( T, ( [@Budsjett] - AvgX ) * ( [@Regnskap] - AvgY ) )
+			VAR VarX = SUMX ( T, ( [@Budsjett] - AvgX ) ^ 2 )
+			VAR VarY = SUMX ( T, ( [@Regnskap] - AvgY ) ^ 2 )
+			VAR Denom = SQRT ( VarX * VarY )
+			RETURN IF ( Denom > 0, DIVIDE ( Cov, Denom ) )
+		formatString: 0.00
+		displayFolder: 10. FT Visuals
+		lineageTag: bcebd29b-da7f-4505-9a85-e8173b9727ef
+
+	measure 'Correlation Strength' =
+			VAR R = [Corr Regnskap vs Budsjett]
+			VAR AbsR = ABS ( R )
 			RETURN
 			    SWITCH (
 			        TRUE (),
-			        _Pct < -0.05, 3,
-			        _Pct < -0.01, 2,
-			        _Pct > 0.05, -2,
-			        _Pct > 0.01, -1,
-			        0
+			        ISBLANK ( R ), "Ingen data",
+			        AbsR >= 0.80, "Svært sterk",
+			        AbsR >= 0.60, "Sterk",
+			        AbsR >= 0.40, "Moderat",
+			        AbsR >= 0.20, "Svak",
+			        "Svært svak"
 			    )
-		formatString: 0
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: c918240b-419a-4129-910a-9128ca019214
+		displayFolder: 10. FT Visuals
+		lineageTag: b3420fa3-9072-415f-92a3-28efeddb2f83
 
-	measure FT_Time_Diverging_Surplus = IF([Avvik Kr] > 0, [Avvik Kr], BLANK())
-		formatString: #,##0 "kr";(#,##0 "kr");"-"
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: b81290ca-419a-4b10-8812-cb918240ba15
-
-	measure FT_Time_Diverging_Deficit = IF([Avvik Kr] < 0, [Avvik Kr], BLANK())
-		formatString: #,##0 "kr";(#,##0 "kr");"-"
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: c81290ca-419a-4b10-8812-cb918240ba16
-
-	measure FT_Time_Cumulative_Actual = TOTALYTD([Sum Regnskap], 'dim_date'[Dato])
-		formatString: #,##0 "kr"
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: d81290ca-419a-4b10-8812-cb918240ba17
-
-	measure FT_Time_Cumulative_Budget = TOTALYTD([Sum Budsjett], 'dim_date'[Dato])
-		formatString: #,##0 "kr"
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: e81290ca-419a-4b10-8812-cb918240ba18
-
-	measure FT_Time_Cumulative_EAC = [EOY Estimat Trendjustert]
-		formatString: #,##0 "kr"
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: f81290ca-419a-4b10-8812-cb918240ba19
-
-	measure FT_Corr_Scatter_Size = ABS([Avvik YTD Kr])
-		formatString: #,##0 "kr"
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: a11290ca-419a-4b10-8812-cb918240ba20
-
-	measure FT_Pareto_80_Cutoff = 0.80
-		formatString: 0%
-		displayFolder: 7. FT Visual Vocabulary
-		lineageTag: b11290ca-419a-4b10-8812-cb918240ba21
-
-	column Placeholder
-		dataType: int64
+	column Dummy
+		dataType: string
 		isHidden
-		lineageTag: 55437812-40f4-4147-975e-18be95738ab2
+		lineageTag: 1d0044f4-5b1e-4e15-98c1-dfec848380d0
 		summarizeBy: none
-		sourceColumn: Placeholder
+		sourceColumn: Dummy
+
+		annotation SummarizationSetBy = Automatic
 
 	partition _Måltall = m
 		mode: import
-		source = #table(type table [Placeholder = Int64.Type], {{1}})
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Dummy = _t])
+				in
+				    Source
 
 	annotation PBI_ResultType = Table
-

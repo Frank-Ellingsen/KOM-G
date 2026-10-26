@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "Forecast Action Summary"
                 }
               },
-              "queryRef": "_Measures.Forecast Action Summary",
+              "queryRef": "_Måltall.Forecast Action Summary",
               "nativeQueryRef": "Forecast Action Summary",
               "active": true
             }

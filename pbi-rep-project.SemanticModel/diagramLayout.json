@@ -19,7 +19,7 @@
             "height": 224,
             "width": 234
           },
-          "zIndex": 0
+          "zIndex": 1
         },
         {
           "location": {
@@ -32,7 +32,7 @@
             "height": 272,
             "width": 234
           },
-          "zIndex": 0
+          "zIndex": 2
         },
         {
           "location": {
@@ -45,7 +45,7 @@
             "height": 296,
             "width": 234
           },
-          "zIndex": 0
+          "zIndex": 3
         },
         {
           "location": {
@@ -58,7 +58,7 @@
             "height": 300,
             "width": 234
           },
-          "zIndex": 0
+          "zIndex": 4
         },
         {
           "location": {
@@ -71,85 +71,20 @@
             "height": 300,
             "width": 234
           },
-          "zIndex": 0
+          "zIndex": 5
         },
         {
           "location": {
             "x": 1138,
-            "y": 174
+            "y": 0
           },
           "nodeIndex": "_Måltall",
-          "nodeLineageTag": "e9e29b20-e9d6-433b-a6c8-077fb1a6501b",
+          "nodeLineageTag": "710d8eb4-333c-4619-92fd-704ef7777b00",
           "size": {
-            "height": 300,
+            "height": 704,
             "width": 234
           },
-          "zIndex": 0
-        },
-        {
-          "location": {
-            "x": 1422,
-            "y": 248
-          },
-          "nodeIndex": "_Valg_Maltall",
-          "nodeLineageTag": "b4f15d2a-4f51-4122-bc51-e407185cc631",
-          "size": {
-            "height": 152,
-            "width": 234
-          },
-          "zIndex": 0
-        },
-        {
-          "location": {
-            "x": 1706,
-            "y": 248
-          },
-          "nodeIndex": "dim_sikkerhet",
-          "nodeLineageTag": "8a4c10ef-51a2-4a0b-93bf-4375b8e49f01",
-          "size": {
-            "height": 152,
-            "width": 234
-          },
-          "zIndex": 0
-        },
-        {
-          "location": {
-            "x": 1990,
-            "y": 260
-          },
-          "nodeIndex": "Tidsintelligens",
-          "nodeLineageTag": "e6593452-9b55-4a64-9f44-8cb3123851aa",
-          "size": {
-            "height": 128,
-            "width": 234
-          },
-          "zIndex": 0
-        },
-        {
-          "location": {
-            "x": 2274,
-            "y": 248
-          },
-          "nodeIndex": "Kutt_Hoveddrivere_Pct",
-          "nodeLineageTag": "71b02842-9a01-4be1-9bc0-81f7d38ae011",
-          "size": {
-            "height": 152,
-            "width": 234
-          },
-          "zIndex": 0
-        },
-        {
-          "location": {
-            "x": 2558,
-            "y": 248
-          },
-          "nodeIndex": "Omdisponering_Pct",
-          "nodeLineageTag": "d4882109-1a02-45e8-b801-447cae819b33",
-          "size": {
-            "height": 152,
-            "width": 234
-          },
-          "zIndex": 0
+          "zIndex": 6
         }
       ],
       "name": "All tables",

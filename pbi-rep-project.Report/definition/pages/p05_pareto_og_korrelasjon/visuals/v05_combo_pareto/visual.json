@@ -39,13 +39,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "ERP Negativ Kostnadsdriver"
                 }
               },
-              "queryRef": "_Measures.ERP Negativ Kostnadsdriver",
+              "queryRef": "_Måltall.ERP Negativ Kostnadsdriver",
               "nativeQueryRef": "ERP Negativ Kostnadsdriver",
               "active": true
             }
@@ -58,13 +58,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "ERP Pareto Kumulativ %"
                 }
               },
-              "queryRef": "_Measures.ERP Pareto Kumulativ %",
+              "queryRef": "_Måltall.ERP Pareto Kumulativ %",
               "nativeQueryRef": "ERP Pareto Kumulativ %",
               "active": true
             }

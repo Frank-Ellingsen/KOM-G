@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "Corr Regnskap vs Budsjett"
                 }
               },
-              "queryRef": "_Measures.Corr Regnskap vs Budsjett",
+              "queryRef": "_Måltall.Corr Regnskap vs Budsjett",
               "nativeQueryRef": "Corr Regnskap vs Budsjett",
               "active": true
             }

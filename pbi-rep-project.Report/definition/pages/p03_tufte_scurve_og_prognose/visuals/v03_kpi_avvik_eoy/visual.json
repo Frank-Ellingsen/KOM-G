@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "EOY Run Rate Avvik"
                 }
               },
-              "queryRef": "_Measures.EOY Run Rate Avvik",
+              "queryRef": "_Måltall.EOY Run Rate Avvik",
               "nativeQueryRef": "EOY Run Rate Avvik",
               "active": true
             }

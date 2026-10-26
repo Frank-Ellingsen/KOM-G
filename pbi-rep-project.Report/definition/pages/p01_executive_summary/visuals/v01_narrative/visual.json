@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "Story Executive Summary"
                 }
               },
-              "queryRef": "_Measures.Story Executive Summary",
+              "queryRef": "_Måltall.Story Executive Summary",
               "nativeQueryRef": "Story Executive Summary",
               "active": true
             }

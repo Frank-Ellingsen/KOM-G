@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "EOY Årsbudsjett"
                 }
               },
-              "queryRef": "_Measures.EOY Årsbudsjett",
+              "queryRef": "_Måltall.EOY Årsbudsjett",
               "nativeQueryRef": "EOY Årsbudsjett",
               "active": true
             }

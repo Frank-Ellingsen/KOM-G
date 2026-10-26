@@ -3,6 +3,8 @@
 **/localSettings.json
 **/cache.abf
 **/autoSave/
+pbi/
+kom_pbi_rep_project.pbip
 
 # Temporary / Lock files
 *.tmp

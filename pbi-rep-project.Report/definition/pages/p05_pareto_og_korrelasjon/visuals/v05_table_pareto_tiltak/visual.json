@@ -35,13 +35,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "ERP Negativ Kostnadsdriver"
                 }
               },
-              "queryRef": "_Measures.ERP Negativ Kostnadsdriver",
+              "queryRef": "_Måltall.ERP Negativ Kostnadsdriver",
               "nativeQueryRef": "ERP Negativ Kostnadsdriver",
               "active": true
             },
@@ -50,13 +50,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "ERP Negativ Driver Andel %"
                 }
               },
-              "queryRef": "_Measures.ERP Negativ Driver Andel %",
+              "queryRef": "_Måltall.ERP Negativ Driver Andel %",
               "nativeQueryRef": "ERP Negativ Driver Andel %",
               "active": true
             },
@@ -65,13 +65,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "ERP Driver Tiltaksbehov Måned"
                 }
               },
-              "queryRef": "_Measures.ERP Driver Tiltaksbehov Måned",
+              "queryRef": "_Måltall.ERP Driver Tiltaksbehov Måned",
               "nativeQueryRef": "ERP Driver Tiltaksbehov Måned",
               "active": true
             },
@@ -80,13 +80,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "ERP Driver Tiltaksbehov Restår"
                 }
               },
-              "queryRef": "_Measures.ERP Driver Tiltaksbehov Restår",
+              "queryRef": "_Måltall.ERP Driver Tiltaksbehov Restår",
               "nativeQueryRef": "ERP Driver Tiltaksbehov Restår",
               "active": true
             },
@@ -95,13 +95,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "ERP Driver Tiltaksgrad %"
                 }
               },
-              "queryRef": "_Measures.ERP Driver Tiltaksgrad %",
+              "queryRef": "_Måltall.ERP Driver Tiltaksgrad %",
               "nativeQueryRef": "ERP Driver Tiltaksgrad %",
               "active": true
             }

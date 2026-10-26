@@ -3,8 +3,8 @@
   "pageOrder": [
     "p01_executive_summary",
     "p02_trend_og_tidsserie",
-    "p03_tufte_scurve_og_prognose",
     "p04_avvik_og_drivere",
+    "p03_tufte_scurve_og_prognose",
     "p05_pareto_og_korrelasjon",
     "p06_scenario_simulering"
   ],

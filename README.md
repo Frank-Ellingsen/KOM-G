@@ -1,156 +1,103 @@
-# README: KOSTRA Datamodell & Økonomistyring i Power BI
-
-Dette prosjektet leverer en **best-practice datamodell (stjerneskjema)** for kommunal økonomistyring, budsjettoppfølging og KOSTRA-rapportering i Power BI.
-
-Løsningen slår sammen statlige KOSTRA-standarder (Funksjon og Art/Konto) med kommunens interne organisasjonsstruktur (Ansvar/Enhet), og tilrettelegger for automatisert **Folder Import**, **Time Intelligence**, **Prognoser (EOY Forecast)** og **Radnivåsikkerhet (RLS)**.
+# KomKostra – Økonomistyring og KOSTRA Rapporteringsplattform 2024
+**Kristiansand Kommune – Finansiell Virksomhetsstyring, Prognostisering og Scenarioanalyse**
 
 ---
 
-## 📋 Innholdsfortegnelse
-1. [Formål & Forretningsverdi](#1-formål--forretningsverdi)
-2. [Arkitektur & Datamodell (Stjerneskjema)](#2-arkitektur--datamodell-stjerneskjema)
-3. [Mappeimport-strategi (Folder Import)](#3-mappeimport-strategi-folder-import)
-4. [Dimensjoner & Hierarkier](#4-dimensjoner--hierarkier)
-5. [DAX Måltall & Analysefunksjonalitet](#5-dax-måltall--analysefunksjonalitet)
-6. [Sikkerhet & Tilgangsstyring (RLS)](#6-sikkerhet--tilgangsstyring-rls)
-7. [Innhold i Leveranse-pakken (Studio Panel)](#7-innhold-i-leveranse-pakken-studio-panel)
-8. [Hurtigstart: Slik kommer du i gang i Power BI](#8-hurtigstart-slik-kommer-du-i-gang-i-power-bi)
+## 📌 Prosjektoversikt
+
+**KomKostra** er en komplett virksomhetsstyrings- og rapporteringsløsning for Kristiansand kommune bygget på Power BI Developer Mode (**PBIP** - Power BI Project) med **TMDL** (Tabular Model Definition Language) og **PBIR** (Power BI Report format).
+
+Løsningen konsoliderer og avstemmer regnskaps- og budsjettdata for perioden januar–august 2024 på tvers av kommunens sentrale tjenesteområder:
+- **Oppvekst og Utdanning (`KomSkole`):** Grunnskole, SFO, PPT og spesialpedagogikk.
+- **Helse og Mestring (`Bomiljø`):** Pleie og omsorg i institusjon og bolig.
+
+Dataene er strukturert i henhold til statlige KOSTRA-standarder (4-sifrede funksjonsgrupper og 6-sifrede kontokoder) koblet direkte mot kommunens interne ansvars- og enhetsstruktur.
 
 ---
 
-## 1. Formål & Forretningsverdi
+## 🏛️ Datamodell og Arkitektur (Star Schema)
 
-* **Brobygger mellom KOSTRA og intern styring:** KOSTRA er utformet for statlig rapportering per funksjon og art. Denne modellen kobler de nasjonale KOSTRA-kodene direkte sammen med kommunens interne ansvarssteder (f.eks. skoler, omsorgssentre, stabsavdelinger).
-* **Høyest mulig detaljnivå (Grain):** Modellen bevarer dataene på laveste nivå (6-sifret konto, 4-sifret funksjonsgruppe, 5-sifret ansvar og eksakt dato), noe som gir uendelig drill-down-fleksibilitet.
-* **Automatisert skalerbarhet:** Ved bruk av *Folder Import* kan nye månedlige regnskaps- og budsjettuttrekk legges rett i en mappe. Power BI leser, vasker og slår sammen filene automatisk ved et enkelt klikk på **Refresh**.
+Datamodellen er implementert som et rent, høytytende stjerneskjema:
 
----
-
-## 2. Arkitektur & Datamodell (Stjerneskjema)
-
-Datamodellen er bygget som et **rent stjerneskjema (Star Schema)** med felles dimensjoner (*Conformed Dimensions*) som filtrerer én konsolidert faktatabell.
-
-```text
-                  [ dim_date ]
-                       │ (1)
-                       ▼ (*)
- [ dim_kostra_funksjon ] ──(1)──► (*) [ fact_regnskap ] ◄──(*)──(1) [ dim_kostra_kontoplan ]
-                                              ▲ (*)
-                                              │ (1)
-                                       [ dim_ansvar ]
+```mermaid
+graph TD
+    dim_date["dim_date (Kalender / Måned)"] -->|1:N Dato| fact_data["fact_data (Faktaregnskap & Budsjett)"]
+    dim_ansvar["dim_ansvar (Enhet & Område)"] -->|1:N Ansvar_Kode| fact_data
+    dim_kostra_kontoplan["dim_kostra_kontoplan (KOSTRA Art 6-siffer)"] -->|1:N Kontokode_6Siffer| fact_data
+    dim_kostra_funksjon["dim_kostra_funksjon (KOSTRA Funksjon 4-siffer)"] -->|1:N KOSTRA_Funksjonsgruppe_Kode| fact_data
+    
+    subgraph ParameterTabeller ["What-If Parametere & Valg"]
+        Kutt["Kutt_Hoveddrivere_Pct (0-100%)"]
+        Omdisp["Omdisponering_Pct (0-100%)"]
+        Valg["_Valg_Maltall (Metrikkvelger)"]
+    end
+    
+    subgraph MaltallTabell ["DAX Beregninger (78 Måltall)"]
+        _Maltall["_Måltall (Kjerne, Tidsrekker, S-kurver, Drivere, What-If, Storytelling)"]
+    end
 ```
 
-### Relasjoner i Power BI
-| Dimensjon (1-siden) | Primærnøkkel (PK) | Faktatabell (*-siden) | Fremmednøkkel (FK) | Kardinalitet | Cross Filter |
-| :--- | :--- | :--- | :--- | :---: | :---: |
-| **`dim_date`** | `Dato` | `fact_regnskap` | `Dato` | **1 : \*** | Single |
-| **`dim_kostra_kontoplan`** | `Kontokode_6Siffer` | `fact_regnskap` | `Kontokode_6Siffer` | **1 : \*** | Single |
-| **`dim_kostra_funksjon`** | `KOSTRA_Funksjonsgruppe_Kode` | `fact_regnskap` | `KOSTRA_Funksjonsgruppe_Kode` | **1 : \*** | Single |
-| **`dim_ansvar`** | `Ansvar_Kode` | `fact_regnskap` | `Ansvar_Kode` | **1 : \*** | Single |
+### Relasjonsoversikt
+| Dimensjon (1-siden) | Fremmednøkkel i `fact_data` (*-siden) | Kardinalitet | Kryssfiltrering |
+| :--- | :--- | :---: | :---: |
+| **`dim_date`** | `Dato` | `1 : *` | Single |
+| **`dim_ansvar`** | `Ansvar_Kode` | `1 : *` | Single |
+| **`dim_kostra_kontoplan`** | `Kontokode_6Siffer` | `1 : *` | Single |
+| **`dim_kostra_funksjon`** | `KOSTRA_Funksjonsgruppe_Kode` | `1 : *` | Single |
 
 ---
 
-## 3. Mappeimport-strategi (Folder Import)
+## 📊 Nøkkeltall per 31.08.2024 (i kNOK)
 
-Nye faktadata hentes ut fra økonomisystemet (f.eks. Agresso/Unit4, Visma, Xledger) og lagres i mappen `faktatabeller/`.
+| Sektor / Område | Revidert Budsjett YTD | Faktisk Regnskap YTD | Avvik Kr (Budsjett - Regnskap) | Forbruk % | Status RAG |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Oppvekst og Utdanning (Skole)** | 17 958,0 | 18 902,0 | **-944,0** | 105,25 % | 🔴 Merforbruk |
+| **Helse og Mestring (Bomiljø)** | 17 233,7 | 12 622,9 | **+4 610,8** | 73,25 % | 🟢 Mindreforbruk |
+| **KONSOLIDERT TOTALT** | **35 191,7** | **31 524,9** | **+3 666,8** | **89,58 %** | 🟢 Totalbalanse |
 
-### Navnestandard for filer
-Alle nye filuttrekk må navngis etter standarden: **`YYYY_MM_[Sektor/Kilde].csv`**
-
-**Eksempler:**
-* `2024_01_fact_bomiljo.csv`
-* `2024_01_fact_komskole.csv`
-* `2024_02_fact_bomiljo.csv`
-
-### Krav til felter i faktatabellene (Standardiserte overskrifter)
-1. **`Dato`** (Date, f.eks. `2024-01-01`)
-2. **`KOSTRA_Funksjonsgruppe_Kode`** (4-sifret kode, f.eks. `2020` eller `2540`)
-3. **`Kontokode_6Siffer`** (6-sifret kode, f.eks. `101000`)
-4. **`Ansvar_Kode`** (5-sifret kode, f.eks. `20210` eller `25310`)
-5. **`Sektor`** (Text, f.eks. `"Oppvekst og Utdanning"` eller `"Helse og Omsorg"`)
-6. **`Budsjett`** (Decimal, måltall)
-7. **`Regnskap`** (Decimal, måltall)
-
-> **NB:** Mappen skal **ikke** tømmes! Gamle månedlige filer skal bli liggende slik at historikken bevares ved Power BI-oppdatering.
+* **Hovedutfordring:** Strukturell ubalanse der skolesektoren har merforbruk på personalsiden (`101000 Fastlønn` -1 414k, `102013 Vikarer` -381k, `104000 Overtid` -230k), mens helsesektoren har et utilsiktet mindreforbruk på +4,61 mill. kr grunnet ubesatte stillinger.
+* **Strategisk løsning (Scenario C):** 50 % kutt i variable personalkostnader i skolen kombinert med administrativ omdisponering av **638,5 kNOK** fra helse gir **nøyaktig 0-balanse ved årsslutt (EOY)**.
 
 ---
 
-## 4. Dimensjoner & Hierarkier
+## 📑 Rapportstruktur i Power BI ([pbi-rep-project.pbip](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip))
 
-Alle dimensjonstabeller er flate (denormaliserte) for maksimal ytelse. I Power BI er det bygget eksplisitte hierarkier for drill-down i Matrise-visuals:
+Rapporten inneholder 6 spesialiserte sider utformet etter Edward Tuftes standarder for høy datablekk-faktor:
 
-### A. Kontoplan-hierarki (`dim_kostra_kontoplan`)
-1. **`Kontoklasse_Kode_Navn`** *(f.eks. 1 - Drift)*
-2. **`Hovedkategori_Kode_Navn`** *(f.eks. 1 - Lønn og sosiale utgifter)*
-3. **`Hovedgruppe_Kode_Navn`** *(f.eks. 10 - Lønnsutgifter)*
-4. **`KOSTRA_Art_4Siffer_Navn`** *(f.eks. 1010 - Fastlønn)*
-5. **`Konto_Kode_Navn`** *(f.eks. 101000 - Fastlønn - ordinære)*
-
-### B. Funksjon-hierarki (`dim_kostra_funksjon`)
-1. **`Hovedfunksjon_Kode_Navn`** *(f.eks. HF2 - Oppvekst, utdanning, helse og omsorg)*
-2. **`Tjenesteomrade_Kode_Navn`** *(f.eks. 20 - Oppvekst, utdanning, helse og velferd)*
-3. **`Funksjonsgruppe_Kode_Navn`** *(f.eks. 2020 - Grunnskoler (1.-10. trinn))*
-4. **`Funksjon_Kode_Navn`** *(f.eks. 202 - Grunnskoleopplæring)*
-
-### C. Ansvars-hierarki (`dim_ansvar`)
-1. **`Omrade_Kode_Navn`** *(f.eks. 2 - Oppvekst og utdanning)*
-2. **`Ansvar_Kode_Navn`** *(f.eks. 20210 - Grunnskole A (1-10 trinn))*
+1. **`01. Hovedrapport (Kommuneøkonomi 2024)`** (`p01_executive_summary`): Konsolidert status for formannskap og bystyre, KPI-kort, sektorvis nettoavvik og dynamisk ledelsesnotat (`[Story Executive Summary]`).
+2. **`02. Sektor: Oppvekst og Utdanning`** (`p02_trend_og_tidsserie`): Dypdykk i skolesektoren, måned-over-måned utvikling (MoM), funksjonsavvik og overforbruksanalyse.
+3. **`03. Sektor: Helse og Mestring`** (`p04_avvik_og_drivere`): Vakansanalyse på fastlønn/pensjon, vikarbyråkostnader (`127040`) og tiltaksbehov for reståret.
+4. **`04. Månedlig Avvik og Prognose`** (`p03_tufte_scurve_og_prognose`): Tufte S-kurver for akkumulert regnskap vs. budsjett, 3-måneders glidende snitt (3M MA) og EOY Run-Rate prognose (+5,5 mill. kr).
+5. **`05. KOSTRA Struktur og Nøkkeltall`** (`p05_pareto_og_korrelasjon`): 80/20 Pareto-avviksfordeling, enhetskostnader og Pearson korrelasjonsberegning (r = 0,94).
+6. **`06. What-If Scenario og Balanse`** (`p06_scenario_simulering`): Interaktive What-If parametere for kutt i hoveddrivere og rammemessig omdisponering.
 
 ---
 
-## 5. DAX Måltall & Analysefunksjonalitet
+## 📁 Leveransepakker og Dokumentasjon
 
-Løsningen leveres med en komplett DAX-pakke organisert i følgende dokumenter i Studio-panelet:
-* **`dax_startpakke_kostra_v2.md`**: Kjerne-DAX, MoM, YTD og EOY Forecast.
-* **`dax_avansert_og_rls.md`**: RAG-fargekoder, Field Parameters, Calculation Groups og RLS.
-
-### Viktige DAX-konsepter i modellen:
-* **Basismåltall:** `Sum Regnskap`, `Sum Budsjett`, `Avvik Kr`, `Forbruk %`.
-* **Måned-over-måned (MoM):** `Regnskap PM`, `Regnskap MoM Endring Kr`.
-* **Prognose (EOY Forecast):** `[Regnskap YTD] + [Budsjett Resten av Året]` gir estimert årsresultat ved årets slutt.
-* **Driveranalyse:** `Pct Bidrag til Totalt Avvik` avdekker hvilke enheter eller kontoer som forårsaker budsjettoverskridelsene.
-* **RAG Betinget Formatering:** `RAG Farge Avvik` returnerer dynamiske HEX-fargekoder (`#D13438` rød, `#FFB900` gul, `#107C41` grønn) for bruk i visualer.
-
----
-
-## 6. Sikkerhet & Tilgangsstyring (RLS)
-
-Modellen støtter **Row-Level Security (RLS)** på ansvars- og områdenivå ved hjelp av tabellen `dim_sikkerhet` (kobles mot `dim_ansvar` via `Ansvar_Kode` eller `Omrade_Kode`).
-
-### DAX-filterregel på `dim_sikkerhet`:
-```dax
-[Epost] = USERPRINCIPALNAME ()
-```
-* **Rektor/Enhetsleder:** Ser kun sin egen skole/enhet (`Ansvar_Kode`).
-* **Kommunalområdedirektør:** Ser alle enheter i sitt område (`Omrade_Kode`).
-* **Kommunedirektør / Økonomiavdeling:** Har full tilgang uten RLS-restriksjoner.
+* **[`full_md_rapporter/`](file:///c:/Users/frank/Desktop/Kom/full_md_rapporter/):** 6 fullstendige styringsrapporter i Markdown for administrativ og politisk ledelse:
+  - [`01_Hovedrapport_Kommuneokonomi_2024.md`](file:///c:/Users/frank/Desktop/Kom/full_md_rapporter/01_Hovedrapport_Kommuneokonomi_2024.md)
+  - [`02_Sektorrapport_Oppvekst_og_Utdanning.md`](file:///c:/Users/frank/Desktop/Kom/full_md_rapporter/02_Sektorrapport_Oppvekst_og_Utdanning.md)
+  - [`03_Sektorrapport_Helse_og_Mestring.md`](file:///c:/Users/frank/Desktop/Kom/full_md_rapporter/03_Sektorrapport_Helse_og_Mestring.md)
+  - [`04_Manedlig_Avviks_og_Prognoserapport.md`](file:///c:/Users/frank/Desktop/Kom/full_md_rapporter/04_Manedlig_Avviks_og_Prognoserapport.md)
+  - [`05_KOSTRA_Struktur_og_Nokkeltallrapport.md`](file:///c:/Users/frank/Desktop/Kom/full_md_rapporter/05_KOSTRA_Struktur_og_Nokkeltallrapport.md)
+  - [`06_Omdisponerings_og_Kuttsimuleringsrapport.md`](file:///c:/Users/frank/Desktop/Kom/full_md_rapporter/06_Omdisponerings_og_Kuttsimuleringsrapport.md)
+  - [`README_RAPPORT_PAKKE.md`](file:///c:/Users/frank/Desktop/Kom/full_md_rapporter/README_RAPPORT_PAKKE.md)
+* **[`antigravity_master_pakke/`](file:///c:/Users/frank/Desktop/Kom/antigravity_master_pakke/):** Modulær implementasjonsguide for datavask, dimensjoner, DAX og dashboardbygging.
+* **[`tabular_editor_dax_script.md`](file:///c:/Users/frank/Desktop/Kom/tabular_editor_dax_script.md):** Komplett C# automatiseringsskript for Tabular Editor 2 / 3 for opprettelse av samtlige 78 måltall med formatering og display mapper.
 
 ---
 
-## 7. Innhold i Leveranse-pakken (Studio Panel)
+## 🚀 Kom i gang
 
-Følgende filer er generert og tilgjengelige i Studio-panelet for nedlasting og testing:
-
-1. **`powerbi_kostra_datamodell_v2.zip`**
-   * **`dimensjoner/`**: Fullstendige CSV-dimensjoner for 2024 (`dim_date`, `dim_ansvar`, `dim_kostra_kontoplan`, `dim_kostra_funksjon`).
-   * **`faktatabeller/`**: 16 månedlige testfiler for 2024 (8 for skole og 8 for helse/bomiljø) klare for *Folder Import*-testing.
-2. **`fact_bomiljo_8_perioder.zip`**: Testfiler kun for helse og omsorg.
-3. **`fact_komskole_8_perioder.zip`**: Testfiler kun for skole.
-4. **`dax_startpakke_kostra_v2.md`**: Dokumentasjon og DAX-koder for kjerne, YTD, MoM og EOY.
-5. **`dax_avansert_og_rls.md`**: Dokumentasjon for RAG, Field Parameters, Calculation Groups og RLS.
-6. **`README.md`**: Dette dokumentet.
+1. Klon repositoriet:
+   ```bash
+   git clone https://github.com/Frank-Ellingsen/KomKostra.git
+   ```
+2. Åpne prosjektet direkte i **Power BI Desktop (med Fabric/PBIP-støtte aktivert)**:
+   - Dobbeltklikk på [`pbi-rep-project.pbip`](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip).
+3. For automatisert DAX-oppdatering via Tabular Editor:
+   - Åpne modellen i **Tabular Editor** -> Lim inn skriptet fra [`tabular_editor_dax_script.md`](file:///c:/Users/frank/Desktop/Kom/tabular_editor_dax_script.md) -> Kjør skript (F5).
 
 ---
-
-## 8. Hurtigstart: Slik kommer du i gang i Power BI
-
-1. **Last ned** `powerbi_kostra_datamodell_v2.zip` fra Studio-panelet.
-2. **Pakk ut** zip-filen til en lokal mappe på maskinen din (f.eks. `C:\PowerBI_Test\`).
-3. **Åpne Power BI Desktop** og gjør følgende:
-   * **Importer dimensjonene:** Velg **Get Data -> Text/CSV** og importer de 4 filene i `dimensjoner/`-mappen.
-   * **Markér kalender:** Høyreklikk på `dim_date`, velg **Mark as date table**, og velg kolonnen `Dato`.
-   * **Importer faktatabellen via Mappe:** Velg **Get Data -> Folder**, naviger til `faktatabeller/`-mappen, og klikk **Combine & Transform Data**.
-   * **Sett opp relasjoner:** Koble 1-til-Mange relasjoner fra dimensjonenes PK-er til fremmednøklene i `fact_regnskap`.
-   * **Legg til måltall:** Opprett tabellen `_Måltall` og kopier inn formlene fra `dax_startpakke_kostra_v2.md`.
-
-Nå har du en komplett, skalerbar og produksjonsklar Power BI-modell for KOSTRA! 🚀
+*Utviklet for Kristiansand kommune – KOSTRA Chart of Accounts & Finansiell Virksomhetsstyring.*

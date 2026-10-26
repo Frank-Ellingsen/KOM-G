@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "Story Root Cause Detail"
                 }
               },
-              "queryRef": "_Measures.Story Root Cause Detail",
+              "queryRef": "_Måltall.Story Root Cause Detail",
               "nativeQueryRef": "Story Root Cause Detail",
               "active": true
             }

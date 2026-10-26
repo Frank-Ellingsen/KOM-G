@@ -95,13 +95,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "ERP Resterende Ramme"
                 }
               },
-              "queryRef": "_Measures.ERP Resterende Ramme",
+              "queryRef": "_Måltall.ERP Resterende Ramme",
               "nativeQueryRef": "ERP Resterende Ramme",
               "active": true
             }

@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "p05_pareto_og_korrelasjon",
-  "displayName": "5. FT Visuals — Pareto & Korrelasjon",
+  "displayName": "05. KOSTRA Struktur og N\u00f8kkeltall",
   "displayOption": "FitToPage",
   "height": 1080,
   "width": 1920

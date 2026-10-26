@@ -20,13 +20,13 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Measures"
+                      "Entity": "_Måltall"
                     }
                   },
                   "Property": "Story Time Narrative"
                 }
               },
-              "queryRef": "_Measures.Story Time Narrative",
+              "queryRef": "_Måltall.Story Time Narrative",
               "nativeQueryRef": "Story Time Narrative",
               "active": true
             }
