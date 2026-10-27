@@ -1,11 +1,11 @@
-# KomKostra – Økonomistyring og KOSTRA Rapporteringsplattform 2024
+# KOM-G: KomKostra – Økonomistyring og KOSTRA Rapporteringsplattform 2024
 **Kristiansand Kommune – Finansiell Virksomhetsstyring, Månedsrapport per August (Måned 08)**
 
 ---
 
 ## 📌 Prosjektoversikt
 
-**KomKostra** er en helhetlig virksomhetsstyrings- og rapporteringsløsning for Kristiansand kommune bygget på Power BI Developer Mode (**PBIP** - Power BI Project) med **TMDL** (Tabular Model Definition Language) og **PBIR** (Power BI Report format).
+**KOM-G (KomKostra)** er en helhetlig virksomhetsstyrings- og rapporteringsløsning for Kristiansand kommune bygget på Power BI Developer Mode (**PBIP** - Power BI Project) med **TMDL** (Tabular Model Definition Language) og **PBIR** (Power BI Report format).
 
 Alle tall i denne rapporten bygger utelukkende på faktiske data fra datamodellens faktatabell (`fact_data` i `pbi-rep-project.pbip`).
 - **Måleenhet:** Alle økonomiske tall er oppgitt i **tusen kroner (kNOK)** med én desimal, med mindre annet er eksplisitt angitt.
