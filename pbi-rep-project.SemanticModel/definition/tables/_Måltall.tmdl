@@ -593,6 +593,166 @@ table _Måltall
 		displayFolder: 10. FT Visuals
 		lineageTag: b3420fa3-9072-415f-92a3-28efeddb2f83
 
+	measure 'QA Har Regnskap' = IF ( NOT ISBLANK ( SUM ( 'fact_data'[Regnskap] ) ), 1, 0 )
+		formatString: 0
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 320a05f9-c68a-4cc8-85c1-8624160b0024
+
+	measure 'QA Har Budsjett' = IF ( NOT ISBLANK ( SUM ( 'fact_data'[Budsjett] ) ), 1, 0 )
+		formatString: 0
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 0d05abcf-2615-4155-bc58-483cb2a19844
+
+	measure 'QA Dekningsstatus Indikator' =
+			VAR _HarRegnskap = [QA Har Regnskap]
+			VAR _HarBudsjett = [QA Har Budsjett]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        _HarRegnskap = 1 && _HarBudsjett = 1, "🟢 OK (Regnskap & Budsjett)",
+			        _HarRegnskap = 1 && _HarBudsjett = 0, "🟡 Kun Regnskap (Mangler Budsjett)",
+			        _HarRegnskap = 0 && _HarBudsjett = 1, "🔵 Kun Budsjett (Mangler Regnskap)",
+			        "🔴 Mangler Data"
+			    )
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 327ea74e-a097-4947-9745-73432ea1ac00
+
+	measure 'QA Dekningsgrad %' =
+			DIVIDE (
+			    CALCULATE (
+			        COUNTROWS ( 'fact_data' ),
+			        NOT ISBLANK ( 'fact_data'[Regnskap] ) && NOT ISBLANK ( 'fact_data'[Budsjett] )
+			    ),
+			    COUNTROWS ( 'fact_data' ),
+			    0
+			)
+		formatString: 0.0 %
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 3716ea6d-d23a-41e2-8f51-4714e55c93c9
+
+	measure 'QA Umappede Kontokoder Antall' =
+			CALCULATE (
+			    COUNTROWS ( 'fact_data' ),
+			    FILTER (
+			        'fact_data',
+			        ISBLANK ( RELATED ( 'dim_kostra_kontoplan'[Kontonavn] ) )
+			    )
+			)
+		formatString: #,##0
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 82a9b32f-7541-437c-a142-d8f64913089d
+
+	measure 'QA Umappede Kontokoder Regnskap Kr' =
+			CALCULATE (
+			    SUM ( 'fact_data'[Regnskap] ),
+			    FILTER (
+			        'fact_data',
+			        ISBLANK ( RELATED ( 'dim_kostra_kontoplan'[Kontonavn] ) )
+			    )
+			)
+		formatString: #,##0 NOK
+		displayFolder: 11. DQA Kontroller
+		lineageTag: caeed449-98d9-418e-9693-597001ab4f49
+
+	measure 'QA Umappede Ansvar Antall' =
+			CALCULATE (
+			    COUNTROWS ( 'fact_data' ),
+			    FILTER (
+			        'fact_data',
+			        ISBLANK ( RELATED ( 'dim_ansvar'[Ansvar_Navn] ) )
+			    )
+			)
+		formatString: #,##0
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 05e0c20f-36e5-4b5a-a2e7-85a42615c849
+
+	measure 'QA Umappede Funksjoner Antall' =
+			CALCULATE (
+			    COUNTROWS ( 'fact_data' ),
+			    FILTER (
+			        'fact_data',
+			        ISBLANK ( RELATED ( 'dim_kostra_funksjon'[KOSTRA_Funksjonsgruppe_Navn] ) )
+			    )
+			)
+		formatString: #,##0
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 1333ba2e-d834-4c15-9a6e-fcc0ecbb3a08
+
+	measure 'QA Nøkkelstatus Sammendrag' =
+			VAR _Konto = [QA Umappede Kontokoder Antall]
+			VAR _Ansvar = [QA Umappede Ansvar Antall]
+			VAR _Funksjon = [QA Umappede Funksjoner Antall]
+			VAR _Total = COALESCE ( _Konto, 0 ) + COALESCE ( _Ansvar, 0 ) + COALESCE ( _Funksjon, 0 )
+			RETURN
+			    IF ( _Total = 0, "🟢 Alle relasjoner intakt (0 orphan keys)", "🔴 " & _Total & " feilende relasjonskoblinger funnet" )
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 2c3d325c-93b2-4351-be05-3cab5b9ac5a1
+
+	measure 'QA Antall Filer Importert' = DISTINCTCOUNT ( 'fact_data'[Source.Name] )
+		formatString: 0
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 3e02a7bb-eb46-4b4c-abe5-7a2108c7105f
+
+	measure 'QA Antall Rader Per Fil' = COUNTROWS ( 'fact_data' )
+		formatString: #,##0
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 52e8c9cc-6583-411a-96d7-0ce87888dc46
+
+	measure 'QA Duplikatsjekk Filnavn' =
+			VAR _AntallFilerPerPeriodeOgSektor =
+			    CALCULATETABLE (
+			        ADDCOLUMNS (
+			            SUMMARIZE ( 'fact_data', 'dim_date'[yyyy-mm], 'fact_data'[Sektor] ),
+			            "@FilCount", CALCULATE ( DISTINCTCOUNT ( 'fact_data'[Source.Name] ) )
+			        ),
+			        ALL ( 'fact_data'[Source.Name] )
+			    )
+			VAR _MaksFiler = MAXX ( _AntallFilerPerPeriodeOgSektor, [@FilCount] )
+			RETURN
+			    IF ( _MaksFiler > 1, "⚠️ ADVARSEL: Dupliserte filer for samme periode!", "🟢 Ingen filduplikater" )
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 0e6c4f66-932a-4b79-9d21-2c5e32dabb9b
+
+	measure 'QA Ubudsjetterte Kostnader Kr' =
+			CALCULATE (
+			    SUM ( 'fact_data'[Regnskap] ),
+			    'fact_data'[Budsjett] = 0 && 'fact_data'[Regnskap] > 0
+			)
+		formatString: #,##0 NOK
+		displayFolder: 11. DQA Kontroller
+		lineageTag: e16c17d6-2af9-4e4b-9d99-b586376b2872
+
+	measure 'QA Ubudsjetterte Poster Antall' =
+			CALCULATE (
+			    COUNTROWS ( 'fact_data' ),
+			    'fact_data'[Budsjett] = 0 && 'fact_data'[Regnskap] > 0
+			)
+		formatString: #,##0
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 332a5bdd-78bb-42b4-8493-33836d0b6e68
+
+	measure 'QA Ekstreme MoM Endringer' =
+			VAR _Endring = [Regnskap MoM Endring Kr]
+			VAR _Snitt = CALCULATE ( AVERAGE ( 'fact_data'[Regnskap] ), ALL ( 'dim_date' ) )
+			RETURN
+			    IF ( ABS ( _Endring ) > ( _Snitt * 2 ), "⚠️ Uvanlig stort avvik MoM", "OK" )
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 27920a41-58e8-427b-a28a-cffac82c685a
+
+	measure 'QA Negativt Regnskap Antall' =
+			CALCULATE (
+			    COUNTROWS ( 'fact_data' ),
+			    'fact_data'[Regnskap] < 0
+			)
+		formatString: #,##0
+		displayFolder: 11. DQA Kontroller
+		lineageTag: 6fb6a629-2977-4100-9645-acc0243d08c4
+
+	measure 'QA Sist Oppdatert' = MAX ( 'dim_oppdatering'[Sist_Oppdatert] )
+		formatString: General Date
+		displayFolder: 11. DQA Kontroller
+		lineageTag: c4438290-68e5-4974-82b7-031b518dc140
+
 	column Dummy
 		dataType: string
 		isHidden

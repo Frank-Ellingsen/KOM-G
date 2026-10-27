@@ -1,6 +1,10 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
   "pageOrder": [
+    "qa01_dekning_og_kompletthet",
+    "qa02_nokkelavstemming",
+    "qa03_filkontroll",
+    "qa04_anomalikontroll",
     "p01_executive_summary",
     "p02_trend_og_tidsserie",
     "p04_avvik_og_drivere",
@@ -27,5 +31,5 @@
     "p_time09_dots_sparklines",
     "p_time10_advanced_flows"
   ],
-  "activePageName": "p01_executive_summary"
+  "activePageName": "qa01_dekning_og_kompletthet"
 }

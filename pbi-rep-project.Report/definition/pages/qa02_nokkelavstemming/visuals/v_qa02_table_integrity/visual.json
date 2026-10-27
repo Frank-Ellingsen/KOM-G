@@ -1,0 +1,165 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "v_qa02_table_integrity",
+  "position": {
+    "x": 20,
+    "y": 220,
+    "z": 7,
+    "width": 1880,
+    "height": 840,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_data"
+                    }
+                  },
+                  "Property": "Kontokode_6Siffer"
+                }
+              },
+              "queryRef": "fact_data.Kontokode_6Siffer",
+              "nativeQueryRef": "Kontokode_6Siffer",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_kostra_kontoplan"
+                    }
+                  },
+                  "Property": "Kontonavn"
+                }
+              },
+              "queryRef": "dim_kostra_kontoplan.Kontonavn",
+              "nativeQueryRef": "Kontonavn",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_data"
+                    }
+                  },
+                  "Property": "Ansvar_Kode"
+                }
+              },
+              "queryRef": "fact_data.Ansvar_Kode",
+              "nativeQueryRef": "Ansvar_Kode",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_ansvar"
+                    }
+                  },
+                  "Property": "Ansvar_Navn"
+                }
+              },
+              "queryRef": "dim_ansvar.Ansvar_Navn",
+              "nativeQueryRef": "Ansvar_Navn",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_data"
+                    }
+                  },
+                  "Property": "KOSTRA_Funksjonsgruppe_Kode"
+                }
+              },
+              "queryRef": "fact_data.KOSTRA_Funksjonsgruppe_Kode",
+              "nativeQueryRef": "KOSTRA_Funksjonsgruppe_Kode",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_kostra_funksjon"
+                    }
+                  },
+                  "Property": "KOSTRA_Funksjonsgruppe_Navn"
+                }
+              },
+              "queryRef": "dim_kostra_funksjon.KOSTRA_Funksjonsgruppe_Navn",
+              "nativeQueryRef": "KOSTRA_Funksjonsgruppe_Navn",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Sum Regnskap"
+                }
+              },
+              "queryRef": "_Måltall.Sum Regnskap",
+              "nativeQueryRef": "Sum Regnskap",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Sum Budsjett"
+                }
+              },
+              "queryRef": "_Måltall.Sum Budsjett",
+              "nativeQueryRef": "Sum Budsjett",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Nøkkelavstemming: Faktatabeller koblet mot Dimensjoner'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
