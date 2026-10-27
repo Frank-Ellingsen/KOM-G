@@ -4,10 +4,12 @@
 
 .DESCRIPTION
     Samler alle prosjektkommandoer for DuckDB, ML-omtrening, Docker-orkestrering,
-    Streamlit, MLflow og Git i én enkel kommandolinjefil.
+    Streamlit, MLflow, PDF-rapporter, eInnsyn/NOARK 5 forsendelse og Git.
 
 .EXAMPLE
     .\run.ps1 -BuildDB
+    .\run.ps1 -Reports
+    .\run.ps1 -DispatchPDF
     .\run.ps1 -Up
     .\run.ps1 -Retrain
     .\run.ps1 -All
@@ -16,6 +18,10 @@
 param(
     [switch]$BuildDB,
     [switch]$ExportExcel,
+    [switch]$Reports,
+    [switch]$DispatchPDF,
+    [switch]$SendEmail,
+    [string]$Recipient = "postmottak@kristiansand.kommune.no",
     [switch]$Retrain,
     [switch]$Up,
     [switch]$Down,
@@ -44,12 +50,15 @@ function Write-Info ($text) {
 }
 
 # Hjelpemeny dersom ingen parametere er oppgitt
-if (-not ($BuildDB -or $ExportExcel -or $Retrain -or $Up -or $Down -or $Logs -or $Mlflow -or $Streamlit -or $GitPush -or $All)) {
+if (-not ($BuildDB -or $ExportExcel -or $Reports -or $DispatchPDF -or $SendEmail -or $Retrain -or $Up -or $Down -or $Logs -or $Mlflow -or $Streamlit -or $GitPush -or $All)) {
     Write-Header "ANTIGRAVITY KOSTRA AI WORKBENCH - POWERSHELL MENY"
     Write-Host "Bruk: .\run.ps1 [parameter]" -ForegroundColor White
     Write-Host ""
     Write-Host "  -BuildDB       : Bygg DuckDB-databasen (data/database/kostra.duckdb) fra CSV-filer"
     Write-Host "  -ExportExcel   : Eksporter ferdige Excel-ark for ML-modellering"
+    Write-Host "  -Reports       : Generer publiseringsklare executive PDF-månedsrapporter"
+    Write-Host "  -DispatchPDF   : Klargjør seneste PDF-saksutredning med NOARK 5 metadata for eInnsyn"
+    Write-Host "  -SendEmail     : Send PDF som saksnotat via e-post (Bruk -Recipient <adresse>)"
     Write-Host "  -Retrain       : Om-tren ML-prognosemodellen og sjekk Model Drift"
     Write-Host "  -Up            : Start hele Docker-stacken (Streamlit + MLflow)"
     Write-Host "  -Down          : Stopp Docker-stacken"
@@ -57,7 +66,7 @@ if (-not ($BuildDB -or $ExportExcel -or $Retrain -or $Up -or $Down -or $Logs -or
     Write-Host "  -Mlflow        : Start lokal MLflow UI (http://localhost:5000)"
     Write-Host "  -Streamlit     : Start lokal Streamlit UI (http://localhost:8501)"
     Write-Host "  -GitPush       : Commit og push endringer til GitHub"
-    Write-Host "  -All           : Bygg database, start Docker og åpne nettleser"
+    Write-Host "  -All           : Bygg database, generer rapporter, start Docker og åpne nettleser"
     Write-Host ""
     Exit
 }
@@ -73,6 +82,24 @@ if ($ExportExcel) {
     Write-Header "Eksporterer data til Excel..."
     python src/db_manager.py --export
     Write-Success "Excel-fil generert i data/excel_ml_input.xlsx!"
+}
+
+if ($Reports -or $All) {
+    Write-Header "Genererer Executive PDF-Månedsrapporter..."
+    python src/generate_executive_reports.py
+    Write-Success "Månedsrapporter generert i reports/!"
+}
+
+if ($DispatchPDF) {
+    Write-Header "Eksporterer til eInnsyn Hotfolder med NOARK 5 metadata..."
+    python src/dispatch_manager.py --hotfolder
+    Write-Success "eInnsyn hotfolder-eksport fullført!"
+}
+
+if ($SendEmail) {
+    Write-Header "Sender saksnotat via e-post til $Recipient..."
+    python src/dispatch_manager.py --email "$Recipient"
+    Write-Success "e-postoperasjon fullført!"
 }
 
 if ($Retrain) {
@@ -109,13 +136,7 @@ if ($Mlflow) {
 if ($Streamlit) {
     Write-Header "Starter Streamlit App lokalt..."
     Write-Info "Åpner på http://localhost:8501..."
-    if (Test-Path "src/app.py") {
-        streamlit run src/app.py
-    } elseif (Test-Path "app.py") {
-        streamlit run app.py
-    } else {
-        Write-Warning "Ingen app.py funnet ennå i rot eller src/."
-    }
+    streamlit run src/app.py
 }
 
 if ($GitPush) {

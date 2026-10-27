@@ -566,7 +566,16 @@ def main():
         out_pdf_path=os.path.join(OUT_DIR, "Maanedsrapport_2024_Konsolidert_Kristiansand.pdf")
     )
 
+    # Clean up temporary chart images
+    try:
+        import shutil
+        if os.path.exists(SCRATCH_DIR):
+            shutil.rmtree(SCRATCH_DIR)
+    except Exception:
+        pass
+
     print("Alle rapporter ble generert uten feil!")
 
 if __name__ == "__main__":
     main()
+
