@@ -848,10 +848,65 @@ table _Måltall
 		displayFolder: 01. Kjerne
 		lineageTag: b1a1ba9f-baf4-41c0-8fe3-f938914cdaf7
 
-	measure 'Target Avvik %' = 1
-		formatString: 0
-		displayFolder: 01. Kjerne
-		lineageTag: 31f9c871-2668-4e58-8419-9f4fcbdb1c7e
+	measure 'Vikarbyrå Avvik Kr' =
+			CALCULATE (
+			    [Avvik Kr],
+			    'dim_kostra_kontoplan'[Kontokode_6Siffer] = 127040
+			)
+		formatString: #,##0 NOK
+		displayFolder: 04. Kostnadsdrivere
+		lineageTag: a7e38f12-0814-41d3-8c4d-91b58df8a211
+
+	measure 'Overtid Avvik Kr' =
+			CALCULATE (
+			    [Avvik Kr],
+			    'dim_kostra_kontoplan'[Kontokode_6Siffer] = 104000
+			)
+		formatString: #,##0 NOK
+		displayFolder: 04. Kostnadsdrivere
+		lineageTag: b8f49e23-1925-42e4-9d5e-02c69ea9b322
+
+	measure 'Fastlønn Avvik Kr' =
+			CALCULATE (
+			    [Avvik Kr],
+			    'dim_kostra_kontoplan'[Kontokode_6Siffer] = 101000
+			)
+		formatString: #,##0 NOK
+		displayFolder: 04. Kostnadsdrivere
+		lineageTag: c9a50f34-2a36-43f5-ae6f-13d70fb0c433
+
+	measure 'Story Root Cause Helse og Mestring' =
+			"ROTÅRSAK HELSE | Akutt mangel på vernepleiere og sykepleiere i 24/7 døgnturnus har tvunget frem ubudsjettert vikarbyråinnleie (Art 127040: -382,7 kNOK YTD) og overtid (Art 104000: -88,9 kNOK) under ferieavviklingen i sommermånedene."
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: d0b61a45-3b47-4406-bf70-24e81ac1d544
+
+	measure 'Story Anbefalte Tiltak Helse og Mestring' =
+			"ANBEFALTE TILTAK HELSE | 1) Innfør administrativ godkjenningsplikt for vikarbyrå over avdelingsledernivå (estimert gevinst: 200 kNOK). 2) Gjennomfør turnusrevisjon med langvakter i helger. 3) Etabler faste helgestillinger for studenter."
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: e1c72b56-4c58-4517-c081-35f92bd2e655
+
+	measure 'Story Root Cause Oppvekst' =
+			"ROTÅRSAK OPPVEKST | Helårsvirkning av lønnsoppgjøret per 01.05.2024 (Art 101000 Fastlønn: -1 414,0 kNOK) er periodisert flatt i budsjettet. Korttidsvikarer ved skolestart gir sesongtopp, men grunnbemanningen er i henhold til lærernormen."
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: f2d83c67-5d69-4628-d192-460a3ce3f766
+
+	measure 'Story Anbefalte Tiltak Oppvekst' =
+			"ANBEFALTE TILTAK OPPVEKST | 1) Juster periodisert ramme i Tertialrapport 2 mot sentral lønnsreserve (+1,41 MNOK). 2) Skjerm lærernormen (Opplæringsloven § 8-2). 3) Stram inn vikarbruk i SFO og assistentressurser (estimert gevinst: 85 kNOK)."
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: 03e94d78-6e7a-4739-e2a3-571b4df40877
+
+	measure 'Dynamisk Controller Beslutningsstøtte' =
+			VAR Sektor = SELECTEDVALUE ( 'dim_ansvar'[Sektor], "Alle" )
+			VAR AvvikYTD = [Avvik YTD Kr]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        Sektor = "Helse og Omsorg", [Story Root Cause Helse og Mestring] & " " & [Story Anbefalte Tiltak Helse og Mestring],
+			        Sektor = "Oppvekst og Utdanning", [Story Root Cause Oppvekst] & " " & [Story Anbefalte Tiltak Oppvekst],
+			        "KONSOLIDERT BESLUTNINGSSTØTTE | Samlet merforbruk er " & FORMAT ( ABS ( AvvikYTD ), "#,##0 kr" ) & ". Oppvekst krever budsjettjustering for lønnsoppgjør i T2, mens Helse krever stram operasjonell vikarbyråstopp."
+			    )
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: 14fa5e89-7f8b-484a-f3b4-682c5ea51988
 
 	column Dummy
 		dataType: string

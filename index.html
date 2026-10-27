@@ -29,12 +29,24 @@
         <span>YTD Avvik: -2 229,6 kNOK (107,6 %)</span>
       </div>
 
+      <div class="report-download-group">
+        <a href="reports/Maanedsrapport_2024_Helse_og_Mestring.pdf" download="Maanedsrapport_2024_Helse_og_Mestring.pdf" class="btn btn-pdf" title="Last ned fullverdig controller-rapport for Helse & Mestring (PDF)">
+          📄 PDF: Helse & Mestring
+        </a>
+        <a href="reports/Maanedsrapport_2024_Oppvekst_og_Utdanning.pdf" download="Maanedsrapport_2024_Oppvekst_og_Utdanning.pdf" class="btn btn-pdf" title="Last ned fullverdig controller-rapport for Oppvekst (PDF)">
+          📄 PDF: Oppvekst
+        </a>
+        <a href="reports/Maanedsrapport_2024_Konsolidert_Kristiansand.pdf" download="Maanedsrapport_2024_Konsolidert_Kristiansand.pdf" class="btn btn-pdf-outline" title="Last ned konsolidert lederrapport for Kristiansand kommune (PDF)">
+          📄 PDF: Total
+        </a>
+      </div>
+
       <button id="btn-theme-toggle" class="btn" aria-label="Endre fargetema">
         ☀️ Papir
       </button>
 
-      <a href="pbi-rep-project.pbip" class="btn btn-primary" title="Åpne Power BI PBIP prosjekt">
-        📊 Åpne Power BI
+      <a href="pbi-rep-project.zip" download="pbi-rep-project.zip" class="btn btn-primary" title="Last ned komplett Power BI prosjekt (.zip) med TMDL og PBIR">
+        📦 Last ned Power BI (.zip)
       </a>
     </div>
   </header>
@@ -289,6 +301,28 @@
         <div id="chart-legend-container" class="chart-legend-direct">
           <!-- Dynamic direct legend injected by assets/js/dashboard.js -->
         </div>
+
+        <!-- Dynamic Controller Insight & Root Cause / Action Matrix -->
+        <div id="visual-controller-insight" class="visual-insight-panel">
+          <div class="insight-header">
+            <span class="insight-badge">🔍 CONTROLLER INNSIKT & ROTÅRSAKSANALYSE</span>
+            <span id="insight-sector-tag" class="insight-tag">Konsolidert status</span>
+          </div>
+          <div class="insight-grid">
+            <div class="insight-col">
+              <div class="insight-label">Rotårsak (Hvorfor oppstår avviket?):</div>
+              <p id="insight-root-cause" class="insight-text">Laster rotårsak...</p>
+            </div>
+            <div class="insight-col">
+              <div class="insight-label">💡 Anbefalte Controller-tiltak:</div>
+              <p id="insight-recommendations" class="insight-text">Laster tiltak...</p>
+            </div>
+          </div>
+          <div class="insight-footer">
+            <span id="insight-legal-tag">⚖️ Lovmessig ramme: Opplæringsloven § 8-2 / Helse- og omsorgstjenesteloven § 4-1 / AML § 10-6</span>
+            <span id="insight-impact-tag" class="impact-highlight">Potensiell restårsgevinst: 250–350 kNOK</span>
+          </div>
+        </div>
       </div>
 
       <!-- Panel 2: Interactive What-If Scenario Simulator -->
@@ -416,7 +450,7 @@
       <div class="panel-header" style="margin-bottom:0.5rem;">
         <div class="panel-title-wrap">
           <h2>📑 Power BI Rapportkatalog (25 Spesialiserte Rapportsider)</h2>
-          <div class="panel-subtitle">Konfigurert i <a href="pbi-rep-project.pbip" style="color:var(--accent-cyan);text-decoration:none;">pbi-rep-project.pbip</a> med TMDL semantisk modell og PBIR visuelt format</div>
+          <div class="panel-subtitle">Konfigurert i <a href="pbi-rep-project.zip" download="pbi-rep-project.zip" style="color:var(--accent-cyan);text-decoration:none;font-weight:600;">pbi-rep-project.zip (Last ned komplett prosjektmappe)</a> med TMDL semantisk modell og PBIR visuelt format</div>
         </div>
       </div>
 
