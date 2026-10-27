@@ -11,3 +11,4 @@ mlflow>=2.11.0
 
 # Web & Visuals (Optional / Workbench UI)
 streamlit>=1.30.0
+plotly>=5.18.0

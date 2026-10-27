@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Antigravity KOSTRA AI Workbench - Hovedstyringsskript for PowerShell.
 
@@ -83,7 +83,7 @@ if ($Retrain) {
 
 if ($Up -or $All) {
     Write-Header "Starter Docker Stack (Streamlit + MLflow UI)..."
-    docker compose -f docker-compose-v2.yml up --build -d
+    docker compose up --build -d
     Write-Success "Docker-containere kjører i bakgrunnen!"
     Write-Info "Streamlit AI Workbench: http://localhost:8501"
     Write-Info "MLflow Tracking UI:     http://localhost:5000"
@@ -91,13 +91,13 @@ if ($Up -or $All) {
 
 if ($Down) {
     Write-Header "Stopper Docker Stack..."
-    docker compose -f docker-compose-v2.yml down
+    docker compose down
     Write-Success "Docker-containere stoppet."
 }
 
 if ($Logs) {
     Write-Header "Henter Docker-logger (Ctrl+C for å avslutte)..."
-    docker compose -f docker-compose-v2.yml logs -f
+    docker compose logs -f
 }
 
 if ($Mlflow) {
