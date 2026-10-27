@@ -42,69 +42,146 @@
   <!-- 2. Main Executive Cockpit Content -->
   <main class="main-content">
 
+    <!-- Power BI Slicers Ribbon -->
+    <section class="slicer-panel" aria-label="Power BI Slicere & Filtre">
+      <div class="slicer-header-row">
+        <div class="slicer-title">
+          <span>🔍 Slicere & Dimensjonsfiltre (Power BI Reaktivitet)</span>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <button id="btn-reset-slicers" class="btn" style="font-size:0.75rem; padding:0.3rem 0.65rem;">
+            🔄 Nullstill Filtre
+          </button>
+        </div>
+      </div>
+
+      <div class="slicer-grid">
+        <!-- Slicer 1: Sektor -->
+        <div class="slicer-control">
+          <label class="slicer-label" for="slicer-sector">
+            <span>Sektor (dim_ansvar)</span>
+          </label>
+          <select id="slicer-sector" class="slicer-select">
+            <option value="all">Alle Sektorer (Konsolidert)</option>
+            <option value="Oppvekst og Utdanning">Oppvekst og Utdanning (KomSkole)</option>
+            <option value="Helse og Omsorg">Helse og Omsorg (Bomiljø)</option>
+          </select>
+        </div>
+
+        <!-- Slicer 2: KOSTRA Funksjon -->
+        <div class="slicer-control">
+          <label class="slicer-label" for="slicer-function">
+            <span>KOSTRA-Funksjon (dim_kostra_funksjon)</span>
+          </label>
+          <select id="slicer-function" class="slicer-select">
+            <option value="all">Alle Funksjoner</option>
+          </select>
+        </div>
+
+        <!-- Slicer 3: Rapporteringsperiode -->
+        <div class="slicer-control">
+          <label class="slicer-label" for="slicer-month">
+            <span>Rapporteringsperiode (dim_date)</span>
+          </label>
+          <select id="slicer-month" class="slicer-select">
+            <option value="ytd">Akkumulert YTD (Måneder 01–08)</option>
+            <option value="8">Måned 08 (August - Siste)</option>
+            <option value="7">Måned 07 (Juli)</option>
+            <option value="6">Måned 06 (Juni)</option>
+            <option value="5">Måned 05 (Mai)</option>
+            <option value="4">Måned 04 (April)</option>
+            <option value="3">Måned 03 (Mars)</option>
+            <option value="2">Måned 02 (Februar)</option>
+            <option value="1">Måned 01 (Januar)</option>
+          </select>
+        </div>
+
+        <!-- Slicer 4: Kostnadskategori -->
+        <div class="slicer-control">
+          <label class="slicer-label" for="slicer-category">
+            <span>Kostnadsart / Kategori (dim_kontoplan)</span>
+          </label>
+          <select id="slicer-category" class="slicer-select">
+            <option value="all">Alle Kategorier</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Active Filter Chips Bar -->
+      <div class="filter-context-bar">
+        <div class="active-filters-list" id="active-filters-container">
+          <span style="color:var(--text-muted);">Aktiv kontekst:</span>
+          <span class="filter-chip">Konsolidert Total</span>
+        </div>
+        <div id="filter-record-count" style="font-family:var(--font-mono); font-size:0.72rem;">
+          Viser 827 av 827 rader (100 %)
+        </div>
+      </div>
+    </section>
+
     <!-- KPI Metrics Row (Edward Tufte Data-Ink High Precision Cards) -->
     <section class="kpi-grid" aria-label="Hovednøkkeltall">
       <!-- KPI 1 -->
       <article class="kpi-card">
         <div class="kpi-header">
-          <span class="kpi-title">Konsolidert YTD Regnskap</span>
-          <span class="kpi-tag">Måneder 01–08</span>
+          <span class="kpi-title" id="kpi1-title">Konsolidert YTD Regnskap</span>
+          <span class="kpi-tag" id="kpi1-tag">Måneder 01–08</span>
         </div>
         <div class="kpi-value-row">
-          <span class="kpi-value">31 524,9</span>
+          <span class="kpi-value" id="kpi1-value">31 524,9</span>
           <span class="kpi-unit">kNOK</span>
         </div>
         <div class="kpi-subtext">
-          <span>Budsjett: <strong>29 295,2 k</strong></span>
-          <span class="variance-pill neg">-2 229,6 k (107,6 %)</span>
+          <span id="kpi1-budget">Budsjett: <strong>29 295,2 k</strong></span>
+          <span class="variance-pill neg" id="kpi1-variance">-2 229,6 k (107,6 %)</span>
         </div>
       </article>
 
       <!-- KPI 2 -->
       <article class="kpi-card">
         <div class="kpi-header">
-          <span class="kpi-title">Oppvekst & Utdanning</span>
-          <span class="kpi-tag">KomSkole</span>
+          <span class="kpi-title" id="kpi2-title">Oppvekst & Utdanning</span>
+          <span class="kpi-tag" id="kpi2-tag">KomSkole</span>
         </div>
         <div class="kpi-value-row">
-          <span class="kpi-value">18 902,0</span>
+          <span class="kpi-value" id="kpi2-value">18 902,0</span>
           <span class="kpi-unit">kNOK</span>
         </div>
         <div class="kpi-subtext">
-          <span>Budsjett: <strong>17 958,0 k</strong></span>
-          <span class="variance-pill neg">-944,0 k (105,3 %)</span>
+          <span id="kpi2-budget">Budsjett: <strong>17 958,0 k</strong></span>
+          <span class="variance-pill neg" id="kpi2-variance">-944,0 k (105,3 %)</span>
         </div>
       </article>
 
       <!-- KPI 3 -->
       <article class="kpi-card">
         <div class="kpi-header">
-          <span class="kpi-title">Helse & Omsorg</span>
-          <span class="kpi-tag">Bomiljø</span>
+          <span class="kpi-title" id="kpi3-title">Helse & Omsorg</span>
+          <span class="kpi-tag" id="kpi3-tag">Bomiljø</span>
         </div>
         <div class="kpi-value-row">
-          <span class="kpi-value">12 622,9</span>
+          <span class="kpi-value" id="kpi3-value">12 622,9</span>
           <span class="kpi-unit">kNOK</span>
         </div>
         <div class="kpi-subtext">
-          <span>Budsjett: <strong>11 337,2 k</strong></span>
-          <span class="variance-pill neg">-1 285,6 k (111,3 %)</span>
+          <span id="kpi3-budget">Budsjett: <strong>11 337,2 k</strong></span>
+          <span class="variance-pill neg" id="kpi3-variance">-1 285,6 k (111,3 %)</span>
         </div>
       </article>
 
       <!-- KPI 4 -->
       <article class="kpi-card">
         <div class="kpi-header">
-          <span class="kpi-title">Måned 08 (August Isolert)</span>
-          <span class="kpi-tag">Siste Måned</span>
+          <span class="kpi-title" id="kpi4-title">Måned 08 (August Isolert)</span>
+          <span class="kpi-tag" id="kpi4-tag">Siste Måned</span>
         </div>
         <div class="kpi-value-row">
-          <span class="kpi-value">4 120,8</span>
+          <span class="kpi-value" id="kpi4-value">4 120,8</span>
           <span class="kpi-unit">kNOK</span>
         </div>
         <div class="kpi-subtext">
-          <span>Budsjett: <strong>3 770,1 k</strong></span>
-          <span class="variance-pill neg">-350,7 k (109,3 %)</span>
+          <span id="kpi4-budget">Budsjett: <strong>3 770,1 k</strong></span>
+          <span class="variance-pill neg" id="kpi4-variance">-350,7 k (109,3 %)</span>
         </div>
       </article>
 
@@ -115,12 +192,12 @@
           <span class="kpi-tag">Random Forest</span>
         </div>
         <div class="kpi-value-row">
-          <span class="kpi-value">4,3</span>
+          <span class="kpi-value" id="kpi5-value">4,3</span>
           <span class="kpi-unit">kNOK MAE</span>
         </div>
         <div class="kpi-subtext">
           <span>Modell R²: <strong>0.9657</strong></span>
-          <span class="variance-pill pos">Ingen Drift (OK)</span>
+          <span class="variance-pill pos" id="kpi5-status">Ingen Drift (OK)</span>
         </div>
       </article>
     </section>
@@ -363,6 +440,7 @@
     </div>
   </footer>
 
+  <script src="assets/js/kostra-data.js"></script>
   <script src="assets/js/dashboard.js"></script>
 </body>
 </html>

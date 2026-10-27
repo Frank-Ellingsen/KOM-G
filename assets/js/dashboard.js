@@ -1,57 +1,20 @@
 /**
  * KOM-G: KomKostra Executive Cockpit & BI Portal
- * Logic, Interactive S-Curve SVG, What-If Simulator, and Catalog Navigation
+ * Dynamic Power BI Cross-Filtering Engine & Slicer Reactive Architecture
  */
 
-// 1. Data Extracted Directly from DuckDB (fact_data & dimensions)
-const KOSTRA_DATA = {
-  summary: {
-    ytd_budget_knok: 29295.2,
-    ytd_actual_knok: 31524.9,
-    ytd_variance_knok: -2229.6,
-    ytd_spend_pct: 107.61,
-    m08_budget_knok: 3770.1,
-    m08_actual_knok: 4120.8,
-    m08_variance_knok: -350.7,
-    m08_spend_pct: 109.30,
-    oppvekst_ytd_actual: 18902.0,
-    oppvekst_ytd_budget: 17958.0,
-    oppvekst_ytd_variance: -944.0,
-    helse_ytd_actual: 12622.9,
-    helse_ytd_budget: 11337.2,
-    helse_ytd_variance: -1285.6
-  },
-  monthly: [
-    { month: "Jan (01)", budget: 19361.3, actual: 19916.8, variance: -555.4 },
-    { month: "Feb (02)", budget: 1410.9, actual: 2082.1, variance: -671.2 },
-    { month: "Mar (03)", budget: 1342.4, actual: 1541.2, variance: -198.9 },
-    { month: "Apr (04)", budget: 2357.4, actual: 2256.7, variance: 100.6 },
-    { month: "Mai (05)", budget: 1544.2, actual: 1613.4, variance: -69.2 },
-    { month: "Jun (06)", budget: 241.7, actual: 519.3, variance: -277.7 },
-    { month: "Jul (07)", budget: 1512.2, actual: 1837.5, variance: -325.3 },
-    { month: "Aug (08)", budget: 1525.2, actual: 1757.7, variance: -232.6 }
-  ],
-  top_drivers_m08: [
-    { code: "127040", name: "Kjøp av vikarbyråtjenester", sector: "Helse", budget: 0.0, actual: 253.2, variance: -253.2, cause: "Ubudsjettert ekstern innleie sommermåneder" },
-    { code: "101000", name: "Fastlønn ordinære", sector: "Begge", budget: 2333.5, actual: 2530.3, variance: -196.8, cause: "Lønnsoppgjørsvirkning og høyere bemanning" },
-    { code: "102013", name: "Vikarer ved korttidsfravær", sector: "Begge", budget: 12.7, actual: 61.9, variance: -49.2, cause: "Dekning av akutt fravær ved skolestart" },
-    { code: "102031", name: "Vikar kvelds-/nattillegg", sector: "Helse", budget: 0.0, actual: 45.9, variance: -45.9, cause: "Turnustillegg for innleide vikarer" },
-    { code: "104000", name: "Overtid", sector: "Begge", budget: 9.4, actual: 52.4, variance: -43.0, cause: "Ekstraarbeid turnus og skolestart" },
-    { code: "102000", name: "Vikarer ordinære", sector: "Begge", budget: 16.7, actual: 49.3, variance: -32.7, cause: "Vikardekning ved permisjoner" }
-  ],
-  functions_m08: [
-    { code: "2020", name: "Grunnskoleundervisning", sector: "Oppvekst", budget: 1702.8, actual: 1809.2, variance: -106.4 },
-    { code: "2140", name: "Skolefritidsordning (SFO)", sector: "Oppvekst", budget: 311.9, actual: 345.2, variance: -33.3 },
-    { code: "2210", name: "PPT og pedagogisk oppfølging", sector: "Oppvekst", budget: 101.7, actual: 122.9, variance: -21.3 },
-    { code: "2150", name: "Skoleskyss / Leirskole", sector: "Oppvekst", budget: 0.0, actual: 4.0, variance: -4.0 },
-    { code: "2130", name: "Voksenopplæring", sector: "Oppvekst", budget: 64.1, actual: 61.4, variance: 2.7 },
-    { code: "2230", name: "Spesialpedagogiske tiltak", sector: "Oppvekst", budget: 64.5, actual: 58.7, variance: 5.8 },
-    { code: "2040", name: "Statlige refusjoner", sector: "Oppvekst", budget: 0.0, actual: -38.4, variance: 38.4 },
-    { code: "2540", name: "Pleie og omsorg i institusjon/bolig", sector: "Helse", budget: 1525.2, actual: 1757.7, variance: -232.6 }
-  ]
+// Global Filter State (Mirroring Power BI Slicer Context)
+const activeFilters = {
+  sector: "all",
+  function: "all",
+  month: "ytd",
+  category: "all"
 };
 
-// 2. Power BI 25-Siders Rapportkatalog
+let currentChartMode = "scurve"; // "scurve" or "monthly"
+let latestAggregates = null;
+
+// Power BI 25-Siders Rapportkatalog
 const REPORT_PAGES = [
   // Ledelse (6)
   { id: "p01", title: "01. Hovedrapport (Kommuneøkonomi 2024)", cat: "executive", desc: "Konsolidert ledelsesstatus for politisk og administrativ ledelse med automatisk avvikskommentar.", visual: "Executive KPI Cards & Story Narrative" },
@@ -94,26 +57,435 @@ function formatNok(val, decimals = 1) {
   return val < 0 ? `-${formatted}` : formatted;
 }
 
-// 3. Initialize Top Variance Driver Table
+// 1. Initialiser Slicer-valg fra dimensjoner
+function initSlicers() {
+  if (typeof KOSTRA_DIMENSIONS === "undefined") return;
+
+  // Funksjoner
+  const funcSelect = document.getElementById("slicer-function");
+  if (funcSelect) {
+    funcSelect.innerHTML = `<option value="all">Alle KOSTRA-Funksjoner</option>` + 
+      KOSTRA_DIMENSIONS.functions.map(f => `<option value="${f.func_code}">${f.func_name}</option>`).join("");
+  }
+
+  // Kategorier
+  const catSelect = document.getElementById("slicer-category");
+  if (catSelect) {
+    catSelect.innerHTML = `<option value="all">Alle Kontokategorier</option>` + 
+      KOSTRA_DIMENSIONS.categories.map(c => `<option value="${c}">${c}</option>`).join("");
+  }
+}
+
+// 2. Filtrer rådata basert på aktiv slicer-kontekst
+// Rådata-format: [0:m, 1:sector, 2:func_code, 3:func_name, 4:account_code, 5:account_name, 6:cat_name, 7:b_knok, 8:a_knok]
+function getFilteredRecords() {
+  if (typeof KOSTRA_RECORDS === "undefined") return [];
+
+  return KOSTRA_RECORDS.filter(r => {
+    // Sektor
+    if (activeFilters.sector !== "all" && r[1] !== activeFilters.sector) {
+      return false;
+    }
+    // Funksjon
+    if (activeFilters.function !== "all" && r[2] !== parseInt(activeFilters.function)) {
+      return false;
+    }
+    // Kategori
+    if (activeFilters.category !== "all" && r[6] !== activeFilters.category) {
+      return false;
+    }
+    // Måned / Periode
+    if (activeFilters.month !== "ytd") {
+      const targetM = parseInt(activeFilters.month);
+      if (r[0] !== targetM) return false;
+    }
+    return true;
+  });
+}
+
+// 3. Beregn dynamiske aggregater fra filtrerte rader
+function calculateAggregates(records) {
+  let totalBudget = 0;
+  let totalActual = 0;
+  let oppvekstBudget = 0, oppvekstActual = 0;
+  let helseBudget = 0, helseActual = 0;
+
+  // Måneder 1..8
+  const monthMap = {};
+  for (let m = 1; m <= 8; m++) {
+    monthMap[m] = { budget: 0, actual: 0 };
+  }
+
+  // Kontokoder (drivere)
+  const accountMap = {};
+  // KOSTRA-funksjoner
+  const funcMap = {};
+
+  let vikarbyraMonthlyBase = 0; // Art 127040
+  let overtidMonthlyBase = 0;   // Art 104000
+
+  records.forEach(r => {
+    const m = r[0];
+    const sector = r[1];
+    const funcCode = r[2];
+    const funcName = r[3];
+    const accCode = r[4];
+    const accName = r[5];
+    const b = r[7];
+    const a = r[8];
+
+    totalBudget += b;
+    totalActual += a;
+
+    if (sector === "Oppvekst og Utdanning") {
+      oppvekstBudget += b;
+      oppvekstActual += a;
+    } else if (sector === "Helse og Omsorg") {
+      helseBudget += b;
+      helseActual += a;
+    }
+
+    if (monthMap[m]) {
+      monthMap[m].budget += b;
+      monthMap[m].actual += a;
+    }
+
+    // Drivere
+    if (!accountMap[accCode]) {
+      accountMap[accCode] = { code: accCode, name: accName, sector: sector, budget: 0, actual: 0 };
+    }
+    accountMap[accCode].budget += b;
+    accountMap[accCode].actual += a;
+
+    // Funksjoner
+    if (!funcMap[funcCode]) {
+      funcMap[funcCode] = { code: funcCode, name: funcName, sector: sector, budget: 0, actual: 0 };
+    }
+    funcMap[funcCode].budget += b;
+    funcMap[funcCode].actual += a;
+
+    // Simulator baser (siste måned m=8 eller gjennomsnitt)
+    if (accCode === 127040 && (activeFilters.month === "ytd" ? m === 8 : true)) {
+      vikarbyraMonthlyBase += a;
+    }
+    if (accCode === 104000 && (activeFilters.month === "ytd" ? m === 8 : true)) {
+      overtidMonthlyBase += a;
+    }
+  });
+
+  const totalVariance = totalBudget - totalActual;
+  const totalSpendPct = totalBudget > 0 ? (totalActual / totalBudget) * 100 : 0;
+
+  // Monthly array
+  const monthNames = ["Jan (01)", "Feb (02)", "Mar (03)", "Apr (04)", "Mai (05)", "Jun (06)", "Jul (07)", "Aug (08)"];
+  const monthly = Object.keys(monthMap).sort((a,b) => a-b).map(m => {
+    const d = monthMap[m];
+    return {
+      month: monthNames[m - 1],
+      budget: d.budget,
+      actual: d.actual,
+      variance: d.budget - d.actual
+    };
+  });
+
+  // Top Drivers sorted by largest negative variance (merforbruk)
+  const drivers = Object.values(accountMap).map(d => ({
+    ...d,
+    variance: d.budget - d.actual
+  })).sort((a, b) => a.variance - b.variance).slice(0, 8);
+
+  // Functions sorted by variance
+  const functions = Object.values(funcMap).map(f => ({
+    ...f,
+    variance: f.budget - f.actual
+  })).sort((a, b) => a.variance - b.variance);
+
+  return {
+    totalBudget,
+    totalActual,
+    totalVariance,
+    totalSpendPct,
+    oppvekstBudget,
+    oppvekstActual,
+    oppvekstVariance: oppvekstBudget - oppvekstActual,
+    helseBudget,
+    helseActual,
+    helseVariance: helseBudget - helseActual,
+    monthly,
+    drivers,
+    functions,
+    vikarbyraMonthlyBase,
+    overtidMonthlyBase,
+    recordCount: records.length
+  };
+}
+
+// 4. Oppdater Aktiv Filter Context Breadcrumbs
+function updateFilterContextBar(totalRecords, matchingRecords) {
+  const container = document.getElementById("active-filters-container");
+  const countEl = document.getElementById("filter-record-count");
+
+  if (countEl) {
+    const pct = totalRecords > 0 ? ((matchingRecords / totalRecords) * 100).toFixed(0) : 0;
+    countEl.innerText = `Viser ${matchingRecords} av ${totalRecords} rader (${pct} %)`;
+  }
+
+  if (!container) return;
+
+  const chips = [];
+
+  if (activeFilters.sector !== "all") {
+    chips.push(`<span class="filter-chip">Sektor: <strong>${activeFilters.sector}</strong> <span class="filter-chip-remove" data-clear="sector">✕</span></span>`);
+  }
+  if (activeFilters.function !== "all") {
+    const fObj = KOSTRA_DIMENSIONS.functions.find(f => f.func_code == activeFilters.function);
+    const label = fObj ? fObj.func_name : activeFilters.function;
+    chips.push(`<span class="filter-chip">Funksjon: <strong>${label}</strong> <span class="filter-chip-remove" data-clear="function">✕</span></span>`);
+  }
+  if (activeFilters.month !== "ytd") {
+    chips.push(`<span class="filter-chip">Periode: <strong>Måned 0${activeFilters.month}</strong> <span class="filter-chip-remove" data-clear="month">✕</span></span>`);
+  } else {
+    chips.push(`<span class="filter-chip">Periode: <strong>Akkumulert YTD (01–08)</strong></span>`);
+  }
+  if (activeFilters.category !== "all") {
+    chips.push(`<span class="filter-chip">Kategori: <strong>${activeFilters.category}</strong> <span class="filter-chip-remove" data-clear="category">✕</span></span>`);
+  }
+
+  if (chips.length === 0) {
+    container.innerHTML = `<span style="color:var(--text-muted);">Aktiv kontekst:</span> <span class="filter-chip">Konsolidert Total (Alle filtre)</span>`;
+  } else {
+    container.innerHTML = `<span style="color:var(--text-muted);">Aktiv kontekst:</span> ` + chips.join(" ");
+  }
+
+  // Bind clear chip events
+  container.querySelectorAll(".filter-chip-remove").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const toClear = btn.getAttribute("data-clear");
+      if (toClear) {
+        if (toClear === "sector") {
+          activeFilters.sector = "all";
+          document.getElementById("slicer-sector").value = "all";
+        } else if (toClear === "function") {
+          activeFilters.function = "all";
+          document.getElementById("slicer-function").value = "all";
+        } else if (toClear === "month") {
+          activeFilters.month = "ytd";
+          document.getElementById("slicer-month").value = "ytd";
+        } else if (toClear === "category") {
+          activeFilters.category = "all";
+          document.getElementById("slicer-category").value = "all";
+        }
+        applyFilters();
+      }
+    });
+  });
+}
+
+// 5. Oppdater KPI-Kortene dynamisk
+function updateKpiCards(aggs) {
+  // Top nav indicator
+  const topIndicator = document.getElementById("top-status-indicator");
+  if (topIndicator) {
+    const isPos = aggs.totalVariance >= 0;
+    topIndicator.className = isPos ? "status-indicator pos" : "status-indicator";
+    topIndicator.innerHTML = `
+      <span class="pulse-dot"></span>
+      <span>${activeFilters.month === 'ytd' ? 'YTD' : 'M' + activeFilters.month} Avvik: ${formatNok(aggs.totalVariance)} kNOK (${aggs.totalSpendPct.toFixed(1)} %)</span>
+    `;
+  }
+
+  // KPI 1: Aktivt Utvalg Total
+  const kpi1Title = document.getElementById("kpi1-title");
+  const kpi1Tag = document.getElementById("kpi1-tag");
+  const kpi1Val = document.getElementById("kpi1-value");
+  const kpi1Budget = document.getElementById("kpi1-budget");
+  const kpi1Var = document.getElementById("kpi1-variance");
+
+  if (kpi1Title) kpi1Title.innerText = activeFilters.sector === "all" ? "Konsolidert Regnskap" : `${activeFilters.sector}`;
+  if (kpi1Tag) kpi1Tag.innerText = activeFilters.month === "ytd" ? "YTD M01–M08" : `Måned 0${activeFilters.month}`;
+  if (kpi1Val) kpi1Val.innerText = formatNok(aggs.totalActual);
+  if (kpi1Budget) kpi1Budget.innerHTML = `Budsjett: <strong>${formatNok(aggs.totalBudget)} k</strong>`;
+  if (kpi1Var) {
+    const isNeg = aggs.totalVariance < 0;
+    kpi1Var.className = `variance-pill ${isNeg ? 'neg' : 'pos'}`;
+    kpi1Var.innerText = `${formatNok(aggs.totalVariance)} k (${aggs.totalSpendPct.toFixed(1)} %)`;
+  }
+
+  // KPI 2: Oppvekst
+  const kpi2Val = document.getElementById("kpi2-value");
+  const kpi2Budget = document.getElementById("kpi2-budget");
+  const kpi2Var = document.getElementById("kpi2-variance");
+  if (kpi2Val) kpi2Val.innerText = formatNok(aggs.oppvekstActual);
+  if (kpi2Budget) kpi2Budget.innerHTML = `Budsjett: <strong>${formatNok(aggs.oppvekstBudget)} k</strong>`;
+  if (kpi2Var) {
+    const pct = aggs.oppvekstBudget > 0 ? (aggs.oppvekstActual / aggs.oppvekstBudget * 100).toFixed(1) : 0;
+    const isNeg = aggs.oppvekstVariance < 0;
+    kpi2Var.className = `variance-pill ${isNeg ? 'neg' : 'pos'}`;
+    kpi2Var.innerText = aggs.oppvekstActual > 0 ? `${formatNok(aggs.oppvekstVariance)} k (${pct} %)` : "Ikke i utvalg";
+  }
+
+  // KPI 3: Helse
+  const kpi3Val = document.getElementById("kpi3-value");
+  const kpi3Budget = document.getElementById("kpi3-budget");
+  const kpi3Var = document.getElementById("kpi3-variance");
+  if (kpi3Val) kpi3Val.innerText = formatNok(aggs.helseActual);
+  if (kpi3Budget) kpi3Budget.innerHTML = `Budsjett: <strong>${formatNok(aggs.helseBudget)} k</strong>`;
+  if (kpi3Var) {
+    const pct = aggs.helseBudget > 0 ? (aggs.helseActual / aggs.helseBudget * 100).toFixed(1) : 0;
+    const isNeg = aggs.helseVariance < 0;
+    kpi3Var.className = `variance-pill ${isNeg ? 'neg' : 'pos'}`;
+    kpi3Var.innerText = aggs.helseActual > 0 ? `${formatNok(aggs.helseVariance)} k (${pct} %)` : "Ikke i utvalg";
+  }
+
+  // KPI 4: Måned 08 eller valgt måned
+  const kpi4Title = document.getElementById("kpi4-title");
+  const kpi4Tag = document.getElementById("kpi4-tag");
+  const kpi4Val = document.getElementById("kpi4-value");
+  const kpi4Budget = document.getElementById("kpi4-budget");
+  const kpi4Var = document.getElementById("kpi4-variance");
+
+  const targetM = activeFilters.month === "ytd" ? 8 : parseInt(activeFilters.month);
+  const mData = aggs.monthly[targetM - 1] || { budget: 0, actual: 0, variance: 0 };
+  const mPct = mData.budget > 0 ? (mData.actual / mData.budget * 100).toFixed(1) : 0;
+
+  if (kpi4Title) kpi4Title.innerText = activeFilters.month === "ytd" ? "Siste Måned (M08)" : `Valgt Måned (M0${targetM})`;
+  if (kpi4Tag) kpi4Tag.innerText = `Måned 0${targetM}`;
+  if (kpi4Val) kpi4Val.innerText = formatNok(mData.actual);
+  if (kpi4Budget) kpi4Budget.innerHTML = `Budsjett: <strong>${formatNok(mData.budget)} k</strong>`;
+  if (kpi4Var) {
+    const isNeg = mData.variance < 0;
+    kpi4Var.className = `variance-pill ${isNeg ? 'neg' : 'pos'}`;
+    kpi4Var.innerText = `${formatNok(mData.variance)} k (${mPct} %)`;
+  }
+}
+
+// 6. Rendrer Tufte S-Kurve eller Månedlige Stolper dynamisk
+function renderSvgChart() {
+  const container = document.getElementById("tufte-chart-container");
+  if (!container || !latestAggregates) return;
+
+  const width = container.clientWidth || 700;
+  const height = 280;
+  const padding = { top: 35, right: 140, bottom: 35, left: 60 };
+
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+
+  const monthly = latestAggregates.monthly;
+
+  if (currentChartMode === "scurve") {
+    // Kumulativ beregning
+    let cumB = 0, cumA = 0;
+    const cumData = monthly.map(m => {
+      cumB += m.budget;
+      cumA += m.actual;
+      return { month: m.month, cumBudget: cumB, cumActual: cumA };
+    });
+
+    const maxVal = Math.max(1000, Math.max(...cumData.map(d => Math.max(d.cumActual, d.cumBudget)))) * 1.15;
+
+    const getX = (i) => padding.left + (i / Math.max(1, cumData.length - 1)) * chartW;
+    const getY = (val) => padding.top + chartH - (val / maxVal) * chartH;
+
+    const budgetPoints = cumData.map((d, i) => `${getX(i)},${getY(d.cumBudget)}`).join(" ");
+    const actualPoints = cumData.map((d, i) => `${getX(i)},${getY(d.cumActual)}`).join(" ");
+
+    const areaPoints = `${cumData.map((d, i) => `${getX(i)},${getY(d.cumActual)}`).join(" ")} ` +
+                       `${cumData.slice().reverse().map((d, i) => `${getX(cumData.length - 1 - i)},${getY(d.cumBudget)}`).join(" ")}`;
+
+    const last = cumData[cumData.length - 1];
+    const lastX = getX(cumData.length - 1);
+    const lastY_B = getY(last.cumBudget);
+    const lastY_A = getY(last.cumActual);
+
+    // Dynamic grid step
+    const gridStep = maxVal > 20000 ? 10000 : maxVal > 10000 ? 5000 : 2000;
+    const gridLines = [];
+    for (let g = gridStep; g < maxVal; g += gridStep) {
+      gridLines.push(`
+        <line x1="${padding.left}" y1="${getY(g)}" x2="${padding.left + chartW}" y2="${getY(g)}" stroke="var(--border-subtle)" stroke-dasharray="3,3" />
+        <text x="${padding.left - 8}" y="${getY(g) + 4}" fill="var(--text-muted)" font-size="10" font-family="var(--font-mono)" text-anchor="end">${(g/1000).toFixed(0)}k</text>
+      `);
+    }
+
+    container.innerHTML = `
+      <svg class="tufte-svg" viewBox="0 0 ${width} ${height}">
+        ${gridLines.join("")}
+        <polygon points="${areaPoints}" fill="rgba(244, 63, 94, 0.12)" />
+        <polyline points="${budgetPoints}" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="4,4" />
+        <polyline points="${actualPoints}" fill="none" stroke="#38bdf8" stroke-width="3" />
+        ${cumData.map((d, i) => `
+          <circle cx="${getX(i)}" cy="${getY(d.cumActual)}" r="4" fill="#38bdf8" />
+        `).join("")}
+        ${cumData.map((d, i) => `
+          <text x="${getX(i)}" y="${height - 12}" fill="var(--text-muted)" font-size="11" font-family="var(--font-mono)" text-anchor="middle">${d.month.split(" ")[0]}</text>
+        `).join("")}
+        <text x="${lastX + 10}" y="${lastY_A + 3}" fill="#38bdf8" font-size="11" font-family="var(--font-mono)" font-weight="600">
+          Regnskap: ${formatNok(last.cumActual)} k
+        </text>
+        <text x="${lastX + 10}" y="${lastY_B + 15}" fill="#94a3b8" font-size="11" font-family="var(--font-mono)">
+          Budsjett: ${formatNok(last.cumBudget)} k
+        </text>
+      </svg>
+    `;
+  } else {
+    // Monthly Isolated Bars
+    const maxBar = Math.max(100, Math.max(...monthly.map(m => Math.max(m.budget, m.actual)))) * 1.15;
+    const barGroupW = chartW / monthly.length;
+    const barW = Math.max(6, (barGroupW - 14) / 2);
+
+    const getY = (val) => padding.top + chartH - (val / maxBar) * chartH;
+
+    container.innerHTML = `
+      <svg class="tufte-svg" viewBox="0 0 ${width} ${height}">
+        ${monthly.map((m, i) => {
+          const groupX = padding.left + i * barGroupW + 7;
+          const hBudget = Math.max(0, chartH - (getY(m.budget) - padding.top));
+          const hActual = Math.max(0, chartH - (getY(m.actual) - padding.top));
+          const isOver = m.actual > m.budget;
+          const actualColor = isOver ? "var(--variance-neg)" : "var(--accent-cyan)";
+
+          return `
+            <rect x="${groupX}" y="${getY(m.budget)}" width="${barW}" height="${hBudget}" fill="#64748b" opacity="0.6" rx="2" />
+            <rect x="${groupX + barW + 2}" y="${getY(m.actual)}" width="${barW}" height="${hActual}" fill="${actualColor}" rx="2" />
+            <text x="${groupX + barW}" y="${height - 12}" fill="var(--text-muted)" font-size="10" font-family="var(--font-mono)" text-anchor="middle">${m.month.split(" ")[0]}</text>
+          `;
+        }).join("")}
+      </svg>
+    `;
+  }
+}
+
+// 7. Rendrer Kostnadsdrivere i tabell dynamisk
 function renderDriversTable() {
   const tbody = document.getElementById("drivers-table-body");
-  if (!tbody) return;
+  if (!tbody || !latestAggregates) return;
 
-  const maxVar = Math.max(...KOSTRA_DATA.top_drivers_m08.map(d => Math.abs(d.variance)));
+  const drivers = latestAggregates.drivers;
+  if (drivers.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:1.5rem;">Ingen avviksposter funnet for valgt utvalg.</td></tr>`;
+    return;
+  }
 
-  tbody.innerHTML = KOSTRA_DATA.top_drivers_m08.map(d => {
+  const maxVar = Math.max(1, Math.max(...drivers.map(d => Math.abs(d.variance))));
+
+  tbody.innerHTML = drivers.map(d => {
     const barWidth = Math.min(100, (Math.abs(d.variance) / maxVar) * 80);
+    const isNeg = d.variance < 0;
+    const color = isNeg ? "var(--variance-neg)" : "var(--variance-pos)";
+    const sign = d.variance > 0 ? "+" : "";
+
     return `
       <tr>
         <td class="code">${d.code}</td>
-        <td><strong>${d.name}</strong><br><span style="color:var(--text-muted);font-size:0.75rem">${d.cause}</span></td>
+        <td><strong>${d.name}</strong></td>
         <td><span class="kpi-tag">${d.sector}</span></td>
         <td class="num">${formatNok(d.budget)}</td>
         <td class="num">${formatNok(d.actual)}</td>
         <td class="num">
           <div class="variance-bar-cell">
-            <div class="mini-bar" style="width: ${barWidth}px;"></div>
-            <span style="color: var(--variance-neg); font-weight: 600;">${formatNok(d.variance)}</span>
+            <div class="mini-bar" style="width: ${barWidth}px; background:${color};"></div>
+            <span style="color: ${color}; font-weight: 600;">${sign}${formatNok(d.variance)}</span>
           </div>
         </td>
       </tr>
@@ -121,12 +493,18 @@ function renderDriversTable() {
   }).join("");
 }
 
-// 4. Initialize KOSTRA Functions Table
+// 8. Rendrer KOSTRA-Funksjoner i tabell dynamisk
 function renderFunctionsTable() {
   const tbody = document.getElementById("functions-table-body");
-  if (!tbody) return;
+  if (!tbody || !latestAggregates) return;
 
-  tbody.innerHTML = KOSTRA_DATA.functions_m08.map(f => {
+  const funcs = latestAggregates.functions;
+  if (funcs.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:1.5rem;">Ingen funksjoner i aktivt filter.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = funcs.map(f => {
     const isNeg = f.variance < 0;
     const color = isNeg ? "var(--variance-neg)" : "var(--variance-pos)";
     const sign = f.variance > 0 ? "+" : "";
@@ -143,127 +521,14 @@ function renderFunctionsTable() {
   }).join("");
 }
 
-// 5. Render S-Curve (Pure SVG with Tufte Direct Labels)
-let currentChartMode = "scurve"; // "scurve" or "monthly"
-
-function renderSvgChart() {
-  const container = document.getElementById("tufte-chart-container");
-  if (!container) return;
-
-  const width = container.clientWidth || 700;
-  const height = 280;
-  const padding = { top: 35, right: 130, bottom: 35, left: 55 };
-
-  const chartW = width - padding.left - padding.right;
-  const chartH = height - padding.top - padding.bottom;
-
-  if (currentChartMode === "scurve") {
-    // Cumulative sums
-    let cumB = 0, cumA = 0;
-    const cumData = KOSTRA_DATA.monthly.map(m => {
-      cumB += m.budget;
-      cumA += m.actual;
-      return { month: m.month, cumBudget: cumB, cumActual: cumA };
-    });
-
-    const maxVal = Math.max(...cumData.map(d => d.cumActual)) * 1.12;
-
-    const getX = (i) => padding.left + (i / (cumData.length - 1)) * chartW;
-    const getY = (val) => padding.top + chartH - (val / maxVal) * chartH;
-
-    // Build SVG paths
-    const budgetPoints = cumData.map((d, i) => `${getX(i)},${getY(d.cumBudget)}`).join(" ");
-    const actualPoints = cumData.map((d, i) => `${getX(i)},${getY(d.cumActual)}`).join(" ");
-
-    // Variance area path
-    const areaPoints = `${cumData.map((d, i) => `${getX(i)},${getY(d.cumActual)}`).join(" ")} ` +
-                       `${cumData.slice().reverse().map((d, i) => `${getX(cumData.length - 1 - i)},${getY(d.cumBudget)}`).join(" ")}`;
-
-    const lastB = cumData[cumData.length - 1];
-    const lastX = getX(cumData.length - 1);
-    const lastY_B = getY(lastB.cumBudget);
-    const lastY_A = getY(lastB.cumActual);
-
-    container.innerHTML = `
-      <svg class="tufte-svg" viewBox="0 0 ${width} ${height}">
-        <!-- Horizontal Reference Gridlines (Hairlines only, no vertical lines) -->
-        <line x1="${padding.left}" y1="${getY(10000)}" x2="${padding.left + chartW}" y2="${getY(10000)}" stroke="var(--border-subtle)" stroke-dasharray="3,3" />
-        <text x="${padding.left - 8}" y="${getY(10000) + 4}" fill="var(--text-muted)" font-size="10" font-family="var(--font-mono)" text-anchor="end">10k</text>
-
-        <line x1="${padding.left}" y1="${getY(20000)}" x2="${padding.left + chartW}" y2="${getY(20000)}" stroke="var(--border-subtle)" stroke-dasharray="3,3" />
-        <text x="${padding.left - 8}" y="${getY(20000) + 4}" fill="var(--text-muted)" font-size="10" font-family="var(--font-mono)" text-anchor="end">20k</text>
-
-        <line x1="${padding.left}" y1="${getY(30000)}" x2="${padding.left + chartW}" y2="${getY(30000)}" stroke="var(--border-subtle)" stroke-dasharray="3,3" />
-        <text x="${padding.left - 8}" y="${getY(30000) + 4}" fill="var(--text-muted)" font-size="10" font-family="var(--font-mono)" text-anchor="end">30k</text>
-
-        <!-- Variance Ribbon (Merforbruk shaded soft crimson) -->
-        <polygon points="${areaPoints}" fill="rgba(244, 63, 94, 0.12)" />
-
-        <!-- Budsjett Curve (Dotted Muted Blue) -->
-        <polyline points="${budgetPoints}" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="4,4" />
-
-        <!-- Faktisk Regnskap Curve (Solid Cyan) -->
-        <polyline points="${actualPoints}" fill="none" stroke="#38bdf8" stroke-width="3" />
-
-        <!-- Data points on Actuals -->
-        ${cumData.map((d, i) => `
-          <circle cx="${getX(i)}" cy="${getY(d.cumActual)}" r="4" fill="#38bdf8" />
-        `).join("")}
-
-        <!-- X-Axis Labels -->
-        ${cumData.map((d, i) => `
-          <text x="${getX(i)}" y="${height - 12}" fill="var(--text-muted)" font-size="11" font-family="var(--font-mono)" text-anchor="middle">${d.month}</text>
-        `).join("")}
-
-        <!-- Tufte Direct Labels on Endpoints -->
-        <text x="${lastX + 10}" y="${lastY_A + 3}" fill="#38bdf8" font-size="11" font-family="var(--font-mono)" font-weight="600">
-          Regnskap: ${formatNok(lastB.cumActual)} k
-        </text>
-        <text x="${lastX + 10}" y="${lastY_B + 14}" fill="#94a3b8" font-size="11" font-family="var(--font-mono)">
-          Budsjett: ${formatNok(lastB.cumBudget)} k
-        </text>
-      </svg>
-    `;
-  } else {
-    // Monthly Isolated Bars
-    const maxBar = Math.max(...KOSTRA_DATA.monthly.map(m => Math.max(m.budget, m.actual))) * 1.1;
-    const barGroupW = chartW / KOSTRA_DATA.monthly.length;
-    const barW = Math.max(6, (barGroupW - 14) / 2);
-
-    const getY = (val) => padding.top + chartH - (val / maxBar) * chartH;
-
-    container.innerHTML = `
-      <svg class="tufte-svg" viewBox="0 0 ${width} ${height}">
-        <!-- Horizontal Reference lines -->
-        <line x1="${padding.left}" y1="${getY(2000)}" x2="${padding.left + chartW}" y2="${getY(2000)}" stroke="var(--border-subtle)" stroke-dasharray="2,2" />
-        <text x="${padding.left - 8}" y="${getY(2000) + 4}" fill="var(--text-muted)" font-size="10" font-family="var(--font-mono)" text-anchor="end">2k</text>
-
-        <!-- Bars per month -->
-        ${KOSTRA_DATA.monthly.map((m, i) => {
-          const groupX = padding.left + i * barGroupW + 7;
-          const hBudget = chartH - (getY(m.budget) - padding.top);
-          const hActual = chartH - (getY(m.actual) - padding.top);
-          const isOver = m.actual > m.budget;
-          const actualColor = isOver ? "var(--variance-neg)" : "var(--accent-cyan)";
-
-          return `
-            <rect x="${groupX}" y="${getY(m.budget)}" width="${barW}" height="${hBudget}" fill="#64748b" opacity="0.6" rx="2" />
-            <rect x="${groupX + barW + 2}" y="${getY(m.actual)}" width="${barW}" height="${hActual}" fill="${actualColor}" rx="2" />
-            <text x="${groupX + barW}" y="${height - 12}" fill="var(--text-muted)" font-size="10" font-family="var(--font-mono)" text-anchor="middle">${m.month.split(" ")[0]}</text>
-          `;
-        }).join("")}
-      </svg>
-    `;
-  }
-}
-
-// 6. Interactive What-If Scenario Calculation
+// 9. Reaktiv What-If Scenariosimulator
 function updateWhatIfSimulator() {
+  if (!latestAggregates) return;
+
   const vikarPct = parseFloat(document.getElementById("slider-vikar")?.value || 0);
   const overtidPct = parseFloat(document.getElementById("slider-overtid")?.value || 0);
   const omdispPct = parseFloat(document.getElementById("slider-omdisp")?.value || 0);
 
-  // Update slider badges
   const badgeVikar = document.getElementById("val-vikar");
   const badgeOvertid = document.getElementById("val-overtid");
   const badgeOmdisp = document.getElementById("val-omdisp");
@@ -272,10 +537,10 @@ function updateWhatIfSimulator() {
   if (badgeOvertid) badgeOvertid.innerText = `${overtidPct} %`;
   if (badgeOmdisp) badgeOmdisp.innerText = `${omdispPct} %`;
 
-  // Financial parameters (kNOK per month baseline based on August)
-  const monthlyVikarBase = 253.2;  // Art 127040
-  const monthlyOvertidBase = 52.4; // Art 104000
-  const monthlyBudgetBase = 3770.1; // Total consolidated monthly budget
+  // Baser tilpasset aktivt filter
+  const monthlyVikarBase = latestAggregates.vikarbyraMonthlyBase || 253.2;
+  const monthlyOvertidBase = latestAggregates.overtidMonthlyBase || 52.4;
+  const monthlyBudgetBase = (latestAggregates.totalBudget / 8) || 3770.1;
 
   const vikarMonthlySave = (vikarPct / 100) * monthlyVikarBase;
   const overtidMonthlySave = (overtidPct / 100) * monthlyOvertidBase;
@@ -283,16 +548,14 @@ function updateWhatIfSimulator() {
 
   const totalMonthlySavings = vikarMonthlySave + overtidMonthlySave + omdispMonthlySave;
   
-  // Remaining period: September through December = 4 months
+  // 4 gjenværende måneder (Sep–Des)
   const remainingMonths = 4;
   const totalRestarSavings = totalMonthlySavings * remainingMonths;
 
-  // Baseline projected year-end avvik (linear run-rate extrapolation from YTD -2 229,6 over 8 months):
-  // -2 229,6 / 8 * 12 = -3 344,4 kNOK
-  const baselineEoyAvvik = -3344.4;
+  // Baseline projected avvik for aktivt utvalg
+  const baselineEoyAvvik = (latestAggregates.totalVariance / 8) * 12;
   const adjustedEoyAvvik = baselineEoyAvvik + totalRestarSavings;
 
-  // DOM Updates
   const elMonthlySave = document.getElementById("sim-monthly-save");
   const elRestarSave = document.getElementById("sim-restar-save");
   const elEoyResult = document.getElementById("sim-eoy-result");
@@ -311,7 +574,7 @@ function updateWhatIfSimulator() {
     if (adjustedEoyAvvik >= 0) {
       elStatusBadge.className = "status-indicator pos";
       elStatusBadge.innerHTML = `<span class="pulse-dot"></span> Balanse Gjenopprettet`;
-    } else if (adjustedEoyAvvik > -1000) {
+    } else if (adjustedEoyAvvik > -800) {
       elStatusBadge.className = "status-indicator";
       elStatusBadge.style.color = "var(--accent-amber)";
       elStatusBadge.style.borderColor = "var(--accent-amber)";
@@ -325,7 +588,21 @@ function updateWhatIfSimulator() {
   }
 }
 
-// 7. Power BI 25-Siders Rapportkatalog Filter & Render
+// 10. Hovedfunksjon for å anvende aktive filtre og trigge tverrgående oppdatering
+function applyFilters() {
+  const filtered = getFilteredRecords();
+  latestAggregates = calculateAggregates(filtered);
+
+  const totalRecords = typeof KOSTRA_RECORDS !== "undefined" ? KOSTRA_RECORDS.length : 827;
+  updateFilterContextBar(totalRecords, latestAggregates.recordCount);
+  updateKpiCards(latestAggregates);
+  renderSvgChart();
+  renderDriversTable();
+  renderFunctionsTable();
+  updateWhatIfSimulator();
+}
+
+// 11. Power BI 25-Siders Rapportkatalog Filter & Render
 function renderCatalog(filterCat = "all") {
   const grid = document.getElementById("catalog-grid");
   if (!grid) return;
@@ -351,7 +628,7 @@ function renderCatalog(filterCat = "all") {
   `).join("");
 }
 
-// 8. Theme Switcher (Dark / Light)
+// 12. Theme Switcher (Dark / Light)
 function initTheme() {
   const toggleBtn = document.getElementById("btn-theme-toggle");
   const savedTheme = localStorage.getItem("kom_theme") || "dark";
@@ -370,7 +647,7 @@ function initTheme() {
   }
 }
 
-// 9. Copy CLI Commands
+// 13. Copy CLI Commands
 function initCopyButtons() {
   document.querySelectorAll(".btn-copy").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -386,17 +663,69 @@ function initCopyButtons() {
   });
 }
 
-// Initialization on DOM Ready
+// 14. Event Listeners og DOM Oppstart
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
-  renderDriversTable();
-  renderFunctionsTable();
-  renderSvgChart();
+  initSlicers();
   renderCatalog("all");
-  updateWhatIfSimulator();
   initCopyButtons();
 
-  // Resize listener for SVG responsiveness
+  // Kjør første gangs filter og rendering
+  applyFilters();
+
+  // Slicer endringer (Reaktiv kryssfiltrering)
+  const sectorSelect = document.getElementById("slicer-sector");
+  const funcSelect = document.getElementById("slicer-function");
+  const monthSelect = document.getElementById("slicer-month");
+  const catSelect = document.getElementById("slicer-category");
+
+  if (sectorSelect) {
+    sectorSelect.addEventListener("change", (e) => {
+      activeFilters.sector = e.target.value;
+      applyFilters();
+    });
+  }
+
+  if (funcSelect) {
+    funcSelect.addEventListener("change", (e) => {
+      activeFilters.function = e.target.value;
+      applyFilters();
+    });
+  }
+
+  if (monthSelect) {
+    monthSelect.addEventListener("change", (e) => {
+      activeFilters.month = e.target.value;
+      applyFilters();
+    });
+  }
+
+  if (catSelect) {
+    catSelect.addEventListener("change", (e) => {
+      activeFilters.category = e.target.value;
+      applyFilters();
+    });
+  }
+
+  // Nullstill Filtre Knapp
+  const resetBtn = document.getElementById("btn-reset-slicers");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      activeFilters.sector = "all";
+      activeFilters.function = "all";
+      activeFilters.month = "ytd";
+      activeFilters.category = "all";
+
+      if (sectorSelect) sectorSelect.value = "all";
+      if (funcSelect) funcSelect.value = "all";
+      if (monthSelect) monthSelect.value = "ytd";
+      if (catSelect) catSelect.value = "all";
+
+      applyFilters();
+    });
+  }
+
+  // Vindu-skalering for SVG responsivitet
   window.addEventListener("resize", renderSvgChart);
 
   // Chart Toggle Buttons
@@ -419,7 +748,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Slider Events
+  // Slider Events for What-If Simulator
   ["slider-vikar", "slider-overtid", "slider-omdisp"].forEach(id => {
     const el = document.getElementById(id);
     if (el) {

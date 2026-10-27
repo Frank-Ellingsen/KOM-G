@@ -228,6 +228,125 @@ body {
   border-color: var(--border-prominent);
 }
 
+/* Power BI Slicer Ribbon & Dynamic Filter Controls */
+.slicer-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.slicer-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.5rem;
+}
+
+.slicer-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.slicer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.slicer-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.slicer-label {
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+.slicer-select {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-prominent);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.slicer-select:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+.filter-context-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--border-subtle);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.active-filters-list {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-prominent);
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.filter-chip strong {
+  color: var(--accent-cyan);
+}
+
+.filter-chip-remove {
+  cursor: pointer;
+  font-weight: 700;
+  margin-left: 0.2rem;
+  opacity: 0.6;
+}
+
+.filter-chip-remove:hover {
+  opacity: 1;
+  color: var(--variance-neg);
+}
+
 /* Main Container */
 .main-content {
   flex: 1;
