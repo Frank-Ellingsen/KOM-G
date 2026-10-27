@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v02_diverging_butterfly",
   "position": {
-    "x": 965,
-    "y": 630,
-    "z": 10,
-    "width": 935,
-    "height": 430,
-    "tabOrder": 10
+    "x": 950.1654846335698,
+    "y": 255.69739952718678,
+    "z": 1000,
+    "height": 372.19858156028369,
+    "width": 935.03546099290782,
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "columnChart",
@@ -67,6 +67,29 @@
           ]
         }
       }
+    },
+    "objects": {
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 9,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Måltall.FT_Time_Diverging_Deficit"
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [

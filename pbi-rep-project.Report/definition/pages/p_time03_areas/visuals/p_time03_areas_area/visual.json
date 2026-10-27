@@ -4,10 +4,10 @@
   "position": {
     "x": 20,
     "y": 220,
-    "z": 7,
-    "width": 925,
+    "z": 6000,
     "height": 840,
-    "tabOrder": 7
+    "width": 925,
+    "tabOrder": 6000
   },
   "visual": {
     "visualType": "areaChart",
@@ -67,6 +67,29 @@
           ]
         }
       }
+    },
+    "objects": {
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 9,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Måltall.Regnskap YTD"
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [

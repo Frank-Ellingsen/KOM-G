@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v_qa01_table_coverage",
   "position": {
-    "x": 20,
-    "y": 220,
-    "z": 7,
-    "width": 1880,
-    "height": 840,
-    "tabOrder": 7
+    "x": 13.031674208144796,
+    "y": 524.16289592760177,
+    "z": 6000,
+    "height": 521.26696832579182,
+    "width": 1253.9366515837103,
+    "tabOrder": 6000
   },
   "visual": {
     "visualType": "tableEx",
@@ -122,6 +122,23 @@
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Måltall"
+                  }
+                },
+                "Property": "QA Dekningsstatus Indikator"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
       }
     },
     "visualContainerObjects": {

@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "p_ft01_deviation_diverging",
   "position": {
-    "x": 20,
-    "y": 220,
-    "z": 7,
-    "width": 925,
-    "height": 840,
-    "tabOrder": 7
+    "x": 19.66903073286052,
+    "y": 314.70449172576832,
+    "z": 4000,
+    "height": 745.91016548463358,
+    "width": 925.95744680851067,
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "barChart",

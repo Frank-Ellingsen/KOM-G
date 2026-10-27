@@ -74,19 +74,19 @@ table dim_date
 
 		annotation UnderlyingDateTimeDataType = Date
 
-	column yyyy-mm
-		dataType: string
-		lineageTag: efb5a4ee-d227-4275-ba2d-db84cbf601ac
-		summarizeBy: none
-		sourceColumn: yyyy-mm
-
-		annotation SummarizationSetBy = Automatic
-
 	column Maned_Navn = dim_date[month]
 		dataType: string
 		lineageTag: 88719bc4-3b10-4366-a791-38374971c244
 		summarizeBy: none
 		sortByColumn: Maned_Nummer
+
+		annotation SummarizationSetBy = Automatic
+
+	column yyyy-mm
+		dataType: string
+		lineageTag: 170b735b-a29b-42fb-9d65-c05626580cc5
+		summarizeBy: none
+		sourceColumn: yyyy-mm
 
 		annotation SummarizationSetBy = Automatic
 
@@ -110,9 +110,19 @@ table dim_date
 				  #"Renamed columns" = Table.RenameColumns(#"Extracted first characters", {{"Maned_Navn", "month"}}),
 				  #"Inserted Replaced Text" = Table.AddColumn(#"Renamed columns", "Column9", each Text.Replace([#"yyyy-mm"], "2024-0", "M"), type text),
 				  #"Renamed columns 1" = Table.RenameColumns(#"Inserted Replaced Text", {{"Column9", "Mnr"}}),
-				  #"Removed columns 3" = Table.RemoveColumns(#"Renamed columns 1", {"Mnr"})
+				  #"Removed columns 3" = Table.RemoveColumns(#"Renamed columns 1", {"Mnr"}),
+				  #"Duplicated column 1" = Table.DuplicateColumn(#"Removed columns 3", "Maned_Nummer", "Maned_Nummer - Copy"),
+				  #"Changed column type 3" = Table.TransformColumnTypes(#"Duplicated column 1", {{"Maned_Nummer - Copy", type text}}),
+				  #"Duplicated column 2" = Table.DuplicateColumn(#"Changed column type 3", "Ar", "Ar - Copy"),
+				  #"Changed column type 4" = Table.TransformColumnTypes(#"Duplicated column 2", {{"Ar - Copy", type text}}),
+				  #"Inserted Merged Column" = Table.AddColumn(#"Changed column type 4", "Merged", each Text.Combine({[#"Ar - Copy"], "-0", [#"Maned_Nummer - Copy"]}), type text),
+				  #"Renamed columns 2" = Table.RenameColumns(#"Inserted Merged Column", {{"yyyy-mm", "yyyy-mmx"}, {"Merged", "yyyy-mm"}}),
+				  #"Removed columns 4" = Table.RemoveColumns(#"Renamed columns 2", {"yyyy-mmx", "Maned_Nummer - Copy", "Ar - Copy"}),
+				  #"Replaced value" = Table.ReplaceValue(#"Removed columns 4", "-010", "-10", Replacer.ReplaceText, {"yyyy-mm"}),
+				  #"Replaced value 1" = Table.ReplaceValue(#"Replaced value", "-011", "-11", Replacer.ReplaceText, {"yyyy-mm"}),
+				  #"Replaced value 2" = Table.ReplaceValue(#"Replaced value 1", "-012", "-12", Replacer.ReplaceText, {"yyyy-mm"})
 				in
-				  #"Removed columns 3"
+				  #"Replaced value 2"
 
 	annotation PBI_ResultType = Table
 

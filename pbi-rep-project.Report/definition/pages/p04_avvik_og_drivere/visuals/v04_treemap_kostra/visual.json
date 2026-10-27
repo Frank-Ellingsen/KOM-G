@@ -2,17 +2,35 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v04_treemap_kostra",
   "position": {
-    "x": 965,
-    "y": 190,
-    "z": 7,
-    "width": 935,
-    "height": 425,
-    "tabOrder": 7
+    "x": 965.29550827423179,
+    "y": 263.26241134751774,
+    "z": 4000,
+    "height": 385.81560283687946,
+    "width": 935.03546099290782,
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "treemap",
     "query": {
       "queryState": {
+        "Details": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_kostra_kontoplan"
+                    }
+                  },
+                  "Property": "Hovedgruppe_Kode_Navn"
+                }
+              },
+              "queryRef": "dim_kostra_kontoplan.Hovedgruppe_Kode_Navn",
+              "nativeQueryRef": "Hovedgruppe_Kode_Navn"
+            }
+          ]
+        },
         "Group": {
           "projections": [
             {
@@ -20,14 +38,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "dim_kostra_funksjon"
+                      "Entity": "dim_ansvar"
                     }
                   },
-                  "Property": "KOSTRA_Funksjonsgruppe_Navn"
+                  "Property": "Ansvar_Kode_Navn"
                 }
               },
-              "queryRef": "dim_kostra_funksjon.KOSTRA_Funksjonsgruppe_Navn",
-              "nativeQueryRef": "KOSTRA_Funksjonsgruppe_Navn",
+              "queryRef": "dim_ansvar.Ansvar_Kode_Navn",
+              "nativeQueryRef": "Ansvar_Kode_Navn",
               "active": true
             }
           ]

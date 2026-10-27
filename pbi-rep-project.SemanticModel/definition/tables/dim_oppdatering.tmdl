@@ -19,3 +19,4 @@ table dim_oppdatering
 				    Source
 
 	annotation PBI_ResultType = Table
+

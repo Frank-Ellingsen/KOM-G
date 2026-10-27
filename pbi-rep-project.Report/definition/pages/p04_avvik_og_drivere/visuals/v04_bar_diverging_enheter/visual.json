@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v04_bar_diverging_enheter",
   "position": {
-    "x": 20,
-    "y": 190,
-    "z": 6,
-    "width": 925,
-    "height": 425,
-    "tabOrder": 6
+    "x": 19.66903073286052,
+    "y": 263.26241134751774,
+    "z": 3000,
+    "height": 385.81560283687946,
+    "width": 924.44444444444446,
+    "tabOrder": 3000
   },
   "visual": {
     "visualType": "barChart",
@@ -52,6 +52,39 @@
           ]
         }
       }
+    },
+    "objects": {
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Måltall"
+                        }
+                      },
+                      "Property": "Avvik Bar Farge"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [

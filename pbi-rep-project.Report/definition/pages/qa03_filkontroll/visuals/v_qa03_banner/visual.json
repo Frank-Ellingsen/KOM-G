@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v_qa03_banner",
   "position": {
-    "x": 20,
-    "y": 20,
-    "z": 1,
-    "width": 1510,
-    "height": 75,
-    "tabOrder": 1
+    "x": 754.98817966903073,
+    "y": 0,
+    "z": 0,
+    "height": 313.19148936170217,
+    "width": 1165.0118203309694,
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "card",

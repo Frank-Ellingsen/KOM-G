@@ -2,15 +2,15 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v02_paired_col",
   "position": {
-    "x": 965,
-    "y": 190,
-    "z": 8,
-    "width": 935,
-    "height": 425,
-    "tabOrder": 8
+    "x": 0,
+    "y": 255.69739952718678,
+    "z": 0,
+    "height": 372.19858156028369,
+    "width": 935.03546099290782,
+    "tabOrder": 0
   },
   "visual": {
-    "visualType": "columnChart",
+    "visualType": "lineChart",
     "query": {
       "queryState": {
         "Category": {
@@ -46,8 +46,7 @@
                 }
               },
               "queryRef": "_Måltall.Sum Budsjett",
-              "nativeQueryRef": "Sum Budsjett",
-              "active": true
+              "nativeQueryRef": "Sum Budsjett"
             },
             {
               "field": {
@@ -61,12 +60,34 @@
                 }
               },
               "queryRef": "_Måltall.Sum Regnskap",
-              "nativeQueryRef": "Sum Regnskap",
-              "active": true
+              "nativeQueryRef": "Sum Regnskap"
             }
           ]
         }
       }
+    },
+    "objects": {
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 9,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Måltall.Sum Regnskap"
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [
@@ -90,5 +111,51 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "236fe30e1d0c8c2cb829",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_date"
+              }
+            },
+            "Property": "month"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "aae27e3b53dbc52646c4",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Måltall"
+              }
+            },
+            "Property": "Sum Budsjett"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "c8464a3316dbc72af468",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Måltall"
+              }
+            },
+            "Property": "Sum Regnskap"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

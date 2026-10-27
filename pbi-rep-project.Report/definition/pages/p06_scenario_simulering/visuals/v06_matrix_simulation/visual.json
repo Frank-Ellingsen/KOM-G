@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v06_matrix_simulation",
   "position": {
-    "x": 965,
-    "y": 190,
-    "z": 11,
-    "width": 935,
-    "height": 870,
-    "tabOrder": 11
+    "x": 19.051819184123485,
+    "y": 412.78941565600883,
+    "z": 7000,
+    "height": 647.76185226019845,
+    "width": 1862.8445424476295,
+    "tabOrder": 7000
   },
   "visual": {
     "visualType": "tableEx",
@@ -107,7 +107,39 @@
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Måltall"
+                  }
+                },
+                "Property": "Simulert Totale Tiltak Kr"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
       }
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [

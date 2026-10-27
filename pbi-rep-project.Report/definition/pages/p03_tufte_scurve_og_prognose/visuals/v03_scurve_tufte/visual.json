@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v03_scurve_tufte",
   "position": {
-    "x": 20,
-    "y": 190,
-    "z": 7,
-    "width": 1880,
-    "height": 430,
-    "tabOrder": 7
+    "x": 14.117647058823529,
+    "y": 635.29411764705878,
+    "z": 1000,
+    "height": 425.29411764705884,
+    "width": 910.58823529411768,
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "lineChart",
@@ -82,6 +82,48 @@
           ]
         }
       }
+    },
+    "objects": {
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 9,
+                      "Percent": 0.6
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Måltall.FT_Time_Cumulative_Actual"
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 3,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Måltall.FT_Time_Cumulative_Budget"
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [

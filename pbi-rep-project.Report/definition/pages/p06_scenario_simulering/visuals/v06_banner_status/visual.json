@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v06_banner_status",
   "position": {
-    "x": 20,
-    "y": 15,
-    "z": 1,
-    "width": 980,
-    "height": 65,
-    "tabOrder": 1
+    "x": 958.941565600882,
+    "y": 226.50496141124586,
+    "z": 0,
+    "height": 158.7651598676957,
+    "width": 922.954796030871,
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "card",

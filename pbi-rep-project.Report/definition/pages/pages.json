@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
   "pageOrder": [
-    "qa01_dekning_og_kompletthet",
-    "qa02_nokkelavstemming",
     "qa03_filkontroll",
-    "qa04_anomalikontroll",
+    "qa01_dekning_og_kompletthet",
     "p01_executive_summary",
     "p02_trend_og_tidsserie",
     "p04_avvik_og_drivere",
+    "787cb8c3ce10a1326f82",
+    "e3524985bc7aa3618575",
     "p03_tufte_scurve_og_prognose",
     "p05_pareto_og_korrelasjon",
     "p06_scenario_simulering",
@@ -31,5 +31,5 @@
     "p_time09_dots_sparklines",
     "p_time10_advanced_flows"
   ],
-  "activePageName": "qa01_dekning_og_kompletthet"
+  "activePageName": "p02_trend_og_tidsserie"
 }

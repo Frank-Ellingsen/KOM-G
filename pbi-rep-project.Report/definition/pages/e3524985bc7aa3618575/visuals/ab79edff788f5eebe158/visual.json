@@ -1,0 +1,146 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "ab79edff788f5eebe158",
+  "position": {
+    "x": 14.630541871921181,
+    "y": 281.97044334975368,
+    "z": 2,
+    "height": 711.57635467980288,
+    "width": 1895.3201970443349,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "keyDriversVisual",
+    "query": {
+      "queryState": {
+        "Details": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_kostra_kontoplan"
+                    }
+                  },
+                  "Property": "Kontonavn"
+                }
+              },
+              "queryRef": "dim_kostra_kontoplan.Kontonavn",
+              "nativeQueryRef": "Kontonavn"
+            }
+          ]
+        },
+        "ExplainBy": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_kostra_kontoplan"
+                    }
+                  },
+                  "Property": "KOSTRA_Art_Navn"
+                }
+              },
+              "queryRef": "dim_kostra_kontoplan.KOSTRA_Art_Navn",
+              "nativeQueryRef": "KOSTRA_Art_Navn"
+            }
+          ]
+        },
+        "Target": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Måltall"
+                    }
+                  },
+                  "Property": "Forbruk %"
+                }
+              },
+              "queryRef": "_Måltall.Forbruk %",
+              "nativeQueryRef": "Forbruk %"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Måltall"
+                  }
+                },
+                "Property": "Forbruk %"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "keyDrivers": [
+        {
+          "properties": {
+            "numericTargetSelectedKind": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "selectedAnalysis": {
+              "expr": {
+                "Literal": {
+                  "Value": "'topProfiles'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "f0106b9706a90e878b30",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_kostra_kontoplan"
+              }
+            },
+            "Property": "KOSTRA_Art_Navn"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "478cb2955e611a7029d2",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_kostra_kontoplan"
+              }
+            },
+            "Property": "Kontonavn"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

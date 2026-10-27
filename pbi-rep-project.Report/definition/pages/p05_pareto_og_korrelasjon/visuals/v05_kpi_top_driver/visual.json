@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v05_kpi_top_driver",
   "position": {
-    "x": 970,
-    "y": 90,
-    "z": 5,
-    "width": 450,
-    "height": 85,
-    "tabOrder": 5
+    "x": 19.411764705882355,
+    "y": 227.64705882352942,
+    "z": 0,
+    "height": 224.11764705882354,
+    "width": 543.52941176470586,
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "card",

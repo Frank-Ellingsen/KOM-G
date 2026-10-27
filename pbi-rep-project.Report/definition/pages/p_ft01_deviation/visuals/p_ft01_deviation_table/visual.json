@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "p_ft01_deviation_table",
   "position": {
-    "x": 965,
-    "y": 220,
-    "z": 8,
-    "width": 935,
-    "height": 840,
-    "tabOrder": 8
+    "x": 965.29550827423179,
+    "y": 314.70449172576832,
+    "z": 5000,
+    "height": 745.91016548463358,
+    "width": 935.03546099290782,
+    "tabOrder": 5000
   },
   "visual": {
     "visualType": "tableEx",

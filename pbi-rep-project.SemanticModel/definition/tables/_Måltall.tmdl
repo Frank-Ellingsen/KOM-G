@@ -753,6 +753,106 @@ table _Måltall
 		displayFolder: 11. DQA Kontroller
 		lineageTag: c4438290-68e5-4974-82b7-031b518dc140
 
+	measure 'Txt Valgt Tjeneste og Funksjon' = ```
+			
+			VAR _TjenesteAntall = COUNTROWS ( VALUES ( 'dim_kostra_funksjon'[Tjenesteomrade_Kode_Navn] ) )
+			VAR _TjenesteTotalt = CALCULATE ( COUNTROWS ( VALUES ( 'dim_kostra_funksjon'[Tjenesteomrade_Kode_Navn] ) ), ALL ( 'dim_kostra_funksjon' ) )
+			
+			VAR _TjenesteTekst = 
+			    IF (
+			        NOT ISFILTERED ( 'dim_kostra_funksjon'[Tjenesteomrade_Kode_Navn] ) || _TjenesteAntall = _TjenesteTotalt,
+			        "Alle tjenesteområder",
+			        IF (
+			            _TjenesteAntall = 1,
+			            SELECTEDVALUE ( 'dim_kostra_funksjon'[Tjenesteomrade_Kode_Navn] ),
+			            _TjenesteAntall & " tjenesteområder valgt"
+			        )
+			    )
+			
+			VAR _FunksjonAntall = COUNTROWS ( VALUES ( 'dim_kostra_funksjon'[Funksjonsgruppe_Kode_Navn] ) )
+			VAR _FunksjonTotalt = CALCULATE ( COUNTROWS ( VALUES ( 'dim_kostra_funksjon'[Funksjonsgruppe_Kode_Navn] ) ), ALL ( 'dim_kostra_funksjon' ) )
+			
+			VAR _FunksjonTekst = 
+			    IF (
+			        NOT ISFILTERED ( 'dim_kostra_funksjon'[Funksjonsgruppe_Kode_Navn] ) || _FunksjonAntall = _FunksjonTotalt,
+			        "Alle funksjonsgrupper",
+			        IF (
+			            _FunksjonAntall = 1,
+			            SELECTEDVALUE ( 'dim_kostra_funksjon'[Funksjonsgruppe_Kode_Navn] ),
+			            _FunksjonAntall & " funksjonsgrupper valgt"
+			        )
+			    )
+			
+			RETURN
+			    "Tjenesteområde: " & _TjenesteTekst & " | Funksjonsgruppe: " & _FunksjonTekst
+			```
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: eadac840-db42-43b5-9d0c-6c766267ff4d
+
+	measure 'Dynamisk Rapportittel Komplett' = ```
+			
+			-- 1. Periode-kontekst
+			VAR _Ar = SELECTEDVALUE ( 'dim_date'[Ar], "2024" )
+			VAR _Maned = SELECTEDVALUE ( 'dim_date'[Maned_Navn], "Alle måneder" )
+			
+			-- 2. Tjenesteområde-kontekst
+			VAR _TjenesteAntall = COUNTROWS ( VALUES ( 'dim_kostra_funksjon'[Tjenesteomrade_Kode_Navn] ) )
+			VAR _TjenesteTotalt = CALCULATE ( COUNTROWS ( VALUES ( 'dim_kostra_funksjon'[Tjenesteomrade_Kode_Navn] ) ), ALL ( 'dim_kostra_funksjon' ) )
+			VAR _TjenesteTekst = 
+			    IF (
+			        NOT ISFILTERED ( 'dim_kostra_funksjon'[Tjenesteomrade_Kode_Navn] ) || _TjenesteAntall = _TjenesteTotalt,
+			        "Alle tjenesteområder",
+			        IF (
+			            _TjenesteAntall = 1,
+			            SELECTEDVALUE ( 'dim_kostra_funksjon'[Tjenesteomrade_Kode_Navn] ),
+			            _TjenesteAntall & " tjenesteområder"
+			        )
+			    )
+			
+			-- 3. Funksjonsgruppe-kontekst
+			VAR _FunksjonAntall = COUNTROWS ( VALUES ( 'dim_kostra_funksjon'[Funksjonsgruppe_Kode_Navn] ) )
+			VAR _FunksjonTotalt = CALCULATE ( COUNTROWS ( VALUES ( 'dim_kostra_funksjon'[Funksjonsgruppe_Kode_Navn] ) ), ALL ( 'dim_kostra_funksjon' ) )
+			VAR _FunksjonTekst = 
+			    IF (
+			        NOT ISFILTERED ( 'dim_kostra_funksjon'[Funksjonsgruppe_Kode_Navn] ) || _FunksjonAntall = _FunksjonTotalt,
+			        "Alle funksjonsgrupper",
+			        IF (
+			            _FunksjonAntall = 1,
+			            SELECTEDVALUE ( 'dim_kostra_funksjon'[Funksjonsgruppe_Kode_Navn] ),
+			            _FunksjonAntall & " funksjonsgrupper"
+			        )
+			    )
+			
+			-- 4. Finansiell status
+			VAR _AvvikBelop = FORMAT ( [Avvik Kr], "#,##0 NOK;-#,##0 NOK;0 NOK" )
+			VAR _StatusIkon = [Status Indikator]
+			
+			RETURN
+			    "Status " & _Ar & " (" & _Maned & ") — " & _TjenesteTekst & " / " & _FunksjonTekst & " | Avvik: " & _AvvikBelop & " " & _StatusIkon
+			```
+		displayFolder: 07. Dynamisk Tekst
+		lineageTag: 52641603-d110-46db-b676-4f3a9ff17825
+
+	measure 'abs Avvik' = ABS([Avvik Kr])
+		formatString: #,0
+		displayFolder: 01. Kjerne
+		lineageTag: f0b97021-9b0d-4f96-ba19-f7d62e2066d4
+
+	measure 'abs Avvik %' = ABS([Avvik %])
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 01. Kjerne
+		lineageTag: 19a76d31-fc23-4b1a-ac55-48a154fa06fb
+
+	measure 'Max avvik %' = 1.2
+		formatString: 0
+		displayFolder: 01. Kjerne
+		lineageTag: b1a1ba9f-baf4-41c0-8fe3-f938914cdaf7
+
+	measure 'Target Avvik %' = 1
+		formatString: 0
+		displayFolder: 01. Kjerne
+		lineageTag: 31f9c871-2668-4e58-8419-9f4fcbdb1c7e
+
 	column Dummy
 		dataType: string
 		isHidden

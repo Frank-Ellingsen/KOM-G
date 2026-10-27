@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v_qa01_banner",
   "position": {
-    "x": 20,
-    "y": 20,
-    "z": 1,
-    "width": 1510,
-    "height": 75,
-    "tabOrder": 1
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "height": 282.35294117647061,
+    "width": 1254.7058823529412,
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "card",
@@ -23,12 +23,11 @@
                       "Entity": "_Måltall"
                     }
                   },
-                  "Property": "Dynamisk Rapporttittel"
+                  "Property": "Dynamisk Rapportittel Komplett"
                 }
               },
-              "queryRef": "_Måltall.Dynamisk Rapporttittel",
-              "nativeQueryRef": "Dynamisk Rapporttittel",
-              "active": true
+              "queryRef": "_Måltall.Dynamisk Rapportittel Komplett",
+              "nativeQueryRef": "Dynamisk Rapportittel Komplett"
             }
           ]
         }

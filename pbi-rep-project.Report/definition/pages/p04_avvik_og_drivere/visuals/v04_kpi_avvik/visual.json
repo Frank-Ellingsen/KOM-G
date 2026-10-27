@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "v04_kpi_avvik",
   "position": {
-    "x": 20,
-    "y": 90,
-    "z": 3,
-    "width": 615,
-    "height": 85,
-    "tabOrder": 3
+    "x": 965.79185520361989,
+    "y": 44.886877828054295,
+    "z": 0,
+    "height": 205.61085972850677,
+    "width": 321.447963800905,
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "card",
@@ -33,6 +33,21 @@
           ]
         }
       }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1000D"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [
