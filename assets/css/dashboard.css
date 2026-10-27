@@ -504,48 +504,82 @@ body {
 
 .panel-toolbar {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .btn-pill {
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-family: var(--font-mono);
-  padding: 0.25rem 0.6rem;
+  padding: 0.25rem 0.55rem;
   border-radius: 9999px;
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
   cursor: pointer;
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
-.btn-pill.active, .btn-pill:hover {
+.btn-pill.active {
   background: var(--accent-blue);
   color: #ffffff;
   border-color: var(--accent-blue);
+  font-weight: 600;
+}
+
+.btn-pill:hover:not(.active) {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
 }
 
 /* SVG Chart Container */
 .chart-container {
   width: 100%;
   position: relative;
-  min-height: 280px;
+  min-height: 310px;
 }
 
 .tufte-svg {
   width: 100%;
-  height: 280px;
+  height: 310px;
   overflow: visible;
+  display: block;
 }
 
 .chart-legend-direct {
   display: flex;
   justify-content: flex-end;
-  gap: 1.5rem;
+  gap: 1.25rem;
   margin-top: 0.75rem;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   font-family: var(--font-mono);
   color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.card-open-visual-btn {
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all var(--transition-fast);
+  margin-top: 0.3rem;
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+.card-open-visual-btn:hover {
+  background: var(--accent-cyan);
+  color: #0f172a;
 }
 
 .legend-item {

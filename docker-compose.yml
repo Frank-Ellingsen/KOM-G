@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: kostra_streamlit_app
+    ports:
+      - "8501:8501"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - SPIDER_API_KEY=${SPIDER_API_KEY}
+      - SERPER_API_KEY=${SERPER_API_KEY}
+      - DUCKDB_PATH=/app/data/kostra.duckdb
+    volumes:
+      - ./data:/app/data
+      - ./chroma_db:/app/chroma_db
+      - ./models:/app/models
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  mlflow:
+    build: .
+    container_name: kostra_mlflow_server
+    command: mlflow ui --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:////app/data/mlflow.db
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data
+      - ./mlruns:/app/mlruns
+    restart: unless-stopped

@@ -265,16 +265,20 @@
     <!-- Two-Column Financial Layout: S-Curve & What-If Simulator -->
     <section class="content-grid-2col">
       
-      <!-- Panel 1: S-Curve & Time Series -->
+      <!-- Panel 1: Tufte Visualiseringsstudio & Anbefalte Visuals -->
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title-wrap">
-            <h2>📈 Tufte S-Kurve & Akkumulert Forbruk</h2>
-            <div class="panel-subtitle">Direkte etiketter på endepunkter, null gitterlinjer, kNOK akkumulert Jan–Aug 2024</div>
+            <h2 id="chart-main-title">📈 Tufte S-Kurve & Akkumulert Forbruk</h2>
+            <div class="panel-subtitle" id="chart-main-subtitle">Direkte etiketter på endepunkter, null gitterlinjer, kNOK akkumulert Jan–Aug 2024</div>
           </div>
-          <div class="panel-toolbar">
-            <button id="btn-chart-scurve" class="btn-pill active">S-Kurve (Kumulativ)</button>
-            <button id="btn-chart-monthly" class="btn-pill">Månedlig (Isolert)</button>
+          <div class="panel-toolbar" id="chart-view-selector">
+            <button id="btn-chart-scurve" class="btn-pill active" data-mode="scurve" title="Time 05: Tufte S-Kurve">📈 S-Kurve</button>
+            <button id="btn-chart-monthly" class="btn-pill" data-mode="monthly" title="Time 06: Månedskolonner">📊 Månedlig</button>
+            <button id="btn-chart-diverging" class="btn-pill" data-mode="diverging" title="FT 01: Diverging Bars (Deviation)">⚖️ FT 01: Avvik</button>
+            <button id="btn-chart-lollipop" class="btn-pill" data-mode="lollipop" title="Time 07 / FT 03: Lollipop med Toleransegrenser">🍭 Time 07: Lollipops</button>
+            <button id="btn-chart-waterfall" class="btn-pill" data-mode="waterfall" title="Time 10: Budsjett til EAC Avviksvannfall">🌊 Time 10: Waterfall</button>
+            <button id="btn-chart-slope" class="btn-pill" data-mode="slope" title="Time 08: Slopegraph M01 vs M08 Endring">📐 Time 08: Slopegraph</button>
           </div>
         </div>
 
@@ -282,19 +286,8 @@
           <!-- Dynamic SVG injected by assets/js/dashboard.js -->
         </div>
 
-        <div class="chart-legend-direct">
-          <div class="legend-item">
-            <div class="legend-line" style="background:#38bdf8;"></div>
-            <span>Faktisk Regnskap (31 524,9 k)</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-line" style="background:#64748b; border: 1px dashed #64748b;"></div>
-            <span>Budsjettramme (29 295,2 k)</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-line" style="background:rgba(244,63,94,0.4);"></div>
-            <span>Areal: Merforbruk</span>
-          </div>
+        <div id="chart-legend-container" class="chart-legend-direct">
+          <!-- Dynamic direct legend injected by assets/js/dashboard.js -->
         </div>
       </div>
 

@@ -152,17 +152,21 @@ function calculateAggregates(records) {
 
     // Drivere
     if (!accountMap[accCode]) {
-      accountMap[accCode] = { code: accCode, name: accName, sector: sector, budget: 0, actual: 0 };
+      accountMap[accCode] = { code: accCode, name: accName, sector: sector, budget: 0, actual: 0, m01: 0, m08: 0, cat: r[6] };
     }
     accountMap[accCode].budget += b;
     accountMap[accCode].actual += a;
+    if (m === 1) accountMap[accCode].m01 += a;
+    if (m === 8) accountMap[accCode].m08 += a;
 
     // Funksjoner
     if (!funcMap[funcCode]) {
-      funcMap[funcCode] = { code: funcCode, name: funcName, sector: sector, budget: 0, actual: 0 };
+      funcMap[funcCode] = { code: funcCode, name: funcName, sector: sector, budget: 0, actual: 0, m01: 0, m08: 0 };
     }
     funcMap[funcCode].budget += b;
     funcMap[funcCode].actual += a;
+    if (m === 1) funcMap[funcCode].m01 += a;
+    if (m === 8) funcMap[funcCode].m08 += a;
 
     // Simulator baser (siste måned m=8 eller gjennomsnitt)
     if (accCode === 127040 && (activeFilters.month === "ytd" ? m === 8 : true)) {
@@ -200,6 +204,42 @@ function calculateAggregates(records) {
     variance: f.budget - f.actual
   })).sort((a, b) => a.variance - b.variance);
 
+  // Time 08: Slope Data (Januar M01 vs August M08)
+  const slopeData = Object.values(funcMap)
+    .filter(f => (f.m01 > 0 || f.m08 > 0))
+    .map(f => {
+      const diff = f.m08 - f.m01;
+      const pct = f.m01 > 0 ? (diff / f.m01) * 100 : (f.m08 > 0 ? 100 : 0);
+      return { ...f, diff, pct };
+    })
+    .sort((a, b) => b.m08 - a.m08)
+    .slice(0, 6);
+
+  // Time 10: Financial Waterfall Steps (Budget -> Variance Drivers -> Actual)
+  const fastlonnVar = (accountMap[101000]?.budget || 0) - (accountMap[101000]?.actual || 0);
+  const vikarbyraVar = (accountMap[127040]?.budget || 0) - (accountMap[127040]?.actual || 0);
+  const overtidVar = (accountMap[104000]?.budget || 0) - (accountMap[104000]?.actual || 0);
+  const vikarKortVar = (accountMap[102013]?.budget || 0) - (accountMap[102013]?.actual || 0);
+  
+  let refVar = 0;
+  records.forEach(r => {
+    if (r[6] === "Refusjoner") refVar += (r[7] - r[8]);
+  });
+
+  const capturedVar = fastlonnVar + vikarbyraVar + overtidVar + vikarKortVar + refVar;
+  const ovrigVar = totalVariance - capturedVar;
+
+  const waterfallSteps = [
+    { name: "Budsjett YTD", amount: totalBudget, delta: totalBudget, isAnchor: true, color: "#64748b" },
+    { name: "Fastlønn (101)", amount: fastlonnVar, delta: fastlonnVar, isAnchor: false, color: fastlonnVar < 0 ? "#f43f5e" : "#10b981" },
+    { name: "Vikarbyrå (127)", amount: vikarbyraVar, delta: vikarbyraVar, isAnchor: false, color: vikarbyraVar < 0 ? "#f43f5e" : "#10b981" },
+    { name: "Overtid (104)", amount: overtidVar, delta: overtidVar, isAnchor: false, color: overtidVar < 0 ? "#f43f5e" : "#10b981" },
+    { name: "Korttidsvikar", amount: vikarKortVar, delta: vikarKortVar, isAnchor: false, color: vikarKortVar < 0 ? "#f43f5e" : "#10b981" },
+    { name: "Refusjoner", amount: refVar, delta: refVar, isAnchor: false, color: refVar < 0 ? "#f43f5e" : "#10b981" },
+    { name: "Øvrig drift", amount: ovrigVar, delta: ovrigVar, isAnchor: false, color: ovrigVar < 0 ? "#f43f5e" : "#10b981" },
+    { name: "Regnskap YTD", amount: totalActual, delta: totalActual, isAnchor: true, color: "#38bdf8" }
+  ];
+
   return {
     totalBudget,
     totalActual,
@@ -214,6 +254,8 @@ function calculateAggregates(records) {
     monthly,
     drivers,
     functions,
+    slopeData,
+    waterfallSteps,
     vikarbyraMonthlyBase,
     overtidMonthlyBase,
     recordCount: records.length
@@ -359,101 +401,434 @@ function updateKpiCards(aggs) {
   }
 }
 
-// 6. Rendrer Tufte S-Kurve eller Månedlige Stolper dynamisk
+// 6. Rendrer valgt Tufte/FT Visual dynamisk
 function renderSvgChart() {
   const container = document.getElementById("tufte-chart-container");
   if (!container || !latestAggregates) return;
 
-  const width = container.clientWidth || 700;
-  const height = 280;
-  const padding = { top: 35, right: 140, bottom: 35, left: 60 };
+  // Dynamisk tittel, undertittel og tegnforklaring
+  updateChartHeadersAndLegend();
 
+  const width = container.clientWidth || 700;
+  const isTall = currentChartMode === "diverging" || currentChartMode === "lollipop" || currentChartMode === "waterfall";
+  const height = isTall ? 320 : 280;
+  const padding = { top: 38, right: 140, bottom: 35, left: 60 };
+
+  if (currentChartMode === "scurve") {
+    renderScurveChart(container, latestAggregates, width, height, padding);
+  } else if (currentChartMode === "monthly") {
+    renderMonthlyChart(container, latestAggregates, width, height, padding);
+  } else if (currentChartMode === "diverging") {
+    renderDivergingChart(container, latestAggregates, width, height, padding);
+  } else if (currentChartMode === "lollipop") {
+    renderLollipopChart(container, latestAggregates, width, height, padding);
+  } else if (currentChartMode === "waterfall") {
+    renderWaterfallChart(container, latestAggregates, width, height, padding);
+  } else if (currentChartMode === "slope") {
+    renderSlopegraphChart(container, latestAggregates, width, height, padding);
+  }
+}
+
+// 6a. Oppdater tittel, undertittel og direkte tegnforklaring
+function updateChartHeadersAndLegend() {
+  const titleEl = document.getElementById("chart-main-title");
+  const subEl = document.getElementById("chart-main-subtitle");
+  const legendEl = document.getElementById("chart-legend-container");
+
+  const meta = {
+    scurve: {
+      title: "📈 Tufte S-Kurve & Akkumulert Forbruk (Time 05)",
+      sub: "Direkte etiketter på endepunkter, null vertikale gitterlinjer, kNOK akkumulert Jan–Aug 2024",
+      legend: `
+        <div class="legend-item"><div class="legend-line" style="background:#38bdf8;"></div><span>Faktisk Regnskap (${formatNok(latestAggregates.totalActual)} k)</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:#64748b; border:1px dashed #64748b;"></div><span>Budsjettramme (${formatNok(latestAggregates.totalBudget)} k)</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:rgba(244,63,94,0.4);"></div><span>Areal: Merforbruk (${formatNok(Math.abs(Math.min(0, latestAggregates.totalVariance)))} k)</span></div>
+      `
+    },
+    monthly: {
+      title: "📊 Månedlig Forbruk & Avvik (Time 06)",
+      sub: "Grupperte månedskolonner: Budsjett vs. Faktisk regnskap isolert per måned (kNOK)",
+      legend: `
+        <div class="legend-item"><div class="legend-line" style="background:#64748b;"></div><span>Budsjettramme</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:#38bdf8;"></div><span>Regnskap (Innen ramme)</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:#f43f5e;"></div><span>Regnskap (Merforbruk)</span></div>
+      `
+    },
+    diverging: {
+      title: "⚖️ FT 01: Divergerende Avviksstolper (Deviation / Avvik mot null)",
+      sub: "Sentrert rundt 0 kNOK: Røde stolper til venstre viser merforbruk, grønne til høyre viser mindreforbruk",
+      legend: `
+        <div class="legend-item"><div class="legend-line" style="background:#f43f5e;"></div><span>Merforbruk (Overskridelse)</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:#10b981;"></div><span>Mindreforbruk (Innsparing)</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:var(--border-prominent);"></div><span>0-Aksen (Balanse)</span></div>
+      `
+    },
+    lollipop: {
+      title: "🍭 Time 07: Lollipop Chart & Toleranseterskler (Ranking & Limits)",
+      sub: "Forbruksgrad i % av budsjett for sentrale kostnadsdrivere med stiplede referanselinjer for risikonivå",
+      legend: `
+        <div class="legend-item"><div class="legend-line" style="background:#10b981;"></div><span>Under 100 % (OK)</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:#f59e0b;"></div><span>100–110 % (Varsel)</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:#f43f5e;"></div><span>Over 110 % (Kritisk)</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:#f43f5e; border-top:1px dashed #f43f5e;"></div><span>110% Terskel</span></div>
+      `
+    },
+    waterfall: {
+      title: "🌊 Time 10: Avviksvannfall & EAC Bridge (Budget to Actuals)",
+      sub: "Trinnvis forklaring av avviksbroen fra opprinnelig budsjettramme til faktisk regnskap og prognosert årsslutt",
+      legend: `
+        <div class="legend-item"><div class="legend-line" style="background:#64748b;"></div><span>Budsjettramme (Start)</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:#f43f5e;"></div><span>Kostnadsøkning (Merforbruk)</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:#10b981;"></div><span>Innsparing / Refusjon</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:#38bdf8;"></div><span>Faktisk Regnskap YTD</span></div>
+      `
+    },
+    slope: {
+      title: "📐 Time 08: Slopegraph / Hellingsgraf (M01 vs M08 Endringsanalyse)",
+      sub: "Tufte hellingsanalyse: Sammenligner Januar (M01) mot August (M08) for å avsløre kostnadsakselerasjon",
+      legend: `
+        <div class="legend-item"><div class="legend-line" style="background:#f43f5e;"></div><span>Kraftig akselerasjon (> +15 %)</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:#38bdf8;"></div><span>Moderat vekst (0 til +15 %)</span></div>
+        <div class="legend-item"><div class="legend-line" style="background:#10b981;"></div><span>Reduksjon / Innsparing (< 0 %)</span></div>
+      `
+    }
+  };
+
+  const curr = meta[currentChartMode] || meta.scurve;
+  if (titleEl) titleEl.innerText = curr.title;
+  if (subEl) subEl.innerText = curr.sub;
+  if (legendEl) legendEl.innerHTML = curr.legend;
+}
+
+// 6b. Visual 1: S-Kurve (Time 05 Running Totals)
+function renderScurveChart(container, aggs, width, height, padding) {
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+  const monthly = aggs.monthly;
+
+  let cumB = 0, cumA = 0;
+  const cumData = monthly.map(m => {
+    cumB += m.budget;
+    cumA += m.actual;
+    return { month: m.month, cumBudget: cumB, cumActual: cumA };
+  });
+
+  const maxVal = Math.max(1000, Math.max(...cumData.map(d => Math.max(d.cumActual, d.cumBudget)))) * 1.15;
+  const getX = (i) => padding.left + (i / Math.max(1, cumData.length - 1)) * chartW;
+  const getY = (val) => padding.top + chartH - (val / maxVal) * chartH;
+
+  const budgetPoints = cumData.map((d, i) => `${getX(i)},${getY(d.cumBudget)}`).join(" ");
+  const actualPoints = cumData.map((d, i) => `${getX(i)},${getY(d.cumActual)}`).join(" ");
+  const areaPoints = `${cumData.map((d, i) => `${getX(i)},${getY(d.cumActual)}`).join(" ")} ` +
+                     `${cumData.slice().reverse().map((d, i) => `${getX(cumData.length - 1 - i)},${getY(d.cumBudget)}`).join(" ")}`;
+
+  const last = cumData[cumData.length - 1];
+  const lastX = getX(cumData.length - 1);
+  const lastY_B = getY(last.cumBudget);
+  const lastY_A = getY(last.cumActual);
+
+  const gridStep = maxVal > 20000 ? 10000 : maxVal > 10000 ? 5000 : 2000;
+  const gridLines = [];
+  for (let g = gridStep; g < maxVal; g += gridStep) {
+    gridLines.push(`
+      <line x1="${padding.left}" y1="${getY(g)}" x2="${padding.left + chartW}" y2="${getY(g)}" stroke="var(--border-subtle)" stroke-dasharray="3,3" />
+      <text x="${padding.left - 8}" y="${getY(g) + 4}" fill="var(--text-muted)" font-size="10" font-family="var(--font-mono)" text-anchor="end">${(g/1000).toFixed(0)}k</text>
+    `);
+  }
+
+  container.innerHTML = `
+    <svg class="tufte-svg" viewBox="0 0 ${width} ${height}">
+      ${gridLines.join("")}
+      <polygon points="${areaPoints}" fill="rgba(244, 63, 94, 0.12)" />
+      <polyline points="${budgetPoints}" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="4,4" />
+      <polyline points="${actualPoints}" fill="none" stroke="#38bdf8" stroke-width="3" />
+      ${cumData.map((d, i) => `
+        <circle cx="${getX(i)}" cy="${getY(d.cumActual)}" r="4" fill="#38bdf8" />
+      `).join("")}
+      ${cumData.map((d, i) => `
+        <text x="${getX(i)}" y="${height - 12}" fill="var(--text-muted)" font-size="11" font-family="var(--font-mono)" text-anchor="middle">${d.month.split(" ")[0]}</text>
+      `).join("")}
+      <text x="${lastX + 10}" y="${lastY_A + 3}" fill="#38bdf8" font-size="11" font-family="var(--font-mono)" font-weight="600">
+        Regnskap: ${formatNok(last.cumActual)} k
+      </text>
+      <text x="${lastX + 10}" y="${lastY_B + 15}" fill="#94a3b8" font-size="11" font-family="var(--font-mono)">
+        Budsjett: ${formatNok(last.cumBudget)} k
+      </text>
+    </svg>
+  `;
+}
+
+// 6c. Visual 2: Månedlig (Time 06 Bars & Columns)
+function renderMonthlyChart(container, aggs, width, height, padding) {
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+  const monthly = aggs.monthly;
+
+  const maxBar = Math.max(100, Math.max(...monthly.map(m => Math.max(m.budget, m.actual)))) * 1.15;
+  const barGroupW = chartW / monthly.length;
+  const barW = Math.max(8, (barGroupW - 14) / 2);
+  const getY = (val) => padding.top + chartH - (val / maxBar) * chartH;
+
+  container.innerHTML = `
+    <svg class="tufte-svg" viewBox="0 0 ${width} ${height}">
+      ${monthly.map((m, i) => {
+        const groupX = padding.left + i * barGroupW + 7;
+        const hBudget = Math.max(0, chartH - (getY(m.budget) - padding.top));
+        const hActual = Math.max(0, chartH - (getY(m.actual) - padding.top));
+        const isOver = m.actual > m.budget;
+        const actualColor = isOver ? "var(--variance-neg)" : "var(--accent-cyan)";
+
+        return `
+          <rect x="${groupX}" y="${getY(m.budget)}" width="${barW}" height="${hBudget}" fill="#64748b" opacity="0.6" rx="2" />
+          <rect x="${groupX + barW + 2}" y="${getY(m.actual)}" width="${barW}" height="${hActual}" fill="${actualColor}" rx="2" />
+          <text x="${groupX + barW}" y="${height - 12}" fill="var(--text-muted)" font-size="10" font-family="var(--font-mono)" text-anchor="middle">${m.month.split(" ")[0]}</text>
+          <text x="${groupX + barW + 2 + barW/2}" y="${getY(m.actual) - 4}" fill="${actualColor}" font-size="9" font-family="var(--font-mono)" text-anchor="middle">${formatNok(m.actual, 0)}</text>
+        `;
+      }).join("")}
+    </svg>
+  `;
+}
+
+// 6d. Visual 3: FT 01 Diverging Bar Chart (Deviation mot 0-aksen)
+function renderDivergingChart(container, aggs, width, height, padding) {
   const chartW = width - padding.left - padding.right;
   const chartH = height - padding.top - padding.bottom;
 
-  const monthly = latestAggregates.monthly;
-
-  if (currentChartMode === "scurve") {
-    // Kumulativ beregning
-    let cumB = 0, cumA = 0;
-    const cumData = monthly.map(m => {
-      cumB += m.budget;
-      cumA += m.actual;
-      return { month: m.month, cumBudget: cumB, cumActual: cumA };
-    });
-
-    const maxVal = Math.max(1000, Math.max(...cumData.map(d => Math.max(d.cumActual, d.cumBudget)))) * 1.15;
-
-    const getX = (i) => padding.left + (i / Math.max(1, cumData.length - 1)) * chartW;
-    const getY = (val) => padding.top + chartH - (val / maxVal) * chartH;
-
-    const budgetPoints = cumData.map((d, i) => `${getX(i)},${getY(d.cumBudget)}`).join(" ");
-    const actualPoints = cumData.map((d, i) => `${getX(i)},${getY(d.cumActual)}`).join(" ");
-
-    const areaPoints = `${cumData.map((d, i) => `${getX(i)},${getY(d.cumActual)}`).join(" ")} ` +
-                       `${cumData.slice().reverse().map((d, i) => `${getX(cumData.length - 1 - i)},${getY(d.cumBudget)}`).join(" ")}`;
-
-    const last = cumData[cumData.length - 1];
-    const lastX = getX(cumData.length - 1);
-    const lastY_B = getY(last.cumBudget);
-    const lastY_A = getY(last.cumActual);
-
-    // Dynamic grid step
-    const gridStep = maxVal > 20000 ? 10000 : maxVal > 10000 ? 5000 : 2000;
-    const gridLines = [];
-    for (let g = gridStep; g < maxVal; g += gridStep) {
-      gridLines.push(`
-        <line x1="${padding.left}" y1="${getY(g)}" x2="${padding.left + chartW}" y2="${getY(g)}" stroke="var(--border-subtle)" stroke-dasharray="3,3" />
-        <text x="${padding.left - 8}" y="${getY(g) + 4}" fill="var(--text-muted)" font-size="10" font-family="var(--font-mono)" text-anchor="end">${(g/1000).toFixed(0)}k</text>
-      `);
-    }
-
-    container.innerHTML = `
-      <svg class="tufte-svg" viewBox="0 0 ${width} ${height}">
-        ${gridLines.join("")}
-        <polygon points="${areaPoints}" fill="rgba(244, 63, 94, 0.12)" />
-        <polyline points="${budgetPoints}" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="4,4" />
-        <polyline points="${actualPoints}" fill="none" stroke="#38bdf8" stroke-width="3" />
-        ${cumData.map((d, i) => `
-          <circle cx="${getX(i)}" cy="${getY(d.cumActual)}" r="4" fill="#38bdf8" />
-        `).join("")}
-        ${cumData.map((d, i) => `
-          <text x="${getX(i)}" y="${height - 12}" fill="var(--text-muted)" font-size="11" font-family="var(--font-mono)" text-anchor="middle">${d.month.split(" ")[0]}</text>
-        `).join("")}
-        <text x="${lastX + 10}" y="${lastY_A + 3}" fill="#38bdf8" font-size="11" font-family="var(--font-mono)" font-weight="600">
-          Regnskap: ${formatNok(last.cumActual)} k
-        </text>
-        <text x="${lastX + 10}" y="${lastY_B + 15}" fill="#94a3b8" font-size="11" font-family="var(--font-mono)">
-          Budsjett: ${formatNok(last.cumBudget)} k
-        </text>
-      </svg>
-    `;
-  } else {
-    // Monthly Isolated Bars
-    const maxBar = Math.max(100, Math.max(...monthly.map(m => Math.max(m.budget, m.actual)))) * 1.15;
-    const barGroupW = chartW / monthly.length;
-    const barW = Math.max(6, (barGroupW - 14) / 2);
-
-    const getY = (val) => padding.top + chartH - (val / maxBar) * chartH;
-
-    container.innerHTML = `
-      <svg class="tufte-svg" viewBox="0 0 ${width} ${height}">
-        ${monthly.map((m, i) => {
-          const groupX = padding.left + i * barGroupW + 7;
-          const hBudget = Math.max(0, chartH - (getY(m.budget) - padding.top));
-          const hActual = Math.max(0, chartH - (getY(m.actual) - padding.top));
-          const isOver = m.actual > m.budget;
-          const actualColor = isOver ? "var(--variance-neg)" : "var(--accent-cyan)";
-
-          return `
-            <rect x="${groupX}" y="${getY(m.budget)}" width="${barW}" height="${hBudget}" fill="#64748b" opacity="0.6" rx="2" />
-            <rect x="${groupX + barW + 2}" y="${getY(m.actual)}" width="${barW}" height="${hActual}" fill="${actualColor}" rx="2" />
-            <text x="${groupX + barW}" y="${height - 12}" fill="var(--text-muted)" font-size="10" font-family="var(--font-mono)" text-anchor="middle">${m.month.split(" ")[0]}</text>
-          `;
-        }).join("")}
-      </svg>
-    `;
+  // Bruk funksjoner (eller drivere hvis kun én funksjon er valgt)
+  const items = aggs.functions.length > 1 ? aggs.functions.slice(0, 8) : aggs.drivers.slice(0, 8);
+  if (items.length === 0) {
+    container.innerHTML = `<div style="text-align:center; padding:3rem; color:var(--text-muted);">Ingen data for valgt utvalg.</div>`;
+    return;
   }
+
+  const maxNeg = Math.max(50, Math.abs(Math.min(0, ...items.map(d => d.variance))));
+  const maxPos = Math.max(50, Math.max(0, ...items.map(d => d.variance)));
+  const totalDomain = maxNeg + maxPos;
+
+  const zeroX = padding.left + (maxNeg / totalDomain) * chartW;
+  const rowH = chartH / items.length;
+
+  container.innerHTML = `
+    <svg class="tufte-svg" viewBox="0 0 ${width} ${height}">
+      <!-- Zero Axis Header -->
+      <text x="${zeroX - 12}" y="${padding.top - 10}" fill="#f43f5e" font-size="11" font-family="var(--font-mono)" font-weight="600" text-anchor="end">← Merforbruk</text>
+      <text x="${zeroX + 12}" y="${padding.top - 10}" fill="#10b981" font-size="11" font-family="var(--font-mono)" font-weight="600" text-anchor="start">Mindreforbruk →</text>
+      
+      <!-- Zero Axis Line -->
+      <line x1="${zeroX}" y1="${padding.top}" x2="${zeroX}" y2="${padding.top + chartH}" stroke="var(--border-prominent)" stroke-width="2" />
+      <text x="${zeroX}" y="${padding.top + chartH + 18}" fill="var(--text-muted)" font-size="10" font-family="var(--font-mono)" text-anchor="middle">0 kNOK</text>
+
+      ${items.map((item, i) => {
+        const yCenter = padding.top + i * rowH + rowH / 2;
+        const barH = Math.max(12, Math.min(22, rowH - 8));
+        const barY = yCenter - barH / 2;
+        const v = item.variance;
+        const isNeg = v < 0;
+        const cleanName = item.name.length > 24 ? item.name.substring(0, 22) + ".." : item.name;
+
+        if (isNeg) {
+          const barW = (Math.abs(v) / totalDomain) * chartW;
+          const barX = zeroX - barW;
+          return `
+            <rect x="${barX}" y="${barY}" width="${barW}" height="${barH}" fill="#f43f5e" rx="3" />
+            <text x="${barX - 6}" y="${yCenter + 4}" fill="#f43f5e" font-size="11" font-family="var(--font-mono)" font-weight="600" text-anchor="end">${formatNok(v)} k</text>
+            <text x="${zeroX + 8}" y="${yCenter + 4}" fill="var(--text-secondary)" font-size="11" text-anchor="start">${cleanName} (${item.code})</text>
+          `;
+        } else {
+          const barW = (v / totalDomain) * chartW;
+          const barX = zeroX;
+          return `
+            <rect x="${barX}" y="${barY}" width="${barW}" height="${barH}" fill="#10b981" rx="3" />
+            <text x="${barX + barW + 6}" y="${yCenter + 4}" fill="#10b981" font-size="11" font-family="var(--font-mono)" font-weight="600" text-anchor="start">+${formatNok(v)} k</text>
+            <text x="${zeroX - 8}" y="${yCenter + 4}" fill="var(--text-secondary)" font-size="11" text-anchor="end">${cleanName} (${item.code})</text>
+          `;
+        }
+      }).join("")}
+    </svg>
+  `;
+}
+
+// 6e. Visual 4: Time 07 Lollipop Chart med Toleranseterskler
+function renderLollipopChart(container, aggs, width, height, padding) {
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+  const items = aggs.drivers.slice(0, 7);
+
+  if (items.length === 0) {
+    container.innerHTML = `<div style="text-align:center; padding:3rem; color:var(--text-muted);">Ingen kostnadsdrivere funnet.</div>`;
+    return;
+  }
+
+  const labelMargin = 160;
+  const plotW = chartW - labelMargin - 20;
+
+  // Beregn % for hver
+  const itemsWithPct = items.map(d => {
+    const pct = d.budget > 0 ? (d.actual / d.budget) * 100 : (d.actual > 0 ? 135 : 0);
+    return { ...d, pct };
+  });
+
+  const maxPct = Math.min(220, Math.max(130, Math.max(...itemsWithPct.map(d => d.pct)) * 1.1));
+  const getX = (p) => padding.left + labelMargin + (Math.min(maxPct, p) / maxPct) * plotW;
+
+  const x80 = getX(80);
+  const x100 = getX(100);
+  const x110 = getX(110);
+  const rowH = chartH / itemsWithPct.length;
+
+  container.innerHTML = `
+    <svg class="tufte-svg" viewBox="0 0 ${width} ${height}">
+      <!-- Threshold Reference Lines -->
+      <line x1="${x80}" y1="${padding.top}" x2="${x80}" y2="${padding.top + chartH}" stroke="#64748b" stroke-dasharray="3,3" stroke-width="1.5" />
+      <text x="${x80}" y="${padding.top - 8}" fill="#64748b" font-size="10" font-family="var(--font-mono)" text-anchor="middle">80% Buffer</text>
+
+      <line x1="${x100}" y1="${padding.top}" x2="${x100}" y2="${padding.top + chartH}" stroke="#94a3b8" stroke-dasharray="4,4" stroke-width="1.5" />
+      <text x="${x100}" y="${padding.top - 8}" fill="#94a3b8" font-size="10" font-family="var(--font-mono)" text-anchor="middle">100% Budsjett</text>
+
+      <line x1="${x110}" y1="${padding.top}" x2="${x110}" y2="${padding.top + chartH}" stroke="#f43f5e" stroke-dasharray="3,3" stroke-width="1.5" />
+      <text x="${x110}" y="${padding.top - 8}" fill="#f43f5e" font-size="10" font-family="var(--font-mono)" text-anchor="middle">110% Varsel</text>
+
+      <!-- Rows -->
+      ${itemsWithPct.map((item, i) => {
+        const yCenter = padding.top + i * rowH + rowH / 2;
+        const dotX = getX(item.pct);
+        const color = item.pct > 110 ? "#f43f5e" : item.pct > 100 ? "#f59e0b" : "#10b981";
+        const shortName = item.name.length > 20 ? item.name.substring(0, 19) + ".." : item.name;
+
+        return `
+          <!-- Label on left -->
+          <text x="${padding.left + labelMargin - 10}" y="${yCenter + 4}" fill="var(--text-primary)" font-size="11" text-anchor="end">
+            ${shortName} (${item.code})
+          </text>
+
+          <!-- Stem -->
+          <line x1="${padding.left + labelMargin}" y1="${yCenter}" x2="${dotX}" y2="${yCenter}" stroke="#475569" stroke-width="2" />
+
+          <!-- Circle Dot -->
+          <circle cx="${dotX}" cy="${yCenter}" r="6" fill="${color}" stroke="#0f172a" stroke-width="1.5" />
+
+          <!-- Value label -->
+          <text x="${dotX + 10}" y="${yCenter + 4}" fill="${color}" font-size="11" font-family="var(--font-mono)" font-weight="600">
+            ${item.budget > 0 ? item.pct.toFixed(1) + ' %' : 'Ubudsjettert'} (${formatNok(item.actual)} k)
+          </text>
+        `;
+      }).join("")}
+    </svg>
+  `;
+}
+
+// 6f. Visual 5: Time 10 Avviksvannfall (Waterfall Bridge Budsjett -> Regnskap -> EAC)
+function renderWaterfallChart(container, aggs, width, height, padding) {
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+  const steps = aggs.waterfallSteps;
+
+  if (!steps || steps.length === 0) return;
+
+  const maxVal = Math.max(1000, Math.max(aggs.totalBudget, aggs.totalActual)) * 1.25;
+  const getY = (val) => padding.top + chartH - (val / maxVal) * chartH;
+
+  const N = steps.length;
+  const colGap = 8;
+  const colW = Math.max(18, (chartW - (N - 1) * colGap) / N);
+
+  let running = aggs.totalBudget;
+
+  const renderedSteps = steps.map((step, i) => {
+    const x = padding.left + i * (colW + colGap);
+
+    if (step.isAnchor) {
+      const y = getY(step.amount);
+      const h = Math.max(4, (padding.top + chartH) - y);
+      running = step.amount;
+      return { ...step, x, y, h, topY: y, bottomY: padding.top + chartH, running };
+    } else {
+      const prevRunning = running;
+      running += Math.abs(step.delta); // Kostnadsøkning (merforbruk) legger seg på toppen av budsjett for å nå faktisk regnskap
+      const topVal = Math.max(prevRunning, running);
+      const botVal = Math.min(prevRunning, running);
+      const y = getY(topVal);
+      const h = Math.max(4, getY(botVal) - y);
+      return { ...step, x, y, h, topY: y, bottomY: getY(botVal), running };
+    }
+  });
+
+  container.innerHTML = `
+    <svg class="tufte-svg" viewBox="0 0 ${width} ${height}">
+      <!-- Connectors between steps -->
+      ${renderedSteps.map((s, i) => {
+        if (i === 0) return "";
+        const prev = renderedSteps[i - 1];
+        const lineY = prev.isAnchor ? prev.y : prev.topY;
+        return `<line x1="${prev.x + colW}" y1="${lineY}" x2="${s.x}" y2="${lineY}" stroke="#64748b" stroke-dasharray="2,2" stroke-width="1" />`;
+      }).join("")}
+
+      <!-- Columns & Labels -->
+      ${renderedSteps.map((s) => `
+        <rect x="${s.x}" y="${s.y}" width="${colW}" height="${s.h}" fill="${s.color}" rx="2" />
+        <text x="${s.x + colW / 2}" y="${s.y - 6}" fill="${s.color}" font-size="10" font-family="var(--font-mono)" font-weight="600" text-anchor="middle">
+          ${s.isAnchor ? formatNok(s.amount, 0) : (s.delta < 0 ? '-' : '+') + formatNok(Math.abs(s.delta), 0)}
+        </text>
+        <text x="${s.x + colW / 2}" y="${height - 12}" fill="var(--text-muted)" font-size="9" font-family="var(--font-mono)" text-anchor="middle">
+          ${s.name.split(" ")[0]}
+        </text>
+      `).join("")}
+    </svg>
+  `;
+}
+
+// 6g. Visual 6: Time 08 Slopegraph / Hellingsgraf (M01 vs M08)
+function renderSlopegraphChart(container, aggs, width, height, padding) {
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+  const items = aggs.slopeData;
+
+  if (!items || items.length === 0) {
+    container.innerHTML = `<div style="text-align:center; padding:3rem; color:var(--text-muted);">Ingen tidsrekkedata for M01 vs M08.</div>`;
+    return;
+  }
+
+  const x1 = padding.left + 150;
+  const x2 = width - padding.right - 110;
+  const maxVal = Math.max(100, Math.max(...items.map(d => Math.max(d.m01, d.m08)))) * 1.25;
+  const getY = (val) => padding.top + chartH - (val / maxVal) * chartH;
+
+  container.innerHTML = `
+    <svg class="tufte-svg" viewBox="0 0 ${width} ${height}">
+      <!-- Rail Headers -->
+      <text x="${x1}" y="${padding.top - 14}" fill="var(--text-secondary)" font-size="12" font-family="var(--font-mono)" text-anchor="middle" font-weight="600">Januar (M01)</text>
+      <text x="${x2}" y="${padding.top - 14}" fill="var(--text-secondary)" font-size="12" font-family="var(--font-mono)" text-anchor="middle" font-weight="600">August (M08)</text>
+
+      <!-- Vertical Rails -->
+      <line x1="${x1}" y1="${padding.top}" x2="${x1}" y2="${padding.top + chartH}" stroke="var(--border-prominent)" stroke-width="2" />
+      <line x1="${x2}" y1="${padding.top}" x2="${x2}" y2="${padding.top + chartH}" stroke="var(--border-prominent)" stroke-width="2" />
+
+      <!-- Slopes -->
+      ${items.map(item => {
+        const y1 = getY(item.m01);
+        const y2 = getY(item.m08);
+        const color = item.pct > 15 ? "#f43f5e" : item.pct >= 0 ? "#38bdf8" : "#10b981";
+        const shortName = item.name.length > 22 ? item.name.substring(0, 20) + ".." : item.name;
+
+        return `
+          <!-- Connecting Slope Line -->
+          <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2.5" />
+
+          <!-- Left Point & Label -->
+          <circle cx="${x1}" cy="${y1}" r="4" fill="${color}" />
+          <text x="${x1 - 10}" y="${y1 + 4}" fill="var(--text-secondary)" font-size="11" font-family="var(--font-mono)" text-anchor="end">
+            ${shortName} (${formatNok(item.m01)} k)
+          </text>
+
+          <!-- Right Point & Label -->
+          <circle cx="${x2}" cy="${y2}" r="4" fill="${color}" />
+          <text x="${x2 + 10}" y="${y2 + 4}" fill="${color}" font-size="11" font-family="var(--font-mono)" font-weight="600" text-anchor="start">
+            ${formatNok(item.m08)} k (${item.pct >= 0 ? '+' : ''}${item.pct.toFixed(0)}%)
+          </text>
+        `;
+      }).join("")}
+    </svg>
+  `;
 }
 
 // 7. Rendrer Kostnadsdrivere i tabell dynamisk
@@ -602,6 +977,32 @@ function applyFilters() {
   updateWhatIfSimulator();
 }
 
+// Mapping fra Power BI rapportside til aktiv visualiseringsmodus
+const PAGE_TO_MODE = {
+  "p04": "scurve",
+  "p_time05": "scurve",
+  "p_time06": "monthly",
+  "p_ft01": "diverging",
+  "p_ft03": "lollipop",
+  "p_time07": "lollipop",
+  "p06": "waterfall",
+  "p_time10": "waterfall",
+  "p_time08": "slope"
+};
+
+// 10b. Skift aktiv visualisering
+function setChartMode(mode) {
+  currentChartMode = mode;
+  document.querySelectorAll("#chart-view-selector button").forEach(b => {
+    if (b.getAttribute("data-mode") === mode) {
+      b.classList.add("active");
+    } else {
+      b.classList.remove("active");
+    }
+  });
+  renderSvgChart();
+}
+
 // 11. Power BI 25-Siders Rapportkatalog Filter & Render
 function renderCatalog(filterCat = "all") {
   const grid = document.getElementById("catalog-grid");
@@ -611,21 +1012,41 @@ function renderCatalog(filterCat = "all") {
     ? REPORT_PAGES 
     : REPORT_PAGES.filter(p => p.cat === filterCat);
 
-  grid.innerHTML = filtered.map(p => `
-    <div class="report-page-card">
-      <div class="card-top">
-        <span class="page-num-pill">${p.id}</span>
-        <span class="page-category-tag">${p.cat.toUpperCase()}</span>
+  grid.innerHTML = filtered.map(p => {
+    const targetMode = PAGE_TO_MODE[p.id];
+    const openBtn = targetMode 
+      ? `<button class="card-open-visual-btn" data-target-mode="${targetMode}">👁️ Vis i graf</button>` 
+      : "";
+
+    return `
+      <div class="report-page-card">
+        <div class="card-top">
+          <span class="page-num-pill">${p.id}</span>
+          <span class="page-category-tag">${p.cat.toUpperCase()}</span>
+        </div>
+        <div>
+          <h3 class="card-title">${p.title}</h3>
+          <p class="card-desc">${p.desc}</p>
+        </div>
+        <div class="card-visual-type">
+          <span>📊</span> ${p.visual}
+        </div>
+        ${openBtn}
       </div>
-      <div>
-        <h3 class="card-title">${p.title}</h3>
-        <p class="card-desc">${p.desc}</p>
-      </div>
-      <div class="card-visual-type">
-        <span>📊</span> ${p.visual}
-      </div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
+
+  // Bind klikk på åpne-knapper i kortene
+  grid.querySelectorAll(".card-open-visual-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const mode = btn.getAttribute("data-target-mode");
+      if (mode) {
+        setChartMode(mode);
+        const chartEl = document.getElementById("tufte-chart-container");
+        if (chartEl) chartEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+  });
 }
 
 // 12. Theme Switcher (Dark / Light)
@@ -728,25 +1149,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Vindu-skalering for SVG responsivitet
   window.addEventListener("resize", renderSvgChart);
 
-  // Chart Toggle Buttons
-  const btnScurve = document.getElementById("btn-chart-scurve");
-  const btnMonthly = document.getElementById("btn-chart-monthly");
-
-  if (btnScurve && btnMonthly) {
-    btnScurve.addEventListener("click", () => {
-      currentChartMode = "scurve";
-      btnScurve.classList.add("active");
-      btnMonthly.classList.remove("active");
-      renderSvgChart();
+  // Alle 6 Chart Toggle Knapper
+  document.querySelectorAll("#chart-view-selector button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const mode = btn.getAttribute("data-mode");
+      if (mode) setChartMode(mode);
     });
-
-    btnMonthly.addEventListener("click", () => {
-      currentChartMode = "monthly";
-      btnMonthly.classList.add("active");
-      btnScurve.classList.remove("active");
-      renderSvgChart();
-    });
-  }
+  });
 
   // Slider Events for What-If Simulator
   ["slider-vikar", "slider-overtid", "slider-omdisp"].forEach(id => {

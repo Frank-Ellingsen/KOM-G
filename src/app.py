@@ -9,6 +9,7 @@ import sys
 import duckdb
 import pandas as pd
 import streamlit as st
+import plotly.graph_objects as go
 
 # Tving UTF-8 på Windows
 if sys.platform.startswith("win"):
@@ -309,24 +310,180 @@ st.divider()
 col_chart, col_sim = st.columns([1.6, 1.0])
 
 with col_chart:
-    st.subheader("📈 Tufte S-Kurve (Akkumulert Utvikling)")
-    st.caption("Akkumulert budsjettramme vs faktisk regnskap Jan–Aug 2024")
-    
-    monthly_chart_df = filtered_df.groupby("m").agg(
-        b_sum=("b_knok", "sum"),
-        a_sum=("a_knok", "sum")
-    ).reset_index()
+    st.subheader("🎨 Anbefalte Visuals (FT Visual Guide & Time-Visuals 60)")
+    v_tab1, v_tab2, v_tab3, v_tab4, v_tab5 = st.tabs([
+        "📈 S-Kurve (Time 05)",
+        "⚖️ FT 01: Diverging Bars",
+        "🍭 Time 07: Lollipop Limits",
+        "🌊 Time 10: EAC Waterfall",
+        "📐 Time 08: Slopegraph"
+    ])
 
-    monthly_chart_df["Budsjett_Kumulativ"] = monthly_chart_df["b_sum"].cumsum()
-    monthly_chart_df["Regnskap_Kumulativ"] = monthly_chart_df["a_sum"].cumsum()
-    monthly_chart_df["Måned_Navn"] = monthly_chart_df["m"].map({
-        1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "Mai", 6: "Jun", 7: "Jul", 8: "Aug"
-    })
+    with v_tab1:
+        st.caption("Akkumulert budsjettramme vs faktisk regnskap Jan–Aug 2024 (Tufte S-kurve)")
+        monthly_chart_df = filtered_df.groupby("m").agg(
+            b_sum=("b_knok", "sum"),
+            a_sum=("a_knok", "sum")
+        ).reset_index()
 
-    st.line_chart(
-        data=monthly_chart_df.set_index("Måned_Navn")[["Regnskap_Kumulativ", "Budsjett_Kumulativ"]],
-        color=["#38bdf8", "#64748b"]
-    )
+        monthly_chart_df["Budsjett_Kumulativ"] = monthly_chart_df["b_sum"].cumsum()
+        monthly_chart_df["Regnskap_Kumulativ"] = monthly_chart_df["a_sum"].cumsum()
+        monthly_chart_df["Måned_Navn"] = monthly_chart_df["m"].map({
+            1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "Mai", 6: "Jun", 7: "Jul", 8: "Aug"
+        })
+
+        fig_sc = go.Figure()
+        fig_sc.add_trace(go.Scatter(
+            x=monthly_chart_df["Måned_Navn"], y=monthly_chart_df["Budsjett_Kumulativ"],
+            mode="lines+markers", name="Budsjett", line=dict(color="#64748b", dash="dash", width=2)
+        ))
+        fig_sc.add_trace(go.Scatter(
+            x=monthly_chart_df["Måned_Navn"], y=monthly_chart_df["Regnskap_Kumulativ"],
+            mode="lines+markers", name="Regnskap", line=dict(color="#38bdf8", width=3),
+            fill="tonexty", fillcolor="rgba(244, 63, 94, 0.12)"
+        ))
+        fig_sc.update_layout(
+            height=320, margin=dict(l=10, r=20, t=10, b=20),
+            paper_bgcolor="#111726", plot_bgcolor="#111726",
+            font=dict(family="JetBrains Mono, sans-serif", color="#94a3b8"),
+            xaxis=dict(showgrid=False), yaxis=dict(showgrid=True, gridcolor="#1e293b"),
+            showlegend=True, legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        )
+        st.plotly_chart(fig_sc, use_container_width=True)
+
+    with v_tab2:
+        st.caption("FT 01 Deviation: Divergerende stolper sentrert rundt 0 kNOK")
+        div_df = filtered_df.groupby(["KOSTRA_Funksjonsgruppe_Kode", "Funksjonsnavn"]).agg(
+            b_sum=("b_knok", "sum"), a_sum=("a_knok", "sum")
+        ).reset_index()
+        div_df["Variance"] = div_df["b_sum"] - div_df["a_sum"]
+        div_df = div_df.sort_values("Variance", ascending=True)
+
+        colors = ["#f43f5e" if v < 0 else "#10b981" for v in div_df["Variance"]]
+        fig_div = go.Figure(go.Bar(
+            y=[f"{row['KOSTRA_Funksjonsgruppe_Kode']} {row['Funksjonsnavn'][:16]}.." for _, row in div_df.iterrows()],
+            x=div_df["Variance"],
+            orientation="h",
+            marker=dict(color=colors, line=dict(width=0)),
+            text=[f"{v:+.1f} k".replace(".", ",") for v in div_df["Variance"]],
+            textposition="auto"
+        ))
+        fig_div.add_vline(x=0, line_width=1.5, line_color="#94a3b8")
+        fig_div.update_layout(
+            height=340, margin=dict(l=10, r=20, t=10, b=20),
+            paper_bgcolor="#111726", plot_bgcolor="#111726",
+            font=dict(family="JetBrains Mono, sans-serif", color="#94a3b8"),
+            xaxis=dict(showgrid=False, title="Avvik mot Budsjett (kNOK)"),
+            yaxis=dict(showgrid=False, autorange="reversed"),
+            showlegend=False
+        )
+        st.plotly_chart(fig_div, use_container_width=True)
+
+    with v_tab3:
+        st.caption("Time 07 Lollipop: Forbruksgrad % mot 80% buffer, 100% budsjett og 110% varsel")
+        top_drv = filtered_df.groupby(["Kontokode_6Siffer", "Kontonavn"]).agg(
+            b_sum=("b_knok", "sum"), a_sum=("a_knok", "sum")
+        ).reset_index()
+        top_drv["Pct"] = top_drv.apply(lambda r: (r["a_sum"] / r["b_sum"] * 100) if r["b_sum"] > 0 else (130 if r["a_sum"] > 0 else 0), axis=1)
+        top_drv["Var"] = top_drv["b_sum"] - top_drv["a_sum"]
+        top_drv = top_drv.sort_values("Var", ascending=True).head(7)
+
+        fig_lol = go.Figure()
+        fig_lol.add_vline(x=80, line_dash="dash", line_color="#64748b", annotation_text="80% Buffer", annotation_position="top left")
+        fig_lol.add_vline(x=100, line_dash="dash", line_color="#94a3b8", annotation_text="100% Budsjett", annotation_position="top")
+        fig_lol.add_vline(x=110, line_dash="dash", line_color="#f43f5e", annotation_text="110% Varsel", annotation_position="top right")
+
+        for _, r in top_drv.iterrows():
+            pct_val = min(r["Pct"], 200)
+            dot_color = "#f43f5e" if r["Pct"] > 110 else ("#f59e0b" if r["Pct"] > 100 else "#10b981")
+            label_y = f"{r['Kontonavn'][:16]}.. ({r['Kontokode_6Siffer']})"
+            fig_lol.add_trace(go.Scatter(
+                x=[0, pct_val], y=[label_y, label_y],
+                mode="lines", line=dict(color="#475569", width=2), showlegend=False
+            ))
+            fig_lol.add_trace(go.Scatter(
+                x=[pct_val], y=[label_y],
+                mode="markers+text", marker=dict(color=dot_color, size=10),
+                text=[f"{r['Pct']:.1f}% ({r['a_sum']:.0f}k)"],
+                textposition="middle right", showlegend=False
+            ))
+
+        fig_lol.update_layout(
+            height=340, margin=dict(l=10, r=60, t=25, b=20),
+            paper_bgcolor="#111726", plot_bgcolor="#111726",
+            font=dict(family="JetBrains Mono, sans-serif", color="#94a3b8"),
+            xaxis=dict(showgrid=False, title="Forbruksgrad (%)"),
+            yaxis=dict(showgrid=False, autorange="reversed")
+        )
+        st.plotly_chart(fig_lol, use_container_width=True)
+
+    with v_tab4:
+        st.caption("Time 10 Waterfall: Avviksvannfall som bygger bro fra Budsjett til Regnskap YTD")
+        fastlonn_var = filtered_df[filtered_df["Kontokode_6Siffer"] == 101000].apply(lambda r: r["b_knok"] - r["a_knok"], axis=1).sum()
+        vikar_var = filtered_df[filtered_df["Kontokode_6Siffer"] == 127040].apply(lambda r: r["b_knok"] - r["a_knok"], axis=1).sum()
+        overtid_var = filtered_df[filtered_df["Kontokode_6Siffer"] == 104000].apply(lambda r: r["b_knok"] - r["a_knok"], axis=1).sum()
+        ref_var = filtered_df[filtered_df["Hovedkategori_Navn"] == "Refusjoner"].apply(lambda r: r["b_knok"] - r["a_knok"], axis=1).sum()
+        captured = fastlonn_var + vikar_var + overtid_var + ref_var
+        ovrig = total_variance - captured
+
+        wf_measures = ["relative", "relative", "relative", "relative", "relative", "relative", "total"]
+        wf_x = ["Budsjett", "Fastlønn", "Vikarbyrå", "Overtid", "Refusjon", "Øvrig", "Regnskap"]
+        wf_y = [total_budget, -abs(fastlonn_var), -abs(vikar_var), -abs(overtid_var), ref_var, ovrig, 0]
+        wf_text = [
+            f"{total_budget:.0f}k", f"{fastlonn_var:.0f}k", f"{vikar_var:.0f}k",
+            f"{overtid_var:.0f}k", f"{ref_var:+.0f}k", f"{ovrig:+.0f}k", f"{total_actual:.0f}k"
+        ]
+
+        fig_wf = go.Figure(go.Waterfall(
+            orientation="v", measure=wf_measures, x=wf_x, y=wf_y, text=wf_text,
+            textposition="outside",
+            connector=dict(line=dict(color="#64748b", dash="dot")),
+            increasing=dict(marker=dict(color="#10b981")),
+            decreasing=dict(marker=dict(color="#f43f5e")),
+            totals=dict(marker=dict(color="#38bdf8"))
+        ))
+        fig_wf.update_layout(
+            height=340, margin=dict(l=10, r=20, t=25, b=20),
+            paper_bgcolor="#111726", plot_bgcolor="#111726",
+            font=dict(family="JetBrains Mono, sans-serif", color="#94a3b8"),
+            xaxis=dict(showgrid=False), yaxis=dict(showgrid=False)
+        )
+        st.plotly_chart(fig_wf, use_container_width=True)
+
+    with v_tab5:
+        st.caption("Time 08 Slopegraph: Endringsanalyse M01 (Januar) vs M08 (August)")
+        slope_df = filtered_df.groupby(["KOSTRA_Funksjonsgruppe_Kode", "Funksjonsnavn"]).apply(
+            lambda g: pd.Series({
+                "m01": g[g["m"] == 1]["a_knok"].sum(),
+                "m08": g[g["m"] == 8]["a_knok"].sum()
+            })
+        ).reset_index()
+        slope_df = slope_df[(slope_df["m01"] > 0) | (slope_df["m08"] > 0)].sort_values("m08", ascending=False).head(5)
+
+        fig_sl = go.Figure()
+        for _, r in slope_df.iterrows():
+            diff = r["m08"] - r["m01"]
+            pct = (diff / r["m01"] * 100) if r["m01"] > 0 else 100
+            color = "#f43f5e" if pct > 15 else ("#38bdf8" if pct >= 0 else "#10b981")
+            name = f"{r['KOSTRA_Funksjonsgruppe_Kode']} {r['Funksjonsnavn'][:12]}"
+            fig_sl.add_trace(go.Scatter(
+                x=["Januar (M01)", "August (M08)"],
+                y=[r["m01"], r["m08"]],
+                mode="lines+markers+text",
+                line=dict(color=color, width=2.5),
+                marker=dict(size=8, color=color),
+                text=[f"{name} {r['m01']:.0f}k", f"{r['m08']:.0f}k ({pct:+.0f}%)"],
+                textposition=["middle left", "middle right"],
+                showlegend=False
+            ))
+
+        fig_sl.update_layout(
+            height=340, margin=dict(l=80, r=80, t=20, b=20),
+            paper_bgcolor="#111726", plot_bgcolor="#111726",
+            font=dict(family="JetBrains Mono, sans-serif", color="#94a3b8"),
+            xaxis=dict(showgrid=False), yaxis=dict(showgrid=False)
+        )
+        st.plotly_chart(fig_sl, use_container_width=True)
 
 with col_sim:
     st.subheader("⚖️ What-If Scenariosimulator")
