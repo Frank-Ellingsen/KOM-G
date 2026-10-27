@@ -202,6 +202,66 @@
       </article>
     </section>
 
+    <!-- Early Warnings & Risk Alert Panel -->
+    <section class="panel warning-panel" aria-label="Tidligvarsler og Risikoanalyse">
+      <div class="panel-header">
+        <div class="panel-title-wrap">
+          <h2>🚨 Tidligvarsler & Risikoalarmer (Early Warnings)</h2>
+          <div class="panel-subtitle">Automatisk avviksdeteksjon for budsjettrammer, run-rate og sesongvariasjoner</div>
+        </div>
+        <div class="status-indicator">
+          <span class="pulse-dot"></span> 3 Aktive Risikovarsler
+        </div>
+      </div>
+
+      <div class="warnings-grid">
+        <!-- Warning 1: Kritisk Vikarbyrå -->
+        <article class="warning-card crit">
+          <div class="warning-header">
+            <span class="warning-badge crit">KRITISK RISIKO</span>
+            <span class="warning-code">Art 127040</span>
+          </div>
+          <h3 class="warning-title">Eksplosjon i vikarbyråinnleie (Helse og omsorg)</h3>
+          <p class="warning-text">
+            Ubudsjettert innleie har nådd <strong>253,2 kNOK</strong> i august alene (382,7 kNOK YTD). Uten umiddelbar innleiestopp vil årssluttkostnaden passere <strong>1 400 kNOK</strong>.
+          </p>
+          <div class="warning-action">
+            <strong>Anbefalt Controller-tiltak:</strong> Iverksett administrativ godkjenningsplikt for ekstern innleie over avdelingsledernivå.
+          </div>
+        </article>
+
+        <!-- Warning 2: Fastlønnsavvik ved Skolestart -->
+        <article class="warning-card warn">
+          <div class="warning-header">
+            <span class="warning-badge warn">BETYDELIG AVVIK</span>
+            <span class="warning-code">Art 101000</span>
+          </div>
+          <h3 class="warning-title">Helårsvirkning av lønnsoppgjøret & bemanningsfaktor</h3>
+          <p class="warning-text">
+            Fastlønnsavviket er akkumulert til <strong>-1 414,0 kNOK</strong> i Oppvekst og <strong>-474,9 kNOK</strong> i Helse. Periodiseringen reflekterer ikke tariffendringen per 01.05.
+          </p>
+          <div class="warning-action">
+            <strong>Anbefalt Controller-tiltak:</strong> Juster periodisert ramme i tertial 2 for å unngå feilaktig panikk-kutting i kjerneundervisning.
+          </div>
+        </article>
+
+        <!-- Warning 3: Overtid og kveldstillegg -->
+        <article class="warning-card warn">
+          <div class="warning-header">
+            <span class="warning-badge warn">MODERAT RISIKO</span>
+            <span class="warning-code">Art 104000 & 102031</span>
+          </div>
+          <h3 class="warning-title">Overtidstopp og ubudsjetterte turnustillegg ved skolestart</h3>
+          <p class="warning-text">
+            Overtid og turnustillegg for vikarer overskred budsjett med <strong>-88,9 kNOK</strong> i august. Arbeidsmiljølovens 200-timers grense for overtid nærmer seg for nøkkelpersonell.
+          </p>
+          <div class="warning-action">
+            <strong>Anbefalt Controller-tiltak:</strong> Gjennomgå vaktplaner og turnus for høstsemesteret for å redusere overtidstillegg.
+          </div>
+        </article>
+      </div>
+    </section>
+
     <!-- Two-Column Financial Layout: S-Curve & What-If Simulator -->
     <section class="content-grid-2col">
       
@@ -379,6 +439,89 @@
       </div>
     </section>
 
+    <!-- Frequently Asked Questions (FAQ Accordion) -->
+    <section class="panel faq-panel" aria-label="Ofte Stilte Spørsmål">
+      <div class="panel-header">
+        <div class="panel-title-wrap">
+          <h2>❓ Ofte Stilte Spørsmål (FAQ for Controllere & Ledelse)</h2>
+          <div class="panel-subtitle">Nøkkelinnsikt om avvik, KOSTRA-regler, ML-prognoser og juridiske rammer</div>
+        </div>
+      </div>
+
+      <div class="faq-list">
+        <!-- Q1 -->
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>1. Hvorfor har Kristiansand kommune et samlet merforbruk på -2 229,6 kNOK per august 2024?</span>
+            <span class="faq-chevron">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Merforbruket drives primært av to hovedfaktorer:</p>
+            <ul>
+              <li><strong>Helårsvirkning av lønnsoppgjøret (Art 101000):</strong> Utgjør et samlet avvik på <strong>-1 888,9 kNOK</strong> (-1 414,0 kNOK i skole og -474,9 kNOK i helse). Budsjettet ble periodisert lineært før tariffendringene fra 1. mai trådte i kraft.</li>
+              <li><strong>Akutt innleie av vikarbyrå (Art 127040):</strong> Pleie og omsorg i institusjon/bolig (funksjon 2540) har hatt et ubudsjettert merforbruk på <strong>382,7 kNOK</strong> YTD (hvorav 253,2 kNOK kom i august) pga. rekrutteringsutfordringer og ferieavvikling.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>2. Hva er de største forskjellene i forbruksmønster mellom Oppvekst og Helse?</span>
+            <span class="faq-chevron">+</span>
+          </button>
+          <div class="faq-answer">
+            <p><strong>Oppvekst og Utdanning (105,3 % forbruk):</strong> Avvikene er konsentrert rundt fastlønn og korttidsvikarer ved skolestart (august), men sektoren har stabil grunnbemanning og lav ekstern innleie.</p>
+            <p><strong>Helse og Omsorg (111,3 % forbruk):</strong> Har kontinuerlig 24/7 døgnturnus. Vikarbyrå og turnustillegg utgjør over 40 % av avviket, noe som gir betydelig høyere operasjonell og økonomisk volatilitet.</p>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>3. Hva sier regelverket (Arbeidsmiljøloven) om akutte kutt i overtid og vikarer?</span>
+            <span class="faq-chevron">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Kutt i overtid og vikarer må balanseres mot lovpålagte bemanningsnormer:</p>
+            <ul>
+              <li><strong>Opplæringsloven § 8-2:</strong> Lærernormen setter absolutte krav til lærertetthet i grunnskolen (maks 15 elever per lærer på 1.–4. trinn). Vikarkutt kan ikke bryte denne normen.</li>
+              <li><strong>Helse- og omsorgstjenesteloven § 4-1:</strong> Kommunen har plikt til å yte forsvarlige helsetjenester. Total innleiestopp uten intern omdisponering kan være uforsvarlig.</li>
+              <li><strong>Arbeidsmiljøloven § 10-6:</strong> Maks 10 timer overtid per uke (25 timer per 4 uker). Høyt overtidspress øker risikoen for lovbrudd og sykefravær.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>4. Hvordan fungerer maskinlæringsmodellen (Random Forest) og når utløses drift-alarm?</span>
+            <span class="faq-chevron">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Modellen i <code>src/retrain_pipeline.py</code> trenes på måned, kvartal, KOSTRA-funksjon, kontokode og budsjettramme. Den oppnår en <strong>R² på 0.9657</strong> og test-MAE på <strong>4,3 kNOK</strong>.</p>
+            <p><strong>Model Drift:</strong> Hvis gjennomsnittlig prediksjonsfeil for nye måneder øker med over <strong>20 %</strong> mot baseline, genereres en automatisk <em>Drift Alert</em> i MLflow, og controllere varsles om å rekalibrere sesongvektene.</p>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>5. Hvordan kan controllere koble Excel eller Power BI Desktop til denne løsningen?</span>
+            <span class="faq-chevron">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Det finnes tre direkte integrasjonsmetoder (se <a href="docs/POWERBI_TO_EXCEL_INTEGRATION.md" style="color:var(--accent-cyan);">integrasjonsguiden</a>):</p>
+            <ul>
+              <li><strong>Power BI PBIP:</strong> Dobbeltklikk på <code>pbi-rep-project.pbip</code> for direkte tilgang til TMDL-modellen og 78 DAX-måltall.</li>
+              <li><strong>DuckDB SQL / Python:</strong> Koble direkte til <code>data/database/kostra.duckdb</code> for lynraske OLAP-spørringer.</li>
+              <li><strong>Excel Eksport:</strong> Kjør <code>.\run.ps1 -ExportExcel</code> for å få et ferdig PivotTable-underlag i <code>data/excel_ml_input.xlsx</code>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Operational Hub & CLI Cheatsheet -->
     <section class="cli-box">
       <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -426,7 +569,50 @@
 
   </main>
 
-  <!-- 3. Footer -->
+  <!-- 3. Floating AI Controller Chatbot Widget -->
+  <div id="chatbot-widget" class="chatbot-container" aria-label="AI Controller Chatbot">
+    <!-- Toggle Button -->
+    <button id="chatbot-toggle-btn" class="chatbot-toggle" title="Åpne AI Controller Chatbot">
+      <span>💬</span>
+      <span class="chatbot-toggle-label">AI Controller</span>
+    </button>
+
+    <!-- Chat Modal Window -->
+    <div id="chatbot-window" class="chatbot-window hidden">
+      <div class="chatbot-header">
+        <div class="chatbot-title-wrap">
+          <div class="brand-logo-badge" style="font-size:0.68rem; padding:0.15rem 0.4rem;">AI CONTROLLER</div>
+          <span style="font-size:0.85rem; font-weight:600;">KOSTRA Rådgiver</span>
+        </div>
+        <button id="chatbot-close-btn" class="chatbot-close" title="Lukk chat">✕</button>
+      </div>
+
+      <div class="chatbot-body" id="chatbot-messages">
+        <!-- Initial welcome message from bot -->
+        <div class="chat-message bot">
+          <div class="chat-bubble">
+            Hei Frank! Jeg er din <strong>AI Project Controller</strong> for Kristiansand kommune. Jeg har sanntidstilgang til tallene i <code>kostra.duckdb</code>.
+            <br><br>Hva vil du undersøke i august-regnskapet?
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Prompt Suggestions -->
+      <div class="chatbot-prompts">
+        <button class="chat-prompt-pill" data-prompt="Hvorfor er avviket så stort i august?">Hvorfor stort avvik i aug?</button>
+        <button class="chat-prompt-pill" data-prompt="Hvor mye koster vikarbyrå i helse?">Hva koster vikarbyrå?</button>
+        <button class="chat-prompt-pill" data-prompt="Hva sier arbeidsmiljøloven om overtidskutt?">Arbeidsmiljøloven & overtid?</button>
+        <button class="chat-prompt-pill" data-prompt="Hva er prognosert EAC for årsslutt?">Hva er prognosert EAC?</button>
+      </div>
+
+      <form id="chatbot-form" class="chatbot-footer">
+        <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Still et spørsmål om tallene eller KOSTRA..." autocomplete="off">
+        <button type="submit" class="chatbot-send-btn" title="Send melding">➤</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Footer -->
   <footer class="footer">
     <div>
       <strong>Kristiansand Kommune</strong> – KOSTRA Finansiell Virksomhetsstyring 2024. Siste faktiske periode: Måned 08.

@@ -43,4 +43,10 @@ chroma_db/
 .env.*
 !.env.example
 
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
 

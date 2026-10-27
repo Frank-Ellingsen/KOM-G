@@ -756,13 +756,187 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Catalog Tab Buttons
-  document.querySelectorAll(".tab-btn").forEach(btn => {
+  // FAQ Accordion Listeners
+  initFaqAccordion();
+
+  // AI Chatbot Initialization
+  initChatbot();
+});
+
+// ==========================================================================
+// FAQ Accordion Interactivity
+// ==========================================================================
+function initFaqAccordion() {
+  document.querySelectorAll(".faq-question").forEach(btn => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      const filter = btn.getAttribute("data-filter");
-      renderCatalog(filter);
+      const item = btn.closest(".faq-item");
+      const isOpen = item.classList.contains("open");
+
+      // Close other open items for clean Tufte presentation
+      document.querySelectorAll(".faq-item.open").forEach(openItem => {
+        if (openItem !== item) {
+          openItem.classList.remove("open");
+          openItem.querySelector(".faq-question")?.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      if (isOpen) {
+        item.classList.remove("open");
+        btn.setAttribute("aria-expanded", "false");
+      } else {
+        item.classList.add("open");
+        btn.setAttribute("aria-expanded", "true");
+      }
     });
   });
-});
+}
+
+// ==========================================================================
+// AI Controller Chatbot Engine
+// ==========================================================================
+function initChatbot() {
+  const toggleBtn = document.getElementById("chatbot-toggle-btn");
+  const closeBtn = document.getElementById("chatbot-close-btn");
+  const chatWindow = document.getElementById("chatbot-window");
+  const form = document.getElementById("chatbot-form");
+  const input = document.getElementById("chatbot-input");
+  const messages = document.getElementById("chatbot-messages");
+
+  if (!chatWindow) return;
+
+  // Toggle Window
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", () => {
+      chatWindow.classList.toggle("hidden");
+      if (!chatWindow.classList.contains("hidden") && input) {
+        input.focus();
+      }
+    });
+  }
+
+  // Close Window
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      chatWindow.classList.add("hidden");
+    });
+  }
+
+  // Prompt Pills Click
+  document.querySelectorAll(".chat-prompt-pill").forEach(pill => {
+    pill.addEventListener("click", () => {
+      const prompt = pill.getAttribute("data-prompt");
+      if (prompt && input) {
+        input.value = prompt;
+        form.dispatchEvent(new Event("submit"));
+      }
+    });
+  });
+
+  // Handle Send Message
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const query = input.value.trim();
+      if (!query) return;
+
+      // 1. Add User Message
+      appendChatMessage("user", query);
+      input.value = "";
+
+      // 2. Generate Intelligent Controller Reply
+      setTimeout(() => {
+        const reply = generateControllerResponse(query);
+        appendChatMessage("bot", reply);
+      }, 300);
+    });
+  }
+
+  function appendChatMessage(sender, htmlContent) {
+    const msgDiv = document.createElement("div");
+    msgDiv.className = `chat-message ${sender}`;
+    msgDiv.innerHTML = `<div class="chat-bubble">${htmlContent}</div>`;
+    messages.appendChild(msgDiv);
+    messages.scrollTop = messages.scrollHeight;
+  }
+}
+
+// Knowledge-driven Municipal Controller Response Generator
+function generateControllerResponse(query) {
+  const q = query.toLowerCase();
+  const aggs = latestAggregates || { totalActual: 31524.9, totalBudget: 29295.2, totalVariance: -2229.6 };
+
+  if (q.includes("hvorfor") || q.includes("avvik") || q.includes("august") || q.includes("stort")) {
+    return `
+      <strong>Controller-vurdering av avviket:</strong><br>
+      Per august 2024 er samlet avvik <strong>-2 229,6 kNOK</strong> (107,6 % forbruk).<br><br>
+      De to viktigste årsakene er:
+      <ol style="margin-left:1.2rem; margin-top:0.3rem;">
+        <li><strong>Helårsvirkning av lønnsoppgjøret (Art 101000):</strong> Utgjør -1 888,9 kNOK samlet (-1 414,0 kNOK i Oppvekst og -474,9 kNOK i Helse).</li>
+        <li><strong>Ekstern innleie av vikarbyrå (Art 127040):</strong> Pleie og omsorg (2540) har hatt et ubudsjettert overforbruk på 382,7 kNOK YTD (253,2 kNOK kom i august).</li>
+      </ol>
+      <br><em>Anbefaling:</em> Juster periodiseringen i tertial 2 og iverksett godkjenningskrav for vikarbyråinnleie.
+    `;
+  }
+
+  if (q.includes("vikar") || q.includes("innleie") || q.includes("127040")) {
+    return `
+      <strong>Status for Vikarbyråinnleie (Art 127040):</strong><br>
+      • Budsjett: <strong>0,0 kNOK</strong> (ubudsjettert)<br>
+      • Faktisk regnskap YTD: <strong>382,7 kNOK</strong><br>
+      • August isolert: <strong>253,2 kNOK</strong> (Helse og omsorg, funksjon 2540)<br><br>
+      <strong>Risikovurdering:</strong> Lineær run-rate peker mot over 1 400 kNOK ved årsslutt dersom innleie fortsetter. 
+      <br><br>
+      Bruk <em>What-If simulatorens</em> glidebryter for å se effekten av f.eks. 80 % reduksjon i innleie (sparer ca. 202 kNOK/mnd).
+    `;
+  }
+
+  if (q.includes("arbeidsmiljø") || q.includes("lov") || q.includes("overtid") || q.includes("norm")) {
+    return `
+      <strong>Juridiske rammer & Bemanningsnormer:</strong><br>
+      Når vi vurderer budsjettkutt i Oppvekst og Helse, gjelder følgende ufravikelige regler:
+      <ul style="margin-left:1.2rem; margin-top:0.3rem;">
+        <li><strong>Opplæringsloven § 8-2 (Lærernormen):</strong> Maks 15 elever per lærer på 1.–4. trinn, og 20 på 5.–10. trinn. Vikarkutt kan ikke bryte denne normen.</li>
+        <li><strong>Helse- og omsorgstjenesteloven § 4-1:</strong> Krav om forsvarlige helsetjenester 24/7. Total innleiestopp uten intern omdisponering er uforsvarlig.</li>
+        <li><strong>Arbeidsmiljøloven § 10-6:</strong> Maksimalt 10 timer overtid per 7 dager (25 timer over 4 uker). Overtidspress øker sykefraværsrisikoen.</li>
+      </ul>
+    `;
+  }
+
+  if (q.includes("eac") || q.includes("prognose") || q.includes("årsslutt") || q.includes("balanse")) {
+    return `
+      <strong>Prognose ved årsslutt (EAC):</strong><br>
+      • <strong>Lineær run-rate:</strong> Fremskriver et samlet underskudd på ca. <strong>-3 344,4 kNOK</strong>.<br>
+      • <strong>ML Random Forest modell:</strong> Fanger opp at skolesektoren normalt har lavere vikarkostnader i september–november, men helsesektoren opplever etterslep.<br><br>
+      For å gjenopprette balanse kreves en månedlig innsparing på ca. <strong>836 kNOK</strong> over de resterende 4 månedene (Sep–Des).
+    `;
+  }
+
+  if (q.includes("helse") || q.includes("pleie") || q.includes("bomiljø")) {
+    return `
+      <strong>Sektorstatus: Helse og Omsorg (Bomiljø):</strong><br>
+      • Budsjett YTD: <strong>11 337,2 kNOK</strong><br>
+      • Regnskap YTD: <strong>12 622,9 kNOK</strong><br>
+      • Avvik YTD: <span style="color:var(--variance-neg);font-weight:600;">-1 285,6 kNOK</span> (111,3 % forbruk)<br>
+      • Største avvik: Vikarbyrå (-382,7 k), Fastlønn (-474,9 k) og Vikar kveldstillegg (-45,9 k).
+    `;
+  }
+
+  if (q.includes("skole") || q.includes("oppvekst") || q.includes("utdanning")) {
+    return `
+      <strong>Sektorstatus: Oppvekst og Utdanning (KomSkole):</strong><br>
+      • Budsjett YTD: <strong>17 958,0 kNOK</strong><br>
+      • Regnskap YTD: <strong>18 902,0 kNOK</strong><br>
+      • Avvik YTD: <span style="color:var(--variance-neg);font-weight:600;">-944,0 kNOK</span> (105,3 % forbruk)<br>
+      • Største avvik: Fastlønn ordinære (-1 414,0 k) og Korttidsfravær (-49,2 k).
+    `;
+  }
+
+  // Generelt svar basert på aktiv filterkontekst
+  return `
+    <strong>Aktivt Filterutvalg:</strong><br>
+    • Budsjett: <strong>${formatNok(aggs.totalBudget)} kNOK</strong><br>
+    • Regnskap: <strong>${formatNok(aggs.totalActual)} kNOK</strong><br>
+    • Avvik: <strong style="color:${aggs.totalVariance < 0 ? 'var(--variance-neg)' : 'var(--variance-pos)'};">${formatNok(aggs.totalVariance)} kNOK</strong> (${aggs.totalSpendPct.toFixed(1)} %)<br><br>
+    Du kan stille meg spesifikke spørsmål om <em>vikarbyråkostnader</em>, <em>arbeidsmiljøloven</em>, <em>årssluttprognose (EAC)</em> eller <em>hovedårsakene til august-avviket</em>.
+  `;
+}
