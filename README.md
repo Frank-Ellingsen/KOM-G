@@ -136,6 +136,7 @@ Basert på [`Time-Visuals.pdf`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/
 
 ## 📁 Prosjektstruktur og Ressurser
 
+* **[`index.html`](file:///C:/Users/frank/Desktop/Kom%20-%20G/index.html):** Interaktivt executive styringsdashboard og KOSTRA-cockpit (Tufte S-kurve, What-If simulator, kostnadsdrivere og 25-siders rapportnavigator) bygget med ren Vanilla CSS og JavaScript uten eksterne avhengigheter.
 * **[`instructions/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/instructions/):** Helhetlig instruksjons- og standardiseringssett (operasjoner, ETL, DAX, Tufte visual standards, DQA, agent-regler).
 * **[`docs/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/):** Data Quality & Assurance ([`07_Data_Quality_and_Assurance_Rapport.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/07_Data_Quality_and_Assurance_Rapport.md)), Excel-integrasjon ([`POWERBI_TO_EXCEL_INTEGRATION.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/POWERBI_TO_EXCEL_INTEGRATION.md)), Database-arkitektur ([`DATABASE_AND_EXCEL_STRUCTURE.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/DATABASE_AND_EXCEL_STRUCTURE.md)), ML-omtrening ([`AUTOMATED_RETRAINING_GUIDE.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/AUTOMATED_RETRAINING_GUIDE.md)), Jupyter-guide ([`JUPYTER_AND_MLFLOW_GUIDE.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/JUPYTER_AND_MLFLOW_GUIDE.md)), referansedokumenter i [`docs/references/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/references/) og skjermbilder i [`docs/assets/screenshots/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/assets/screenshots/).
 * **[`notebooks/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/notebooks/):** Interaktive Jupyter-notatbøker for regnskapskontroll og analyse:
@@ -190,16 +191,18 @@ Bruk `run.ps1` som sentral kommandosentral:
 
 ## 🚀 Komme i Gang
 
-1. **Åpne rapporten i Power BI Desktop**:
+1. **Åpne Web Cockpiten i nettleseren**:
+   - Dobbeltklikk på [`index.html`](file:///C:/Users/frank/Desktop/Kom%20-%20G/index.html) for å starte det interaktive styringsdashboardet (fungerer lokalt i hvilken som helst nettleser uten server).
+2. **Åpne rapporten i Power BI Desktop**:
    - Dobbeltklikk på hovedfilen [`pbi-rep-project.pbip`](file:///C:/Users/frank/Desktop/Kom%20-%20G/pbi-rep-project.pbip).
-2. **Oppdatere tallene fra nye månedsfiler**:
+3. **Oppdatere tallene fra nye månedsfiler**:
    - Legg nye CSV-uttrekk i `powerbi_kostra_datamodell\faktatabeller\` og trykk **Oppdater / Refresh** i Power BI.
-3. **Bygge DuckDB og oppdatere ML-modeller**:
+4. **Bygge DuckDB og oppdatere ML-modeller**:
    ```powershell
    .\run.ps1 -BuildDB
    .\run.ps1 -Retrain
    ```
-4. **Miljøvariabler**:
+5. **Miljøvariabler**:
    - Kopier `.env.example` til `.env` og legg inn eventuelle API-nøkler for eksterne AI-agenter (Gemini/Spider/Serper). `.env` er strengt git-ignorert.
 
 ---

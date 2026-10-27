@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="no" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="KOM-G: KomKostra Virksomhetsstyring og KOSTRA Rapporteringsplattform 2024 for Kristiansand kommune. Finansiell rapportering, Tufte S-kurver, What-If simulering og ML tidsserieprognoser.">
+  <meta name="author" content="Frank Ellingsen">
+  <title>KOM-G | Kristiansand Kommune – Finansiell Virksomhetsstyring & KOSTRA Cockpit</title>
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body>
+
+  <!-- 1. Top Navigation & Brand Header -->
+  <header class="top-nav">
+    <div class="brand-section">
+      <div class="brand-logo-badge">
+        <span>KOM-G</span>
+        <span style="opacity: 0.7; font-weight: 400;">v2.4</span>
+      </div>
+      <div class="brand-title-wrap">
+        <h1>Kristiansand Kommune – KOSTRA Cockpit</h1>
+        <div class="brand-subtitle">Finansiell Virksomhetsstyring & Månedsrapport per August (Måned 08 / 2024)</div>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <div class="status-indicator" id="top-status-indicator">
+        <span class="pulse-dot"></span>
+        <span>YTD Avvik: -2 229,6 kNOK (107,6 %)</span>
+      </div>
+
+      <button id="btn-theme-toggle" class="btn" aria-label="Endre fargetema">
+        ☀️ Papir
+      </button>
+
+      <a href="pbi-rep-project.pbip" class="btn btn-primary" title="Åpne Power BI PBIP prosjekt">
+        📊 Åpne Power BI
+      </a>
+    </div>
+  </header>
+
+  <!-- 2. Main Executive Cockpit Content -->
+  <main class="main-content">
+
+    <!-- KPI Metrics Row (Edward Tufte Data-Ink High Precision Cards) -->
+    <section class="kpi-grid" aria-label="Hovednøkkeltall">
+      <!-- KPI 1 -->
+      <article class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Konsolidert YTD Regnskap</span>
+          <span class="kpi-tag">Måneder 01–08</span>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value">31 524,9</span>
+          <span class="kpi-unit">kNOK</span>
+        </div>
+        <div class="kpi-subtext">
+          <span>Budsjett: <strong>29 295,2 k</strong></span>
+          <span class="variance-pill neg">-2 229,6 k (107,6 %)</span>
+        </div>
+      </article>
+
+      <!-- KPI 2 -->
+      <article class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Oppvekst & Utdanning</span>
+          <span class="kpi-tag">KomSkole</span>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value">18 902,0</span>
+          <span class="kpi-unit">kNOK</span>
+        </div>
+        <div class="kpi-subtext">
+          <span>Budsjett: <strong>17 958,0 k</strong></span>
+          <span class="variance-pill neg">-944,0 k (105,3 %)</span>
+        </div>
+      </article>
+
+      <!-- KPI 3 -->
+      <article class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Helse & Omsorg</span>
+          <span class="kpi-tag">Bomiljø</span>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value">12 622,9</span>
+          <span class="kpi-unit">kNOK</span>
+        </div>
+        <div class="kpi-subtext">
+          <span>Budsjett: <strong>11 337,2 k</strong></span>
+          <span class="variance-pill neg">-1 285,6 k (111,3 %)</span>
+        </div>
+      </article>
+
+      <!-- KPI 4 -->
+      <article class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Måned 08 (August Isolert)</span>
+          <span class="kpi-tag">Siste Måned</span>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value">4 120,8</span>
+          <span class="kpi-unit">kNOK</span>
+        </div>
+        <div class="kpi-subtext">
+          <span>Budsjett: <strong>3 770,1 k</strong></span>
+          <span class="variance-pill neg">-350,7 k (109,3 %)</span>
+        </div>
+      </article>
+
+      <!-- KPI 5 -->
+      <article class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">ML Tidsserie-Modell</span>
+          <span class="kpi-tag">Random Forest</span>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value">4,3</span>
+          <span class="kpi-unit">kNOK MAE</span>
+        </div>
+        <div class="kpi-subtext">
+          <span>Modell R²: <strong>0.9657</strong></span>
+          <span class="variance-pill pos">Ingen Drift (OK)</span>
+        </div>
+      </article>
+    </section>
+
+    <!-- Two-Column Financial Layout: S-Curve & What-If Simulator -->
+    <section class="content-grid-2col">
+      
+      <!-- Panel 1: S-Curve & Time Series -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <h2>📈 Tufte S-Kurve & Akkumulert Forbruk</h2>
+            <div class="panel-subtitle">Direkte etiketter på endepunkter, null gitterlinjer, kNOK akkumulert Jan–Aug 2024</div>
+          </div>
+          <div class="panel-toolbar">
+            <button id="btn-chart-scurve" class="btn-pill active">S-Kurve (Kumulativ)</button>
+            <button id="btn-chart-monthly" class="btn-pill">Månedlig (Isolert)</button>
+          </div>
+        </div>
+
+        <div id="tufte-chart-container" class="chart-container">
+          <!-- Dynamic SVG injected by assets/js/dashboard.js -->
+        </div>
+
+        <div class="chart-legend-direct">
+          <div class="legend-item">
+            <div class="legend-line" style="background:#38bdf8;"></div>
+            <span>Faktisk Regnskap (31 524,9 k)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-line" style="background:#64748b; border: 1px dashed #64748b;"></div>
+            <span>Budsjettramme (29 295,2 k)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-line" style="background:rgba(244,63,94,0.4);"></div>
+            <span>Areal: Merforbruk</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2: Interactive What-If Scenario Simulator -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <h2>⚖️ What-If Scenariosimulator</h2>
+            <div class="panel-subtitle">Simuler tiltak for å gjenopprette balanse før 31.12.2024</div>
+          </div>
+          <div id="sim-status-badge" class="status-indicator">
+            <span class="pulse-dot"></span> Betydelig Merforbruk
+          </div>
+        </div>
+
+        <div class="simulator-controls">
+          <!-- Slider 1: Vikarbyrå -->
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span>Reduksjon i Vikarbyråinnleie (Art 127040)</span>
+              <span id="val-vikar" class="slider-value-badge">0 %</span>
+            </div>
+            <input type="range" id="slider-vikar" class="custom-slider" min="0" max="100" value="0" step="5" aria-label="Vikarbyrå reduksjon prosent">
+          </div>
+
+          <!-- Slider 2: Overtid -->
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span>Reduksjon i Overtid (Art 104000)</span>
+              <span id="val-overtid" class="slider-value-badge">0 %</span>
+            </div>
+            <input type="range" id="slider-overtid" class="custom-slider" min="0" max="100" value="0" step="5" aria-label="Overtid reduksjon prosent">
+          </div>
+
+          <!-- Slider 3: Omdisponering -->
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span>Generelt Rammekutt / Omdisponering</span>
+              <span id="val-omdisp" class="slider-value-badge">0 %</span>
+            </div>
+            <input type="range" id="slider-omdisp" class="custom-slider" min="0" max="10" value="0" step="0.5" aria-label="Generell omdisponering prosent">
+          </div>
+        </div>
+
+        <!-- Calculated Live Result Box -->
+        <div class="simulator-result-box">
+          <div class="sim-row">
+            <span class="label">Månedlig innsparingseffekt:</span>
+            <span id="sim-monthly-save" class="val" style="color:var(--accent-cyan);">0,0 kNOK</span>
+          </div>
+          <div class="sim-row">
+            <span class="label">Restårsgevinst (Sep–Des, 4 mnd):</span>
+            <span id="sim-restar-save" class="val" style="color:var(--variance-pos);">0,0 kNOK</span>
+          </div>
+          <div class="sim-divider"></div>
+          <div class="sim-row" style="font-size:0.9rem;">
+            <span class="label"><strong>Prognosert Årssluttavvik (EAC):</strong></span>
+            <span id="sim-eoy-result" class="val" style="font-size:1.05rem; color:var(--variance-neg);">-3 344,4 kNOK</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Two-Column Financial Tables: Drivers & Kostra Functions -->
+    <section class="content-grid-2col">
+      
+      <!-- Table 1: Største Kostnadsdrivere i August -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <h2>⚠️ Topp Kostnadsdrivere i Måned 08 (August)</h2>
+            <div class="panel-subtitle">De 6 største avvikspostene basert på KOSTRA Art 6-siffer (kNOK)</div>
+          </div>
+        </div>
+
+        <div class="tufte-table-wrap">
+          <table class="tufte-table" aria-label="Topp kostnadsdrivere i august">
+            <thead>
+              <tr>
+                <th>Art</th>
+                <th>Kontonavn & Hovedårsak</th>
+                <th>Sektor</th>
+                <th class="num">Budsjett</th>
+                <th class="num">Regnskap</th>
+                <th class="num">Avvik (kNOK)</th>
+              </tr>
+            </thead>
+            <tbody id="drivers-table-body">
+              <!-- Injected by assets/js/dashboard.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Table 2: Kostra Funksjoner -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <h2>🏛️ KOSTRA Funksjonsfordeling (August)</h2>
+            <div class="panel-subtitle">Driftsresultat per KOSTRA-funksjon 4-siffer (kNOK)</div>
+          </div>
+        </div>
+
+        <div class="tufte-table-wrap">
+          <table class="tufte-table" aria-label="KOSTRA Funksjonsfordeling">
+            <thead>
+              <tr>
+                <th>Funksjon</th>
+                <th>Navn</th>
+                <th>Sektor</th>
+                <th class="num">Budsjett</th>
+                <th class="num">Regnskap</th>
+                <th class="num">Avvik</th>
+              </tr>
+            </thead>
+            <tbody id="functions-table-body">
+              <!-- Injected by assets/js/dashboard.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Power BI 25-Siders Rapportkatalog (Interactive Tabbed Navigator) -->
+    <section class="catalog-section">
+      <div class="panel-header" style="margin-bottom:0.5rem;">
+        <div class="panel-title-wrap">
+          <h2>📑 Power BI Rapportkatalog (25 Spesialiserte Rapportsider)</h2>
+          <div class="panel-subtitle">Konfigurert i <a href="pbi-rep-project.pbip" style="color:var(--accent-cyan);text-decoration:none;">pbi-rep-project.pbip</a> med TMDL semantisk modell og PBIR visuelt format</div>
+        </div>
+      </div>
+
+      <nav class="catalog-tabs" aria-label="Rapportkategori">
+        <button class="tab-btn active" data-filter="all">Alle Sider (25)</button>
+        <button class="tab-btn" data-filter="executive">Ledelses- & Styringsrapporter (6)</button>
+        <button class="tab-btn" data-filter="ft">Financial Times Visual Guide (9)</button>
+        <button class="tab-btn" data-filter="time">Time-Visuals 60 Katalog (10)</button>
+      </nav>
+
+      <div id="catalog-grid" class="catalog-grid">
+        <!-- Injected dynamically by assets/js/dashboard.js -->
+      </div>
+    </section>
+
+    <!-- Operational Hub & CLI Cheatsheet -->
+    <section class="cli-box">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span style="color:#a855f7; font-weight:600;">⚡ OPERASJONELL KOMMANDOSENTRAL</span>
+          <span style="color:var(--text-muted); margin-left:0.5rem;">PowerShell CLI (`run.ps1`) & Lokal DuckDB</span>
+        </div>
+        <span style="color:var(--text-muted); font-size:0.75rem;">data/database/kostra.duckdb</span>
+      </div>
+
+      <div class="cli-grid">
+        <div class="cli-item">
+          <div>
+            <div class="cli-cmd">.\run.ps1 -BuildDB</div>
+            <div class="cli-desc">Bygg/oppdater DuckDB OLAP fra CSV-faktatabeller</div>
+          </div>
+          <button class="btn-copy" data-copy=".\run.ps1 -BuildDB" title="Kopier kommando">📋</button>
+        </div>
+
+        <div class="cli-item">
+          <div>
+            <div class="cli-cmd">.\run.ps1 -Retrain</div>
+            <div class="cli-desc">Om-tren Random Forest ML-modell & test drift</div>
+          </div>
+          <button class="btn-copy" data-copy=".\run.ps1 -Retrain" title="Kopier kommando">📋</button>
+        </div>
+
+        <div class="cli-item">
+          <div>
+            <div class="cli-cmd">.\run.ps1 -ExportExcel</div>
+            <div class="cli-desc">Generer oppdatert Excel ML-underlag (data/excel_ml_input.xlsx)</div>
+          </div>
+          <button class="btn-copy" data-copy=".\run.ps1 -ExportExcel" title="Kopier kommando">📋</button>
+        </div>
+
+        <div class="cli-item">
+          <div>
+            <div class="cli-cmd">.\run.ps1 -Mlflow</div>
+            <div class="cli-desc">Start lokalt MLflow Dashboard på http://localhost:5000</div>
+          </div>
+          <button class="btn-copy" data-copy=".\run.ps1 -Mlflow" title="Kopier kommando">📋</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 3. Footer -->
+  <footer class="footer">
+    <div>
+      <strong>Kristiansand Kommune</strong> – KOSTRA Finansiell Virksomhetsstyring 2024. Siste faktiske periode: Måned 08.
+    </div>
+    <div class="footer-links">
+      <a href="README.md" class="footer-link">README.md</a>
+      <a href="instructions/README.md" class="footer-link">Instrukser</a>
+      <a href="docs/07_Data_Quality_and_Assurance_Rapport.md" class="footer-link">DQA-Rapport</a>
+      <a href="docs/POWERBI_TO_EXCEL_INTEGRATION.md" class="footer-link">Excel-Integrasjon</a>
+      <a href="https://github.com/Frank-Ellingsen/KOM-G" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/dashboard.js"></script>
+</body>
+</html>
