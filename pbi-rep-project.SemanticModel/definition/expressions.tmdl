@@ -10,7 +10,7 @@ expression Parameter =
 
 expression 'Sample file' =
 		let
-		  Source = Folder.Files("C:\Users\frank\Desktop\Kom\powerbi_kostra_datamodell\faktatabeller"),
+		  Source = Folder.Files("C:\Users\frank\Desktop\Kom - G\powerbi_kostra_datamodell\faktatabeller"),
 		  #"Filtered hidden files" = Table.SelectRows(Source, each [Attributes]?[Hidden]? <> true),
 		  Navigation = #"Filtered hidden files"{0}[Content]
 		in

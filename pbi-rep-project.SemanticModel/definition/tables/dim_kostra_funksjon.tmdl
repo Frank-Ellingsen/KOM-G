@@ -109,7 +109,7 @@ table dim_kostra_funksjon
 		mode: import
 		source =
 				let
-				  Source = Csv.Document(File.Contents("C:\Users\frank\Desktop\Kom\powerbi_kostra_datamodell\dimensjoner\dim_kostra_funksjon.csv"), [Delimiter = ",", Columns = 13, Encoding = 65001, QuoteStyle = QuoteStyle.None]),
+				  Source = Csv.Document(File.Contents("C:\Users\frank\Desktop\Kom - G\powerbi_kostra_datamodell\dimensjoner\dim_kostra_funksjon.csv"), [Delimiter = ",", Columns = 13, Encoding = 65001, QuoteStyle = QuoteStyle.None]),
 				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
 				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"KOSTRA_Funksjon_ID", Int64.Type}, {"KOSTRA_Funksjon_Navn", type text}, {"Funksjon_Kode_Navn", type text}, {"KOSTRA_Funksjonsgruppe_Kode", Int64.Type}, {"KOSTRA_Funksjonsgruppe_Navn", type text}, {"Funksjonsgruppe_Kode_Navn", type text}, {"Tjenesteomrade_Kode", Int64.Type}, {"Tjenesteomrade_Navn", type text}, {"Tjenesteomrade_Kode_Navn", type text}, {"Hovedfunksjon_Kode", type text}, {"Hovedfunksjon_Navn", type text}, {"Hovedfunksjon_Kode_Navn", type text}, {"Regnskapsregel_Beskrivelse", type text}}),
 				  #"Changed column type 1" = Table.TransformColumnTypes(#"Changed column type", {{"KOSTRA_Funksjon_ID", type text}, {"KOSTRA_Funksjonsgruppe_Kode", type text}, {"Tjenesteomrade_Kode", type text}})

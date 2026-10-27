@@ -74,7 +74,7 @@ table fact_data
 		mode: import
 		source =
 				let
-				  Source = Folder.Files("C:\Users\frank\Desktop\Kom\powerbi_kostra_datamodell\faktatabeller"),
+				  Source = Folder.Files("C:\Users\frank\Desktop\Kom - G\powerbi_kostra_datamodell\faktatabeller"),
 				  #"Filtered hidden files" = Table.SelectRows(Source, each [Attributes]?[Hidden]? <> true),
 				  #"Added custom" = let
 				    rootPath = Text.TrimEnd(Value.Metadata(Value.Type(#"Filtered hidden files"))[FileSystemTable.RootPath]?, "\"),

@@ -70,7 +70,7 @@ table dim_ansvar
 		mode: import
 		source =
 				let
-				  Source = Csv.Document(File.Contents("C:\Users\frank\Desktop\Kom\powerbi_kostra_datamodell\dimensjoner\dim_ansvar.csv"), [Delimiter = ",", Columns = 8, Encoding = 65001, QuoteStyle = QuoteStyle.None]),
+				  Source = Csv.Document(File.Contents("C:\Users\frank\Desktop\Kom - G\powerbi_kostra_datamodell\dimensjoner\dim_ansvar.csv"), [Delimiter = ",", Columns = 8, Encoding = 65001, QuoteStyle = QuoteStyle.None]),
 				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
 				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"Ansvar_Kode", Int64.Type}, {"Enhet_Navn", type text}, {"Ansvar_Navn", type text}, {"Omrade_Kode", Int64.Type}, {"Omrade_Navn", type text}, {"Omrade_Kode_Navn", type text}, {"Ansvar_Kode_Navn", type text}, {"Er_Aktiv", type logical}}),
 				  #"Changed column type 1" = Table.TransformColumnTypes(#"Changed column type", {{"Ansvar_Kode", type text}, {"Omrade_Kode", type text}})

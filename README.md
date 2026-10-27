@@ -95,7 +95,7 @@ De 6 største avvikspostene i august måned basert på `fact_data`:
 
 ---
 
-## 📑 Struktur på Power BI-Rapporten ([kom_pbi_rep_project.pbip](file:///c:/Users/frank/Desktop/Kom/kom_pbi_rep_project.pbip))
+## 📑 Struktur på Power BI-Rapporten ([pbi-rep-project.pbip](file:///C:/Users/frank/Desktop/Kom%20-%20G/pbi-rep-project.pbip))
 
 Rapporten er konfigurert med **25 spesialiserte rapportsider** strukturert i tre seksjoner:
 
@@ -108,7 +108,7 @@ Rapporten er konfigurert med **25 spesialiserte rapportsider** strukturert i tre
 6. **`06. What-If Scenario og Balanse`** (`p06_scenario_simulering`): Dynamisk simulering av kutt i vikar/overtid og budsjettjustering for å gjenopprette balanse.
 
 ### Del 2: Financial Times (FT) Visual Guide (9 Temasider)
-Basert på [`FT-Visual Guide.pdf`](file:///c:/Users/frank/Desktop/Kom/FT-Visual%20Guide.pdf) og [`02_FT_Visual_Guide_Integration.md`](file:///c:/Users/frank/Desktop/Kom/antigravity_master_pakke/02_FT_Visual_Guide_Integration.md):
+Basert på [`FT-Visual Guide.pdf`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/references/FT-Visual%20Guide.pdf):
 7. **`FT 01: Deviation (Avviksanalyser)`** (`p_ft01_deviation`): Diverging bar charts og bullet-kolonner for mindreforbruk vs merforbruk.
 8. **`FT 02: Correlation (Korrelasjonsanalyser)`** (`p_ft02_correlation`): Scatter plots og korrelasjonsmatriser for overtid vs vikarbruk.
 9. **`FT 03: Ranking (Rangeringsanalyser)`** (`p_ft03_ranking`): Sorterte stolper og lollipop-diagrammer over de største kostnadsdriverne.
@@ -120,7 +120,7 @@ Basert på [`FT-Visual Guide.pdf`](file:///c:/Users/frank/Desktop/Kom/FT-Visual%
 15. **`FT 09: Flow (Flyt & Ressursallokering)`** (`p_ft09_flow`): Allokeringsvannfall fra budsjettramme til driftssektorer.
 
 ### Del 3: Time-Visuals 60 Katalog (10 Familiesider)
-Basert på [`Time-Visuals.pdf`](file:///c:/Users/frank/Desktop/Kom/Time-Visuals.pdf) og [`03_Time_Visuals_60_Katalog.md`](file:///c:/Users/frank/Desktop/Kom/antigravity_master_pakke/03_Time_Visuals_60_Katalog.md):
+Basert på [`Time-Visuals.pdf`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/references/Time-Visuals.pdf):
 16. **`Time 01: Line Charts (#01–#10)`** (`p_time01_lines`): Discrete, continuous, stepped og multi-series linjediagrammer.
 17. **`Time 02: Moving Averages & Bands (#11–#13, #18)`** (`p_time02_moving_avg`): 3M glidende gjennomsnitt og utjevnede kostnadstrender.
 18. **`Time 03: Area & Stream Charts (#14–#17, #19)`** (`p_time03_areas`): Standard areal, stablet areal og prosentvise sektorsammensetninger.
@@ -134,18 +134,20 @@ Basert på [`Time-Visuals.pdf`](file:///c:/Users/frank/Desktop/Kom/Time-Visuals.
 
 ---
 
-## 📁 Leveransepakker i Prosjektet
+## 📁 Prosjektstruktur og Ressurser
 
-* **[`full_md_rapporter/`](file:///c:/Users/frank/Desktop/Kom/full_md_rapporter/):** 6 detaljerte styringsrapporter tilpasset kommunens ledelse og kontrollutvalg.
-* **[`antigravity_master_pakke/`](file:///c:/Users/frank/Desktop/Kom/antigravity_master_pakke/):** Implementasjonsdokumentasjon for datamodell, dimensjoner, visualiseringer og DAX.
-* **[`tabular_editor_dax_script.md`](file:///c:/Users/frank/Desktop/Kom/tabular_editor_dax_script.md):** C# skript for automatisert innlasting av alle 78 måltall i Tabular Editor.
+* **[`instructions/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/instructions/):** Helhetlig instruksjons- og standardiseringssett (operasjoner, ETL, DAX, Tufte visual standards, DQA, agent-regler).
+* **[`docs/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/):** Data Quality & Assurance ([`07_Data_Quality_and_Assurance_Rapport.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/07_Data_Quality_and_Assurance_Rapport.md)), referansedokumenter i [`docs/references/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/references/) og skjermbilder i [`docs/assets/screenshots/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/assets/screenshots/).
+* **[`powerbi_kostra_datamodell/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/powerbi_kostra_datamodell/):** Dimensjons- og faktatabeller i CSV-format.
+* **[`pbi-rep-project.pbip`](file:///C:/Users/frank/Desktop/Kom%20-%20G/pbi-rep-project.pbip):** Hovedprosjektet for Power BI Desktop med TMDL-semantisk modell og PBIR-rapport.
+* **[`archive/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/archive/):** Arkiverte bygg og eldre `.pbix`-filer.
 
 ---
 
 ## 🚀 Åpne Løsningen
 
 1. Åpne prosjektet direkte i **Power BI Desktop**:
-   - Dobbeltklikk på hovedfilen [`pbi-rep-project.pbip`](file:///c:/Users/frank/Desktop/Kom/pbi-rep-project.pbip).
+   - Dobbeltklikk på hovedfilen [`pbi-rep-project.pbip`](file:///C:/Users/frank/Desktop/Kom%20-%20G/pbi-rep-project.pbip).
 2. For å oppdatere tallene fra nye månedsfiler:
    - Legg nye CSV-uttrekk i `powerbi_kostra_datamodell\faktatabeller\` og trykk **Oppdater / Refresh** i Power BI.
 

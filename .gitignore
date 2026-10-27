@@ -22,3 +22,8 @@ Desktop.ini
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
+
+# Local blob and binary archives
+local blob/
+archive/*.pbix
+

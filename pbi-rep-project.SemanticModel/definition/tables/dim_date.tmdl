@@ -94,7 +94,7 @@ table dim_date
 		mode: import
 		source =
 				let
-				  Source = Csv.Document(File.Contents("C:\Users\frank\Desktop\Kom\powerbi_kostra_datamodell\dimensjoner\dim_date.csv"), [Delimiter = ",", Columns = 8, Encoding = 65001, QuoteStyle = QuoteStyle.None]),
+				  Source = Csv.Document(File.Contents("C:\Users\frank\Desktop\Kom - G\powerbi_kostra_datamodell\dimensjoner\dim_date.csv"), [Delimiter = ",", Columns = 8, Encoding = 65001, QuoteStyle = QuoteStyle.None]),
 				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
 				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"Dato", type date}, {"Ar", Int64.Type}, {"Maned_Nummer", Int64.Type}, {"Maned_Navn", type text}, {"Ar_Maned", type date}, {"Kvartal", type text}, {"Uke", Int64.Type}, {"Dag_i_Uke", type text}}),
 				  #"Inserted start of month" = Table.AddColumn(#"Changed column type", "Start of month", each Date.StartOfMonth([Dato]), type nullable date),

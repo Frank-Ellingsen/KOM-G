@@ -151,7 +151,7 @@ table dim_kostra_kontoplan
 		mode: import
 		source =
 				let
-				  Source = Csv.Document(File.Contents("C:\Users\frank\Desktop\Kom\powerbi_kostra_datamodell\dimensjoner\dim_kostra_kontoplan.csv"), [Delimiter = ",", Columns = 18, Encoding = 65001, QuoteStyle = QuoteStyle.None]),
+				  Source = Csv.Document(File.Contents("C:\Users\frank\Desktop\Kom - G\powerbi_kostra_datamodell\dimensjoner\dim_kostra_kontoplan.csv"), [Delimiter = ",", Columns = 18, Encoding = 65001, QuoteStyle = QuoteStyle.None]),
 				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
 				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"Kontokode_6Siffer", Int64.Type}, {"Kontonavn", type text}, {"Konto_Kode_Navn", type text}, {"KOSTRA_Art_4Siffer", Int64.Type}, {"KOSTRA_Art_Navn", type text}, {"KOSTRA_Art_4Siffer_Navn", type text}, {"KOSTRA_Art_3Siffer", Int64.Type}, {"Hovedgruppe_Kode", Int64.Type}, {"Hovedgruppe_Navn", type text}, {"Hovedgruppe_Kode_Navn", type text}, {"Hovedkategori_Kode", Int64.Type}, {"Hovedkategori_Navn", type text}, {"Hovedkategori_Kode_Navn", type text}, {"Kontoklasse_ID", Int64.Type}, {"Kontoklasse_Navn", type text}, {"Kontoklasse_Kode_Navn", type text}, {"Regnskapsregel_Beskrivelse", type text}, {"Er_Aktiv", type logical}}),
 				  #"Changed column type 1" = Table.TransformColumnTypes(#"Changed column type", {{"Kontokode_6Siffer", type text}, {"KOSTRA_Art_4Siffer", type text}, {"KOSTRA_Art_3Siffer", type text}, {"Hovedgruppe_Kode", type text}, {"Hovedkategori_Kode", type text}})
