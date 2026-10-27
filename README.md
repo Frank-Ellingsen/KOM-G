@@ -137,10 +137,20 @@ Basert på [`Time-Visuals.pdf`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/
 ## 📁 Prosjektstruktur og Ressurser
 
 * **[`instructions/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/instructions/):** Helhetlig instruksjons- og standardiseringssett (operasjoner, ETL, DAX, Tufte visual standards, DQA, agent-regler).
-* **[`docs/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/):** Data Quality & Assurance ([`07_Data_Quality_and_Assurance_Rapport.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/07_Data_Quality_and_Assurance_Rapport.md)), referansedokumenter i [`docs/references/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/references/) og skjermbilder i [`docs/assets/screenshots/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/assets/screenshots/).
+* **[`docs/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/):** Data Quality & Assurance ([`07_Data_Quality_and_Assurance_Rapport.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/07_Data_Quality_and_Assurance_Rapport.md)), Excel-integrasjon ([`POWERBI_TO_EXCEL_INTEGRATION.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/POWERBI_TO_EXCEL_INTEGRATION.md)), Database-arkitektur ([`DATABASE_AND_EXCEL_STRUCTURE.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/DATABASE_AND_EXCEL_STRUCTURE.md)), referansedokumenter i [`docs/references/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/references/) og skjermbilder i [`docs/assets/screenshots/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/assets/screenshots/).
+* **[`src/db_manager.py`](file:///C:/Users/frank/Desktop/Kom%20-%20G/src/db_manager.py):** Python-verktøy for automatisk bygging av DuckDB OLAP-database og eksport til Excel ML-modeller.
 * **[`powerbi_kostra_datamodell/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/powerbi_kostra_datamodell/):** Dimensjons- og faktatabeller i CSV-format.
 * **[`pbi-rep-project.pbip`](file:///C:/Users/frank/Desktop/Kom%20-%20G/pbi-rep-project.pbip):** Hovedprosjektet for Power BI Desktop med TMDL-semantisk modell og PBIR-rapport.
 * **[`archive/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/archive/):** Arkiverte bygg og eldre `.pbix`-filer.
+
+---
+
+## 🔄 Excel- og DuckDB-Integrasjon (Ad-hoc Analyse & ML)
+
+Løsningen støtter direkte samhandling mellom Power BI Desktop, Excel og lokale analytiske databaser:
+* **[POWERBI_TO_EXCEL_INTEGRATION.md](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/POWERBI_TO_EXCEL_INTEGRATION.md):** 4 metoder for å koble Power BI Desktop til Excel (Lokal SSAS PivotTable via MSOLAP `localhost:<port>`, felles DuckDB datalag, DAX Studio eksport, copy table).
+* **[DATABASE_AND_EXCEL_STRUCTURE.md](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/DATABASE_AND_EXCEL_STRUCTURE.md):** Spesifikasjon for lokal DuckDB OLAP-database (`data/database/kostra.duckdb`) og Python in Excel (`=PY()`) maskinlæringsarbeidsbok.
+* **[src/db_manager.py](file:///C:/Users/frank/Desktop/Kom%20-%20G/src/db_manager.py):** Kjør `python src/db_manager.py --build` for å bygge databasen eller `python src/db_manager.py --export` for å generere et ferdig Excel-underlag (`data/excel_ml_input.xlsx`).
 
 ---
 
@@ -150,6 +160,8 @@ Basert på [`Time-Visuals.pdf`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/
    - Dobbeltklikk på hovedfilen [`pbi-rep-project.pbip`](file:///C:/Users/frank/Desktop/Kom%20-%20G/pbi-rep-project.pbip).
 2. For å oppdatere tallene fra nye månedsfiler:
    - Legg nye CSV-uttrekk i `powerbi_kostra_datamodell\faktatabeller\` og trykk **Oppdater / Refresh** i Power BI.
+3. For lokal SQL-analyse og ML-modellering i Excel:
+   - Bygg databasen med `python src/db_manager.py --build` og koble til `data/database/kostra.duckdb`.
 
 ---
 *Kristiansand kommune – KOSTRA Økonomistyring 2024. Alle tall er verifisert mot faktatabellen i datamodellen.*

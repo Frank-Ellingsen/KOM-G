@@ -65,5 +65,8 @@ SELECT
 FROM 'powerbi_kostra_datamodell/faktatabeller/*.csv'
 WHERE Dato = '2024-08-01'
 GROUP BY Sektor;
-```
 Dette gir øyeblikkelig verifikasjon av rådata før publisering i Power BI.
+
+For full spesifikasjon av det lokale DuckDB-skjemaet, automatisk opprettelse via [`src/db_manager.py`](file:///C:/Users/frank/Desktop/Kom%20-%20G/src/db_manager.py) og integrasjon mot Python in Excel, se:
+* **[`docs/DATABASE_AND_EXCEL_STRUCTURE.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/DATABASE_AND_EXCEL_STRUCTURE.md)**
+* **[`docs/POWERBI_TO_EXCEL_INTEGRATION.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/POWERBI_TO_EXCEL_INTEGRATION.md)**

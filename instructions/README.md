@@ -16,6 +16,8 @@ Denne samlingen etablerer standarder for prosjektstyring, datamodellering, DAX-b
 | **[`04_TUFTE_VISUAL_STANDARDS.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/instructions/04_TUFTE_VISUAL_STANDARDS.md)** | Visualisering & Tufte-prinsipper | Data-Ink Ratio: null vertikale gitterlinjer, dempede farger, direkte etiketter, FT Visual Guide og Time-Visuals 60. |
 | **[`05_DATA_QUALITY_AND_ASSURANCE_DQA.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/instructions/05_DATA_QUALITY_AND_ASSURANCE_DQA.md)** | Revisjon & Datakvalitet | 4-siders DQA-kontroll, dekningsmatrise, konsistenssjekk, kobling mot SSB KOSTRA-veiledere. |
 | **[`06_ANTIGRAVITY_AGENT_INSTRUCTIONS.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/instructions/06_ANTIGRAVITY_AGENT_INSTRUCTIONS.md)** | AI-agent Governance | Retningslinjer for AI-kodestøtte, sikker redigering av TMDL, lokale SQL-arbeidsflyter (DuckDB/SQLite), rollback-sikring. |
+| **[`docs/POWERBI_TO_EXCEL_INTEGRATION.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/POWERBI_TO_EXCEL_INTEGRATION.md)** | Excel & Power BI Samhandling | 4 metoder for å koble Power BI Desktop til Excel (SSAS lokal port, DuckDB, DAX Studio, Python in Excel). |
+| **[`docs/DATABASE_AND_EXCEL_STRUCTURE.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/DATABASE_AND_EXCEL_STRUCTURE.md)** | Database- & ML-arkitektur | DuckDB stjerneskjema, `src/db_manager.py` byggeskript og oppsett for `KOSTRA_ML_AdHoc_Analyse.xlsx`. |
 
 ---
 

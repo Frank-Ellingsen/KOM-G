@@ -23,7 +23,10 @@ Desktop.ini
 !.vscode/settings.json
 !.vscode/extensions.json
 
-# Local blob and binary archives
+# Local blob, data caches and binary archives
 local blob/
 archive/*.pbix
+data/
+*.duckdb
+.env
 
