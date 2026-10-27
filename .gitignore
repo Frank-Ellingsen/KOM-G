@@ -28,5 +28,19 @@ local blob/
 archive/*.pbix
 data/
 *.duckdb
+
+# MLflow and model artifacts
+models/*.pkl
+models/*.joblib
+!models/.gitkeep
+mlruns/
+mlflow.db
+mlflow_data/
+chroma_db/
+
+# Environment files
 .env
+.env.*
+!.env.example
+
 

@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # 1. Streamlit Web App (Hovedgrensesnitt)
+  streamlit-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: antigravity_streamlit
+    ports:
+      - "8501:8501"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - SPIDER_API_KEY=${SPIDER_API_KEY}
+      - MLFLOW_TRACKING_URI=http://mlflow-server:5000
+      - DUCKDB_PATH=/app/data/kostra.duckdb
+    volumes:
+      - .:/app
+      - chroma_data:/app/chroma_db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - mlflow-server
+    restart: unless-stopped
+
+  # 2. MLflow Tracking Server (Modellovervåking & Experiment Tracking)
+  mlflow-server:
+    image: ghcr.io/mlflow/mlflow:v2.11.3
+    container_name: antigravity_mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlflow_data:/mlflow
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --default-artifact-root /mlflow/artifacts
+    restart: unless-stopped
+
+volumes:
+  chroma_data:

@@ -18,6 +18,8 @@ Denne samlingen etablerer standarder for prosjektstyring, datamodellering, DAX-b
 | **[`06_ANTIGRAVITY_AGENT_INSTRUCTIONS.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/instructions/06_ANTIGRAVITY_AGENT_INSTRUCTIONS.md)** | AI-agent Governance | Retningslinjer for AI-kodestøtte, sikker redigering av TMDL, lokale SQL-arbeidsflyter (DuckDB/SQLite), rollback-sikring. |
 | **[`docs/POWERBI_TO_EXCEL_INTEGRATION.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/POWERBI_TO_EXCEL_INTEGRATION.md)** | Excel & Power BI Samhandling | 4 metoder for å koble Power BI Desktop til Excel (SSAS lokal port, DuckDB, DAX Studio, Python in Excel). |
 | **[`docs/DATABASE_AND_EXCEL_STRUCTURE.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/DATABASE_AND_EXCEL_STRUCTURE.md)** | Database- & ML-arkitektur | DuckDB stjerneskjema, `src/db_manager.py` byggeskript og oppsett for `KOSTRA_ML_AdHoc_Analyse.xlsx`. |
+| **[`docs/AUTOMATED_RETRAINING_GUIDE.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/AUTOMATED_RETRAINING_GUIDE.md)** | ML Retraining & Drift | Automatisk månedlig om-trening med `src/retrain_pipeline.py`, modell-drift alarm og MLflow sporing. |
+| **[`docs/JUPYTER_AND_MLFLOW_GUIDE.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/JUPYTER_AND_MLFLOW_GUIDE.md)** | Jupyter & MLflow Guide | Kjøring av datakontroller og tidsrekke-ML i `notebooks/` med lokal SQLite-sporing. |
 
 ---
 

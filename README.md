@@ -137,8 +137,16 @@ Basert på [`Time-Visuals.pdf`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/
 ## 📁 Prosjektstruktur og Ressurser
 
 * **[`instructions/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/instructions/):** Helhetlig instruksjons- og standardiseringssett (operasjoner, ETL, DAX, Tufte visual standards, DQA, agent-regler).
-* **[`docs/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/):** Data Quality & Assurance ([`07_Data_Quality_and_Assurance_Rapport.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/07_Data_Quality_and_Assurance_Rapport.md)), Excel-integrasjon ([`POWERBI_TO_EXCEL_INTEGRATION.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/POWERBI_TO_EXCEL_INTEGRATION.md)), Database-arkitektur ([`DATABASE_AND_EXCEL_STRUCTURE.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/DATABASE_AND_EXCEL_STRUCTURE.md)), referansedokumenter i [`docs/references/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/references/) og skjermbilder i [`docs/assets/screenshots/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/assets/screenshots/).
-* **[`src/db_manager.py`](file:///C:/Users/frank/Desktop/Kom%20-%20G/src/db_manager.py):** Python-verktøy for automatisk bygging av DuckDB OLAP-database og eksport til Excel ML-modeller.
+* **[`docs/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/):** Data Quality & Assurance ([`07_Data_Quality_and_Assurance_Rapport.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/07_Data_Quality_and_Assurance_Rapport.md)), Excel-integrasjon ([`POWERBI_TO_EXCEL_INTEGRATION.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/POWERBI_TO_EXCEL_INTEGRATION.md)), Database-arkitektur ([`DATABASE_AND_EXCEL_STRUCTURE.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/DATABASE_AND_EXCEL_STRUCTURE.md)), ML-omtrening ([`AUTOMATED_RETRAINING_GUIDE.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/AUTOMATED_RETRAINING_GUIDE.md)), Jupyter-guide ([`JUPYTER_AND_MLFLOW_GUIDE.md`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/JUPYTER_AND_MLFLOW_GUIDE.md)), referansedokumenter i [`docs/references/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/references/) og skjermbilder i [`docs/assets/screenshots/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docs/assets/screenshots/).
+* **[`notebooks/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/notebooks/):** Interaktive Jupyter-notatbøker for regnskapskontroll og analyse:
+  * [`01_kostra_data_and_controls.ipynb`](file:///C:/Users/frank/Desktop/Kom%20-%20G/notebooks/01_kostra_data_and_controls.ipynb): Datakvalitetskontroller, relasjonsintegritet og terskelsjekker mot `data/database/kostra.duckdb`.
+  * [`02_ml_forecasting_and_mlflow.ipynb`](file:///C:/Users/frank/Desktop/Kom%20-%20G/notebooks/02_ml_forecasting_and_mlflow.ipynb): Maskinlæringsbasert tidsserie-prognostisering og drift-analyse koblet mot MLflow.
+* **[`src/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/src/):** Produksjonskode i Python:
+  * [`src/db_manager.py`](file:///C:/Users/frank/Desktop/Kom%20-%20G/src/db_manager.py): Bygging av DuckDB OLAP-database og eksport til Excel ML-modeller.
+  * [`src/retrain_pipeline.py`](file:///C:/Users/frank/Desktop/Kom%20-%20G/src/retrain_pipeline.py): Månedlig pipeline for Random Forest tidsserie-prognoser, automatisk Model Drift-deteksjon (> 20 %) og logging til MLflow.
+* **[`models/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/models/):** Serialiserte ML-modeller (`models/kostra_forecast_latest.pkl`).
+* **[`run.ps1`](file:///C:/Users/frank/Desktop/Kom%20-%20G/run.ps1):** Samlet PowerShell CLI for orkestrering av databasebygg, ML-trening, Docker og MLflow.
+* **[`docker-compose-v2.yml`](file:///C:/Users/frank/Desktop/Kom%20-%20G/docker-compose-v2.yml) & [`Dockerfile`](file:///C:/Users/frank/Desktop/Kom%20-%20G/Dockerfile):** Containerisert miljø for Streamlit og MLflow tracking server.
 * **[`powerbi_kostra_datamodell/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/powerbi_kostra_datamodell/):** Dimensjons- og faktatabeller i CSV-format.
 * **[`pbi-rep-project.pbip`](file:///C:/Users/frank/Desktop/Kom%20-%20G/pbi-rep-project.pbip):** Hovedprosjektet for Power BI Desktop med TMDL-semantisk modell og PBIR-rapport.
 * **[`archive/`](file:///C:/Users/frank/Desktop/Kom%20-%20G/archive/):** Arkiverte bygg og eldre `.pbix`-filer.
@@ -154,14 +162,46 @@ Løsningen støtter direkte samhandling mellom Power BI Desktop, Excel og lokale
 
 ---
 
-## 🚀 Åpne Løsningen
+## 🤖 Maskinlæring, Om-trening og MLflow Overvåking
 
-1. Åpne prosjektet direkte i **Power BI Desktop**:
+Prosjektet har en innebygd Random Forest-modell som fanger opp sesongmønstre i kommunale regnskap (f.eks. vikartopper ved skolestart og sommermåneder):
+* **Retrening:** Kjør `.\run.ps1 -Retrain` for å oppdatere modellen mot de nyeste regnskapstallene i DuckDB.
+* **Drift-deteksjon:** Dersom prediksjonsfeilen (MAE) øker med mer enn 20 % mot baseline, utløses en automatisk *Model Drift Alert* i MLflow.
+* **MLflow Tracking UI:** Kjør `.\run.ps1 -Mlflow` for å inspisere kjøringer, parametere, metrikker og modell-artefakter på `http://localhost:5000`.
+
+---
+
+## 🛠️ PowerShell CLI (`run.ps1`) Hurtigkommandoer
+
+Bruk `run.ps1` som sentral kommandosentral:
+
+| Parameter | Beskrivelse |
+| :--- | :--- |
+| `.\run.ps1 -BuildDB` | Bygg/oppdater `data/database/kostra.duckdb` fra CSV-filer |
+| `.\run.ps1 -ExportExcel` | Generer oppdatert `data/excel_ml_input.xlsx` til Excel |
+| `.\run.ps1 -Retrain` | Kjør ML-omtrening og sjekk Model Drift |
+| `.\run.ps1 -Mlflow` | Start lokalt MLflow Tracking UI (`http://localhost:5000`) |
+| `.\run.ps1 -Up` | Start Docker-stacken (Streamlit + MLflow container) |
+| `.\run.ps1 -Down` | Stopp Docker-stacken |
+| `.\run.ps1 -Logs` | Se levende logger fra Docker-tjenester |
+| `.\run.ps1 -All` | Bygg database, start containere og åpne grensesnitt i nettleser |
+
+---
+
+## 🚀 Komme i Gang
+
+1. **Åpne rapporten i Power BI Desktop**:
    - Dobbeltklikk på hovedfilen [`pbi-rep-project.pbip`](file:///C:/Users/frank/Desktop/Kom%20-%20G/pbi-rep-project.pbip).
-2. For å oppdatere tallene fra nye månedsfiler:
+2. **Oppdatere tallene fra nye månedsfiler**:
    - Legg nye CSV-uttrekk i `powerbi_kostra_datamodell\faktatabeller\` og trykk **Oppdater / Refresh** i Power BI.
-3. For lokal SQL-analyse og ML-modellering i Excel:
-   - Bygg databasen med `python src/db_manager.py --build` og koble til `data/database/kostra.duckdb`.
+3. **Bygge DuckDB og oppdatere ML-modeller**:
+   ```powershell
+   .\run.ps1 -BuildDB
+   .\run.ps1 -Retrain
+   ```
+4. **Miljøvariabler**:
+   - Kopier `.env.example` til `.env` og legg inn eventuelle API-nøkler for eksterne AI-agenter (Gemini/Spider/Serper). `.env` er strengt git-ignorert.
 
 ---
 *Kristiansand kommune – KOSTRA Økonomistyring 2024. Alle tall er verifisert mot faktatabellen i datamodellen.*
+
