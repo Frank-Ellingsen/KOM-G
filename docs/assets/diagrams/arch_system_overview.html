@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #ffffff;
+    color: #1e293b;
+    -webkit-font-smoothing: antialiased;
+}
+.diagram-container {
+    width: 1040px;
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin: 0 auto;
+}
+.diag-header {
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+.diag-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.3px;
+    text-transform: uppercase;
+}
+.diag-subtitle {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 2px;
+}
+.diag-badge {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #0284c7;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 12px 14px;
+}
+.card-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.card-pill {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background: #e2e8f0;
+    color: #334155;
+}
+.pill-blue { background: #e0f2fe; color: #0369a1; }
+.pill-amber { background: #fef3c7; color: #b45309; }
+.pill-green { background: #dcfce7; color: #15803d; }
+.pill-slate { background: #f1f5f9; color: #475569; }
+
+.layers-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.layer-row {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #0284c7;
+    border-radius: 6px;
+    padding: 12px 16px;
+}
+.layer-row.layer-ai { border-left-color: #8b5cf6; }
+.layer-row.layer-olap { border-left-color: #059669; }
+.layer-row.layer-ext { border-left-color: #f59e0b; }
+.layer-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+.items-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+.item-box {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    padding: 10px;
+}
+.item-box h4 {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+.item-box p {
+    font-size: 9.5px;
+    color: #64748b;
+    line-height: 1.35;
+}
+.item-box .tech-tag {
+    font-size: 8.5px;
+    font-family: monospace;
+    color: #0284c7;
+    margin-top: 6px;
+    display: inline-block;
+    background: #f0f9ff;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+.arrow-flow {
+    text-align: center;
+    font-size: 11px;
+    color: #94a3b8;
+    margin: -6px 0;
+    font-weight: 700;
+}
+</style>
+</head>
+<body>
+<div class="diagram-container">
+    <div class="diag-header">
+        <div>
+            <div class="diag-title">KOM-G Teknisk Systemarkitektur</div>
+            <div class="diag-subtitle">Firelags lokal-først arkitektur: Presentasjon, Multi-LLM, DuckDB OLAP & Integrasjoner</div>
+        </div>
+        <div class="diag-badge">Lokal-Først | Edward Tufte Standard</div>
+    </div>
+
+    <div class="layers-grid">
+        <!-- Layer 1 -->
+        <div class="layer-row">
+            <div class="layer-label">
+                <span>1. Presentasjons- og Brukerlag (Web Cockpit & Frontends)</span>
+                <span class="card-pill pill-blue">Zero-Framework / ES2022</span>
+            </div>
+            <div class="items-row">
+                <div class="item-box">
+                    <h4>Executive Web Cockpit</h4>
+                    <p>KPI Grid, Slicere, sanntids avviksoversikt og status M01–M08.</p>
+                    <span class="tech-tag">index.html (Semantic HTML5)</span>
+                </div>
+                <div class="item-box">
+                    <h4>Tufte S-Kurve Studio</h4>
+                    <p>Dynamisk SVG, direkte kurvemerking, Financial Times 01–10 charts.</p>
+                    <span class="tech-tag">assets/js/dashboard.js</span>
+                </div>
+                <div class="item-box">
+                    <h4>What-If Simulator</h4>
+                    <p>Live simulering av vikarbyråkutt, fastlønn og rekruttering mot EAC.</p>
+                    <span class="tech-tag">Client-side calc engine</span>
+                </div>
+                <div class="item-box">
+                    <h4>Streamlit AI Workbench</h4>
+                    <p>Interaktiv analytisk flate, KOSTRA-grafer og RAG-saksbehandling.</p>
+                    <span class="tech-tag">src/app.py (Port 8501)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow-flow">▼ Klientside DOM-hendelser, Tilstand & Kontekstinjeksjon ▼</div>
+
+        <!-- Layer 2 -->
+        <div class="layer-row layer-ai">
+            <div class="layer-label">
+                <span>2. Multi-LLM Integrasjonslag & Klientside Sikkerhet</span>
+                <span class="card-pill" style="background:#ede9fe; color:#6d28d9;">Hybrid Cloud / Local AI</span>
+            </div>
+            <div class="items-row">
+                <div class="item-box">
+                    <h4>AI Konfigurasjonsmotor</h4>
+                    <p>Dropdown for leverandørvalg, modell og lokal Base-URL.</p>
+                    <span class="tech-tag">localStorage (kostra_ai_settings)</span>
+                </div>
+                <div class="item-box">
+                    <h4>Sky-LLM REST Dispatcher</h4>
+                    <p>Direkte API-kall: Gemini 2.5, OpenAI GPT-4o, Claude 3.5, Groq, Mistral.</p>
+                    <span class="tech-tag">REST v1beta / completions</span>
+                </div>
+                <div class="item-box">
+                    <h4>Ollama Lokal Inferens</h4>
+                    <p>100 % lokal prosessering. Ingen nettverkstrafikk eller datalekkasje.</p>
+                    <span class="tech-tag">http://localhost:11434</span>
+                </div>
+                <div class="item-box">
+                    <h4>Innebygd Regelmotor</h4>
+                    <p>Deterministisk fallback ved manglende API-nøkkel eller offline-modus.</p>
+                    <span class="tech-tag">Rule-based Controller Logic</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow-flow">▼ SQL-spørringer, Analytiske Aggregeringer & Feature-uttrekk ▼</div>
+
+        <!-- Layer 3 -->
+        <div class="layer-row layer-olap">
+            <div class="layer-label">
+                <span>3. Analytisk Datalag & Maskinlæring (OLAP Engine)</span>
+                <span class="card-pill pill-green">DuckDB In-Process / Parquet</span>
+            </div>
+            <div class="items-row">
+                <div class="item-box">
+                    <h4>DuckDB OLAP Database</h4>
+                    <p>827 transaksjonsrader, stjerneskjema og sub-millisekund spørretid.</p>
+                    <span class="tech-tag">data/database/kostra.duckdb</span>
+                </div>
+                <div class="item-box">
+                    <h4>Analytiske SQL Views</h4>
+                    <p><code>vw_kpi_summary</code>, <code>vw_monthly_scurve</code>, <code>vw_top_drivers</code>.</p>
+                    <span class="tech-tag">DuckDB SQL Window Functions</span>
+                </div>
+                <div class="item-box">
+                    <h4>Random Forest ML Pipeline</h4>
+                    <p>Månedlig tidsserieprognose (Test R²=0.966, MAE=4.3 kNOK).</p>
+                    <span class="tech-tag">models/kostra_forecast_latest.pkl</span>
+                </div>
+                <div class="item-box">
+                    <h4>MLflow Model Registry</h4>
+                    <p>Overvåking av model drift (&gt;20 % MAE avvik) og metriker.</p>
+                    <span class="tech-tag">http://localhost:5000</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow-flow">▼ Eksport, Rapportering & Samhandling ▼</div>
+
+        <!-- Layer 4 -->
+        <div class="layer-row layer-ext">
+            <div class="layer-label">
+                <span>4. Eksterne Grensesnitt, BI og Arkivintegrasjon</span>
+                <span class="card-pill pill-amber">SSB KOSTRA / Power BI TMDL</span>
+            </div>
+            <div class="items-row">
+                <div class="item-box">
+                    <h4>Power BI PBIP Prosjekt</h4>
+                    <p>25 rapportsider, 78 DAX-måltall i ren tekst TMDL/PBIR format.</p>
+                    <span class="tech-tag">pbi-rep-project.pbip</span>
+                </div>
+                <div class="item-box">
+                    <h4>Excel Pivot Analyse</h4>
+                    <p>Ferdigstrukturert datagrunnlag for controllere og enhetsledere.</p>
+                    <span class="tech-tag">data/excel_ml_input.xlsx</span>
+                </div>
+                <div class="item-box">
+                    <h4>SSB KOSTRA & Agresso</h4>
+                    <p>Nasjonal kontoplan, 4-sifrede funksjoner og regnskapsavstemming.</p>
+                    <span class="tech-tag">KOSTRA 2024 / Agresso ERP</span>
+                </div>
+                <div class="item-box">
+                    <h4>Public 360 / eInnsyn</h4>
+                    <p>Automatisert PDF-notatgenerering for formannskap og revisjon.</p>
+                    <span class="tech-tag">ISO PDF/A Dokumenter</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

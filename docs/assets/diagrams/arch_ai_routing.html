@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #ffffff;
+    color: #1e293b;
+    -webkit-font-smoothing: antialiased;
+}
+.diagram-container {
+    width: 1040px;
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin: 0 auto;
+}
+.diag-header {
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+.diag-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.3px;
+    text-transform: uppercase;
+}
+.diag-subtitle {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 2px;
+}
+.diag-badge {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #0284c7;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 12px 14px;
+}
+.card-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.card-pill {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background: #e2e8f0;
+    color: #334155;
+}
+.pill-blue { background: #e0f2fe; color: #0369a1; }
+.pill-amber { background: #fef3c7; color: #b45309; }
+.pill-green { background: #dcfce7; color: #15803d; }
+.pill-slate { background: #f1f5f9; color: #475569; }
+
+.routing-grid {
+    display: grid;
+    grid-template-columns: 280px 40px 1fr 40px 240px;
+    align-items: center;
+    gap: 0;
+}
+.flow-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.flow-arrow {
+    text-align: center;
+    font-size: 16px;
+    color: #94a3b8;
+    font-weight: 700;
+}
+.node-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+.node-card.primary {
+    border-left: 4px solid #0284c7;
+}
+.node-card.secure {
+    border-left: 4px solid #059669;
+    background: #f0fdf4;
+}
+.node-card.cloud {
+    border-left: 4px solid #8b5cf6;
+}
+.node-card.offline {
+    border-left: 4px solid #64748b;
+}
+.node-card h4 {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 3px;
+}
+.node-card p {
+    font-size: 9px;
+    color: #64748b;
+    line-height: 1.3;
+}
+.node-card code {
+    font-size: 8.5px;
+    background: #f1f5f9;
+    padding: 1px 3px;
+    border-radius: 2px;
+    color: #0f172a;
+}
+.privacy-banner {
+    margin-top: 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    font-size: 9.5px;
+}
+.privacy-item strong {
+    display: block;
+    color: #0f172a;
+    margin-bottom: 2px;
+}
+</style>
+</head>
+<body>
+<div class="diagram-container">
+    <div class="diag-header">
+        <div>
+            <div class="diag-title">Multi-LLM Integrasjonsarkitektur & Personvern</div>
+            <div class="diag-subtitle">Orkestrering mellom klientside, lokale språkmodeller og sikre sky-REST endepunkter</div>
+        </div>
+        <div class="diag-badge">Null Datalekkasje | GDPR & Forvaltningsloven</div>
+    </div>
+
+    <div class="routing-grid">
+        <!-- Col 1: Input & Context -->
+        <div class="flow-col">
+            <div class="node-card primary">
+                <h4>Brukerhenvendelse & Valg</h4>
+                <p>Spørsmål i chat-widget eller klikk på "AI Dypdykk" i avvikstabellen.</p>
+                <code>dashboard.js : onSend()</code>
+            </div>
+            <div class="node-card primary">
+                <h4>Kontekstgenerator (Syntese)</h4>
+                <p>Bygger finansiell situasjonsrapport (M08 YTD, KOSTRA-avvik, lovhjemler).</p>
+                <code>buildControllerContext()</code>
+            </div>
+            <div class="node-card primary">
+                <h4>Sikkerhetssanitering</h4>
+                <p>Kun aggregerte kNOK-tall inkluderes. Null personopplysninger eller elevdata.</p>
+                <code>PII-Free Sanitizer</code>
+            </div>
+        </div>
+
+        <div class="flow-arrow">►</div>
+
+        <!-- Col 3: Provider Router -->
+        <div class="flow-col">
+            <div class="node-card secure">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h4>Ollama (Lokal LLM)</h4>
+                    <span class="card-pill pill-green">Anbefalt Forvaltning</span>
+                </div>
+                <p>100 % lokal prosessering på <code>http://localhost:11434/api/chat</code>. Ingen API-nøkkel påkrevd, null trafikk ut av maskinen.</p>
+                <code>Llama 3, Mistral, Qwen</code>
+            </div>
+            <div class="node-card cloud">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h4>Sky-LLM REST Gateways</h4>
+                    <span class="card-pill" style="background:#ede9fe; color:#6d28d9;">Klientside Nøkkel</span>
+                </div>
+                <p>Direkte HTTPS kall med brukerens egen API-nøkkel lagret i <code>localStorage</code>:</p>
+                <p style="margin-top:2px;">• <b>Gemini:</b> GenerativeLanguage API v1beta<br>• <b>OpenAI/Groq/Mistral/DeepSeek:</b> OpenAI-kompatibel endpoint</p>
+            </div>
+            <div class="node-card offline">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h4>Innebygd Regelmotor (Offline)</h4>
+                    <span class="card-pill pill-slate">Deterministisk</span>
+                </div>
+                <p>Automatisk fallback dersom nettverket er nede eller brukeren ikke har konfigurert nøkkel.</p>
+            </div>
+        </div>
+
+        <div class="flow-arrow">►</div>
+
+        <!-- Col 5: Output & Audit -->
+        <div class="flow-col">
+            <div class="node-card">
+                <h4>Sanntids Strømming</h4>
+                <p>Svaret vises direkte i chat-panelet med Markdown-tabeller og kulepunkter.</p>
+                <code>renderMessage()</code>
+            </div>
+            <div class="node-card">
+                <h4>Revisjonslogg i DuckDB</h4>
+                <p>Loggføring av prompt, modell og tidspunkt for etterprøvbarhet.</p>
+                <code>audit_log (SQL Tabell)</code>
+            </div>
+            <div class="node-card">
+                <h4>Saksnotat Eksport</h4>
+                <p>Overføring til formannskapsnotater og PDF-rapporter.</p>
+                <code>generate_reports.py</code>
+            </div>
+        </div>
+    </div>
+
+    <div class="privacy-banner">
+        <div class="privacy-item">
+            <strong>1. Nøkkelbevaring i Nettleser</strong>
+            API-nøkler forlater aldri brukerens egen maskin. De sendes kun kryptert direkte til valgt leverandør.
+        </div>
+        <div class="privacy-item">
+            <strong>2. Konfidensiell Forvaltning</strong>
+            Ved bruk av Ollama er løsningen fullstendig frakoblet internett – godkjent for sensitive analyser.
+        </div>
+        <div class="privacy-item">
+            <strong>3. Revisjonsspor iht. Arkivloven</strong>
+            Alle vurderinger som leder til økonomiske vedtak kan spores i databasens revisjonstabell.
+        </div>
+    </div>
+</div>
+</body>
+</html>

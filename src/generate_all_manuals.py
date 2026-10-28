@@ -3,7 +3,7 @@ KOM-G: Complete Publication-Grade PDF Documentation Generator
 ==============================================================
 Generates 3 exhaustive, multi-page, Edward Tufte-compliant PDF manuals
 in the repository root folder:
-1. KOM-G_User_Guide.pdf
+1. KOM-G_User_Guide.pdf (with high-DPI UI previews and screenshots)
 2. KOM-G_System_Manual_and_Architecture.pdf
 3. KOM-G_Data_Model_and_Dictionary.pdf
 
@@ -21,7 +21,7 @@ from reportlab.lib.units import cm, mm
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT, TA_JUSTIFY
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable, Image
 )
 from reportlab.pdfgen import canvas
 
@@ -38,6 +38,10 @@ C_CRITICAL = colors.HexColor("#dc2626")    # Variance / Risk
 C_WARNING = colors.HexColor("#d97706")     # Amber alert
 C_POSITIVE = colors.HexColor("#059669")    # Green saving
 C_WHITE = colors.HexColor("#ffffff")
+
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+UI_IMG_DIR = os.path.join(ROOT_DIR, "docs", "assets", "ui_previews")
+DIAGRAM_IMG_DIR = os.path.join(ROOT_DIR, "docs", "assets", "diagrams")
 
 
 class TufteNumberedCanvas(canvas.Canvas):
@@ -100,117 +104,125 @@ def get_tufte_stylesheet():
         fontSize=8.5,
         textColor=C_ACCENT,
         leading=11,
-        spaceAfter=4,
+        spaceAfter=3,
         textTransform='uppercase'
     ))
     styles.add(ParagraphStyle(
         'DocTitle',
         fontName='Helvetica-Bold',
-        fontSize=19,
+        fontSize=18,
         textColor=C_PRIMARY,
-        leading=23,
-        spaceAfter=5
+        leading=22,
+        spaceAfter=4
     ))
     styles.add(ParagraphStyle(
         'DocSubtitle',
         fontName='Helvetica',
-        fontSize=10.5,
+        fontSize=10,
         textColor=C_MUTED,
-        leading=14,
-        spaceAfter=12
+        leading=13.5,
+        spaceAfter=10
     ))
     styles.add(ParagraphStyle(
         'H1',
         fontName='Helvetica-Bold',
-        fontSize=12.5,
+        fontSize=12,
         textColor=C_PRIMARY,
-        leading=15.5,
-        spaceBefore=14,
-        spaceAfter=6,
+        leading=15,
+        spaceBefore=11,
+        spaceAfter=5,
         keepWithNext=True
     ))
     styles.add(ParagraphStyle(
         'H2',
         fontName='Helvetica-Bold',
-        fontSize=10,
+        fontSize=9.5,
         textColor=C_SECONDARY,
-        leading=13,
-        spaceBefore=9,
-        spaceAfter=4,
+        leading=12.5,
+        spaceBefore=8,
+        spaceAfter=3,
         keepWithNext=True
     ))
     styles.add(ParagraphStyle(
         'Body',
         fontName='Helvetica',
-        fontSize=8.3,
+        fontSize=8,
         textColor=C_TEXT,
-        leading=11.8,
-        spaceAfter=5
+        leading=11.2,
+        spaceAfter=4
     ))
     styles.add(ParagraphStyle(
         'BodyBold',
         fontName='Helvetica-Bold',
-        fontSize=8.3,
+        fontSize=8,
         textColor=C_TEXT,
-        leading=11.8,
-        spaceAfter=5
+        leading=11.2,
+        spaceAfter=4
     ))
     styles.add(ParagraphStyle(
         'BulletItem',
         fontName='Helvetica',
-        fontSize=8.3,
+        fontSize=8,
         textColor=C_TEXT,
-        leading=11.8,
+        leading=11.2,
         leftIndent=12,
         firstLineIndent=-8,
-        spaceAfter=3
+        spaceAfter=2.5
     ))
     styles.add(ParagraphStyle(
         'CodeSnippet',
         fontName='Courier',
-        fontSize=7.6,
+        fontSize=7.2,
         textColor=colors.HexColor("#0f172a"),
-        leading=10,
-        leftIndent=6
+        leading=9.5,
+        leftIndent=4
     ))
     styles.add(ParagraphStyle(
         'TH',
         fontName='Helvetica-Bold',
-        fontSize=7.8,
+        fontSize=7.5,
         textColor=C_PRIMARY,
-        leading=9.8,
+        leading=9.5,
         alignment=TA_LEFT
     ))
     styles.add(ParagraphStyle(
         'THRight',
         fontName='Helvetica-Bold',
-        fontSize=7.8,
+        fontSize=7.5,
         textColor=C_PRIMARY,
-        leading=9.8,
+        leading=9.5,
         alignment=TA_RIGHT
     ))
     styles.add(ParagraphStyle(
         'TD',
         fontName='Helvetica',
-        fontSize=7.8,
+        fontSize=7.5,
         textColor=C_TEXT,
-        leading=9.8,
+        leading=9.5,
         alignment=TA_LEFT
     ))
     styles.add(ParagraphStyle(
         'TDRight',
         fontName='Helvetica',
-        fontSize=7.8,
+        fontSize=7.5,
         textColor=C_TEXT,
-        leading=9.8,
+        leading=9.5,
         alignment=TA_RIGHT
     ))
     styles.add(ParagraphStyle(
         'CalloutText',
         fontName='Helvetica',
-        fontSize=8,
+        fontSize=7.8,
         textColor=colors.HexColor("#1e293b"),
-        leading=11.2
+        leading=10.8
+    ))
+    styles.add(ParagraphStyle(
+        'FigureCaption',
+        fontName='Helvetica',
+        fontSize=7.2,
+        textColor=C_MUTED,
+        leading=9.2,
+        alignment=TA_CENTER
     ))
 
     return styles
@@ -230,10 +242,10 @@ def make_callout(text, label="KONTROLLER-MERKNAD", tone="accent", usable_w=174*m
     t.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), bg_color),
         ('BOX', (0, 0), (-1, -1), 0.5, b_color),
-        ('LEFTPADDING', (0, 0), (-1, -1), 8),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
-        ('TOPPADDING', (0, 0), (-1, -1), 5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ('LEFTPADDING', (0, 0), (-1, -1), 7),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 7),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
     ]))
     return t
 
@@ -250,16 +262,68 @@ def build_metadata_box(rows, usable_w):
         ('BACKGROUND', (0, 0), (-1, -1), C_BG_ALT),
         ('BOX', (0, 0), (-1, -1), 0.5, C_BORDER),
         ('INNERGRID', (0, 0), (-1, -1), 0.5, C_BG_CODE),
-        ('TOPPADDING', (0, 0), (-1, -1), 3.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 3.5),
-        ('LEFTPADDING', (0, 0), (-1, -1), 6),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 3),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+        ('LEFTPADDING', (0, 0), (-1, -1), 5),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 5),
+    ]))
+    return t
+
+
+def make_ui_figure(img_filename, width, height, caption=""):
+    """Creates a boxed, caption-labeled UI screenshot card."""
+    styles = get_tufte_stylesheet()
+    img_path = os.path.join(UI_IMG_DIR, img_filename)
+    if not os.path.exists(img_path):
+        return Paragraph(f"<i>[Skjermbilde mangler: {img_filename}]</i>", styles['Body'])
+    
+    img = Image(img_path, width=width, height=height)
+    content = [img]
+    if caption:
+        content.append(Spacer(1, 2))
+        content.append(Paragraph(f"<b>Figur:</b> <i>{caption}</i>", styles['FigureCaption']))
+    
+    t = Table([[content]], colWidths=[width + 4])
+    t.setStyle(TableStyle([
+        ('BOX', (0, 0), (-1, -1), 0.5, C_BORDER),
+        ('BACKGROUND', (0, 0), (-1, -1), C_BG_ALT),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+        ('LEFTPADDING', (0, 0), (-1, -1), 2),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 2),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ]))
+    return t
+
+
+def make_diagram_figure(img_filename, width, height, caption=""):
+    """Creates a boxed, caption-labeled diagram card for architecture & data model diagrams."""
+    styles = get_tufte_stylesheet()
+    img_path = os.path.join(DIAGRAM_IMG_DIR, img_filename)
+    if not os.path.exists(img_path):
+        return Paragraph(f"<i>[Diagram mangler: {img_filename}]</i>", styles['Body'])
+    
+    img = Image(img_path, width=width, height=height)
+    content = [img]
+    if caption:
+        content.append(Spacer(1, 2))
+        content.append(Paragraph(f"<b>Figur:</b> <i>{caption}</i>", styles['FigureCaption']))
+    
+    t = Table([[content]], colWidths=[width + 4])
+    t.setStyle(TableStyle([
+        ('BOX', (0, 0), (-1, -1), 0.5, C_BORDER),
+        ('BACKGROUND', (0, 0), (-1, -1), C_BG_ALT),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+        ('LEFTPADDING', (0, 0), (-1, -1), 2),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 2),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
     ]))
     return t
 
 
 # ==============================================================================
-# 1. USER GUIDE (Brukermanual & Operativ Veileder)
+# 1. USER GUIDE (Brukermanual & Operativ Veileder med UI-Previews)
 # ==============================================================================
 def generate_user_guide(out_path):
     usable_w = A4[0] - 36 * mm
@@ -267,11 +331,11 @@ def generate_user_guide(out_path):
     styles = get_tufte_stylesheet()
     story = []
 
-    # --- FORSIDE / TITTEL ---
+    # --- SIDE 1: TITTEL, METADATA & MENY-/SLICER-OVERSIKT ---
     story.append(Paragraph("KOM-G | Kristiansand Kommune", styles['DocBadge']))
     story.append(Paragraph("Brukermanual & Operativ Veileder", styles['DocTitle']))
     story.append(Paragraph("Finansiell Virksomhetsstyring, KOSTRA Cockpit, What-If Simulering & Multi-LLM AI Rådgiver", styles['DocSubtitle']))
-    story.append(HRFlowable(width="100%", thickness=1.5, color=C_PRIMARY, spaceBefore=0, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1.5, color=C_PRIMARY, spaceBefore=0, spaceAfter=6))
 
     meta_rows = [
         ["Dokumenttype", "Brukermanual (Operativ Veiledning)", "Versjon / Dato", "v2.4 / August 2024 (M08)"],
@@ -280,9 +344,8 @@ def generate_user_guide(out_path):
         ["Datagrunnlag", "fact_data (827 rader, M01–M08 2024)", "Hjemler", "Kommuneloven § 13-1, § 14-6 / KOSTRA 2024"]
     ]
     story.append(build_metadata_box(meta_rows, usable_w))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
-    # --- KAPITTEL 1 ---
     story.append(Paragraph("1. Formål, Brukerroller og Kommunalt Rammeverk", styles['H1']))
     story.append(Paragraph(
         "KOM-G (KomKostra) er Kristiansand kommunes standardiserte styringscockpit for finansiell oppfølging, "
@@ -296,20 +359,24 @@ def generate_user_guide(out_path):
         "og understøtter kommunedirektørens administrative fullmakter etter <b>Kommuneloven § 13-1</b>.",
         styles['Body']
     ))
-    story.append(Paragraph("<b>Målgrupper og kjerneoppgaver:</b>", styles['BodyBold']))
-    story.append(Paragraph("• <b>Prosjektcontroller / Finansiell rådgiver:</b> Gjennomfører månedlig avviksanalyse på art- og funksjonsnivå, beregner prognosert årssluttavvik (EAC) og utarbeider strakstiltak.", styles['BulletItem']))
-    story.append(Paragraph("• <b>Virksomhetsleder (Rektor / Enhetsleder):</b> Følger opp bemanningsfaktor, korttidsfravær, overtid og ekstern vikarbyråinnleie opp mot bemanningsnormer.", styles['BulletItem']))
-    story.append(Paragraph("• <b>Kommunalsjef & Økonomidirektør:</b> Benytter konsolidert status og Tufte S-kurver for tertialrapportering (T2) og politisk saksforberedelse til Formannskapet og Bystyret.", styles['BulletItem']))
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 4))
 
-    # --- KAPITTEL 2 ---
     story.append(Paragraph("2. Hoveddashboard og Power BI Dimensjonsfiltre (Slicere)", styles['H1']))
     story.append(Paragraph(
-        "Hovedskjermen gir umiddelbar tilgang til alle data via reaktive Power BI slicere som filtrerer 827 underliggende "
-        "regnskapsrader i sanntid uten forsinkelse eller sideinnlasting:",
+        "Topplinjen og slicer-panelet gir umiddelbar navigasjon og reaktiv filtrering av 827 regnskapsrader:",
         styles['Body']
     ))
+    
+    # PREVIEW 1: Top Nav
+    story.append(make_ui_figure("01_top_nav.png", width=usable_w*0.98, height=38*mm, caption="Toppnavigasjon med merkevare, YTD avvikspuls, PDF hurtigrapporter, tema-toggle og AI oppsett."))
+    story.append(Spacer(1, 4))
+    
+    # PREVIEW 2: Slicers
+    story.append(make_ui_figure("01_slicers.png", width=usable_w*0.98, height=32*mm, caption="Power BI Slicere: Sektor (dim_ansvar), KOSTRA-Funksjon, Periode og Kostnadsart med aktiv kontekstbar."))
+    story.append(Spacer(1, 4))
 
+    # --- SIDE 2: SLICERTABELL & KPI-KORT ---
+    story.append(PageBreak())
     slicer_data = [
         [Paragraph("Slicer / Filter", styles['TH']), Paragraph("Dimensjon", styles['TH']), Paragraph("Valgmuligheter", styles['TH']), Paragraph("Operativ Betydning", styles['TH'])],
         [Paragraph("<b>Sektor</b>", styles['TD']), Paragraph("dim_ansvar", styles['TD']), Paragraph("Alle / Oppvekst / Helse", styles['TD']), Paragraph("Isolerer ansvarsområde eller viser konsolidert kommuneoversikt", styles['TD'])],
@@ -321,28 +388,22 @@ def generate_user_guide(out_path):
     t_slicer.setStyle(TableStyle([
         ('LINEBELOW', (0, 0), (-1, 0), 1.2, C_PRIMARY),
         ('LINEBELOW', (0, 1), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
     ]))
     story.append(t_slicer)
     story.append(Spacer(1, 6))
 
-    story.append(Paragraph("<b>Navigasjonselementer i topplinjen:</b>", styles['BodyBold']))
-    story.append(Paragraph("• <b>YTD Avviksindikator:</b> Viser pulserende status <code>YTD Avvik: -2 229,6 kNOK (107,6 %)</code> i sanntid.", styles['BulletItem']))
-    story.append(Paragraph("• <b>PDF Hurtigrapporter:</b> Direkte nedlasting av formelle saksutredninger for Helse & Mestring, Oppvekst eller Konsolidert total.", styles['BulletItem']))
-    story.append(Paragraph("• <b>Fargetema (☀️ Papir / 🌙 Mørk):</b> Veksler mellom mørkt executive display og Edward Tufte lyst papirtema optimalisert for utskrift.", styles['BulletItem']))
-    story.append(Paragraph("• <b>Power BI Prosjekt (.zip):</b> Last ned komplett PBIP-mappe med TMDL-semantisk modell og 25 rapportsider.", styles['BulletItem']))
-    story.append(Paragraph("• <b>🤖 AI Oppsett:</b> Åpner innstillingsmodalen for valg av AI-leverandør og API-nøkkel.", styles['BulletItem']))
-    story.append(Spacer(1, 6))
-
-    # --- KAPITTEL 3 ---
-    story.append(PageBreak())
     story.append(Paragraph("3. Tolkning av Nøkkeltall (KPIer per Måned 08 / August 2024)", styles['H1']))
     story.append(Paragraph(
-        "Alle økonomiske tall er oppgitt i <b>tusen kroner (kNOK)</b> med én desimal. "
-        "Formel: <b>Avvik = Budsjett - Regnskap</b>. Negativt tall indikerer merforbruk (rødt), mens positivt tall indikerer mindreforbruk (grønt).",
+        "KPI-seksjonen viser fem presisjonskort utformet etter Edward Tuftes prinsipper om høy datablekk-andel. "
+        "Formel: <b>Avvik = Budsjett - Regnskap</b>. Rødt indikerer merforbruk, grønt indikerer mindreforbruk:",
         styles['Body']
     ))
+    
+    # PREVIEW 3: KPI Grid
+    story.append(make_ui_figure("02_kpi_grid.png", width=usable_w*0.98, height=31*mm, caption="Tufte KPI-kort: Konsolidert YTD, Oppvekst, Helse, August isolert og Random Forest ML-prognose."))
+    story.append(Spacer(1, 5))
 
     kpi_data = [
         [Paragraph("Område / Metrikk", styles['TH']), Paragraph("Budsjett YTD", styles['THRight']), Paragraph("Regnskap YTD", styles['THRight']), Paragraph("Avvik (kNOK)", styles['THRight']), Paragraph("Forbruk %", styles['THRight']), Paragraph("Status & Hovedårsak", styles['TH'])],
@@ -356,11 +417,11 @@ def generate_user_guide(out_path):
     t_kpi.setStyle(TableStyle([
         ('LINEBELOW', (0, 0), (-1, 0), 1.2, C_PRIMARY),
         ('LINEBELOW', (0, 1), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 3),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
     ]))
     story.append(t_kpi)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
     story.append(make_callout(
         "Fastlønnsavviket på -1 888,9 kNOK skyldes at tariffoppgjøret per 01.05 ikke var periodisert i budsjettkurven i Framsikt. "
@@ -369,91 +430,95 @@ def generate_user_guide(out_path):
         tone="warning",
         usable_w=usable_w
     ))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 4))
 
-    # --- KAPITTEL 4 ---
-    story.append(Paragraph("4. Tufte Visualiseringsstudio (6 Grafiske Perspektiver)", styles['H1']))
+    # --- SIDE 3: TUFTE VISUALISERINGSSTUDIO ---
+    story.append(PageBreak())
+    story.append(Paragraph("4. Tufte Visualiseringsstudio & Controller Innsikt", styles['H1']))
     story.append(Paragraph(
-        "I tråd med Edward Tuftes visualiseringsteori unngår KOM-G unødvendige gitterlinjer, bakgrunnsskygger og 3D-effekter. "
-        "Brukeren kan veksle sømløst mellom seks spesialiserte visninger:",
+        "Midtpanelet inneholder Tufte Visualiseringsstudio med dynamisk SVG-generering og en dedikert Controller Innsiktsmatrise. "
+        "Brukeren kan veksle mellom seks visninger: S-Kurve, Månedlig, FT 01 Avvik, Time 07 Lollipops, Time 10 Waterfall og Time 08 Slopegraph:",
         styles['Body']
     ))
-    story.append(Paragraph("1. <b>📈 Tufte S-Kurve (Running Totals):</b> Akkumulert regnskapskurve mot periodisert budsjett. Området mellom kurvene skraveres i rosa for å synliggjøre det akkumulerte merforbruket.", styles['BulletItem']))
-    story.append(Paragraph("2. <b>📊 Månedlig (Monthly Columns):</b> Sammenligner månedlige kostnader direkte fra januar til august for å avdekke sesongmessige topper.", styles['BulletItem']))
-    story.append(Paragraph("3. <b>⚖️ FT 01 Avvik (Diverging Bars):</b> Viser netto avvik i kNOK per måned. Røde søyler under nullstreken markerer overskridelser.", styles['BulletItem']))
-    story.append(Paragraph("4. <b>🍭 Time 07 Lollipops:</b> Kostnadsfordeling per enhet med referanselinjer for 80 % buffer og 110 % varselgrense.", styles['BulletItem']))
-    story.append(Paragraph("5. <b>🌊 Time 10 Waterfall (Avviksvannfall):</b> Viser hvordan de enkelte kostnadsdriverne bygger opp avviket mot årssluttprognosen (EAC).", styles['BulletItem']))
-    story.append(Paragraph("6. <b>📐 Time 08 Slopegraph:</b> Sammenligner endring i kostnadsandel mellom måned 01 og måned 08 for å identifisere akselererende kostnadsposter.", styles['BulletItem']))
-    story.append(Spacer(1, 6))
+    
+    # PREVIEW 4: Tufte Studio
+    story.append(make_ui_figure("04_tufte_studio.png", width=usable_w*0.98, height=92*mm, caption="Tufte Visualiseringsstudio med akkumulert S-kurve, skravert merforbruksareal og Controller Innsiktsmatrise med sanntids AI Dypanalyse."))
+    story.append(Spacer(1, 5))
 
-    # --- KAPITTEL 5 ---
+    story.append(Paragraph("<b>De 6 spesialiserte Tufte-visuals:</b>", styles['BodyBold']))
+    story.append(Paragraph("1. <b>📈 S-Kurve (Running Totals):</b> Akkumulert regnskapskurve mot periodisert budsjett. Området mellom kurvene skraveres i rosa for å synliggjøre merforbruket over tid.", styles['BulletItem']))
+    story.append(Paragraph("2. <b>📊 Månedlig (Monthly Columns):</b> Sammenligner budsjett og faktisk kostnad måned for måned fra januar til august.", styles['BulletItem']))
+    story.append(Paragraph("3. <b>⚖️ FT 01 Avvik (Diverging Bars):</b> Viser netto avvik i kNOK per måned for umiddelbar identifikasjon av trendbrudd.", styles['BulletItem']))
+    story.append(Paragraph("4. <b>🍭 Time 07 Lollipops:</b> Rangering av kostnader med toleranselinjer (80 % buffer og 110 % varselgrense).", styles['BulletItem']))
+    story.append(Paragraph("5. <b>🌊 Time 10 Waterfall (Avviksvannfall):</b> Viser hvordan de enkelte kostnadsdriverne bygger opp avviket fra opprinnelig budsjett til årssluttprognose (EAC).", styles['BulletItem']))
+    story.append(Paragraph("6. <b>📐 Time 08 Slopegraph:</b> Sammenligner endring i kostnadsandel mellom måned 01 og måned 08.", styles['BulletItem']))
+    story.append(Paragraph("• <b>⚡ AI Dypanalyse:</b> Knappen i innsiktsheaderen utfører umiddelbart en dedikert analyse via den konfigurerte AI-modellen for den aktive filterkonteksten.", styles['BulletItem']))
+    story.append(Spacer(1, 4))
+
+    # --- SIDE 4: WHAT-IF SIMULATOR & TIDLIGVARSLER ---
+    story.append(PageBreak())
     story.append(Paragraph("5. Interactive What-If Scenariosimulator", styles['H1']))
     story.append(Paragraph(
-        "Simulatoren gir ledelsen mulighet til å teste effekten av tiltak for å bringe økonomien i balanse før 31.12.2024:",
+        "Simulatoren lar controllere teste strakstiltak for å hente inn avviket før 31.12.2024:",
         styles['Body']
     ))
-    sim_data = [
-        [Paragraph("Parameter", styles['TH']), Paragraph("Område / Skala", styles['TH']), Paragraph("Basisverdi (Aug)", styles['TH']), Paragraph("Beregning & Forventet Effekt", styles['TH'])],
-        [Paragraph("<b>Vikarbyråkutt (Art 127040)</b>", styles['TD']), Paragraph("0 % til 100 % (trinn 5 %)", styles['TD']), Paragraph("253,2 kNOK/mnd", styles['TD']), Paragraph("25 % kutt = 63,3 kNOK/mnd (253,2 kNOK spart i reståret Sep–Des)", styles['TD'])],
-        [Paragraph("<b>Overtidskutt (Art 104000)</b>", styles['TD']), Paragraph("0 % til 100 % (trinn 5 %)", styles['TD']), Paragraph("52,4 kNOK/mnd", styles['TD']), Paragraph("10 % kutt = 5,2 kNOK/mnd. Sikrer overholdelse av AML § 10-6", styles['TD'])],
-        [Paragraph("<b>Rammeomdisponering</b>", styles['TD']), Paragraph("0 % til 10 % (trinn 0,5 %)", styles['TD']), Paragraph("Variabel ramme", styles['TD']), Paragraph("Generelt rammekutt i administrative stabsfunksjoner iht. § 13-1", styles['TD'])],
-    ]
-    t_sim = Table(sim_data, colWidths=[usable_w*0.28, usable_w*0.22, usable_w*0.20, usable_w*0.30])
-    t_sim.setStyle(TableStyle([
-        ('LINEBELOW', (0, 0), (-1, 0), 1.2, C_PRIMARY),
-        ('LINEBELOW', (0, 1), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-    ]))
-    story.append(t_sim)
-    story.append(Spacer(1, 8))
 
-    # --- KAPITTEL 6 ---
-    story.append(PageBreak())
+    # Two column layout: Left = What-If Image, Right = Text explanation
+    sim_left = make_ui_figure("05_whatif_simulator.png", width=54*mm, height=88*mm, caption="What-If Scenariosimulator med parametere og live EAC-beregning.")
+    sim_right_text = [
+        Paragraph("<b>Justerbare parametere:</b>", styles['BodyBold']),
+        Paragraph("<b>1. Vikarbyråkutt (Art 127040):</b><br/>Skala: 0–100 % (trinn 5 %). Månedlig forbruk i august var 253,2 kNOK. Et 25 % kutt gir <b>63,3 kNOK</b> i månedlig innsparing og <b>253,2 kNOK</b> spart i reståret (Sep–Des, 4 måneder).", styles['Body']),
+        Spacer(1, 3),
+        Paragraph("<b>2. Overtidsreduksjon (Art 104000):</b><br/>Skala: 0–100 % (trinn 5 %). Månedlig overtid var 52,4 kNOK. Et kutt på 10 % gir 5,2 kNOK/mnd og sikrer overholdelse av Arbeidsmiljølovens 200-timers grense.", styles['Body']),
+        Spacer(1, 3),
+        Paragraph("<b>3. Rammeomdisponering (0–10 %):</b><br/>Generelt rammekutt i administrative felleskostnader under Kommuneloven § 13-1.", styles['Body']),
+        Spacer(1, 3),
+        Paragraph("<b>Live beregningsboks:</b><br/>Oppdaterer kontinuerlig månedlig innsparing, restårsgevinst og <b>Prognosert Årssluttavvik (EAC)</b>.", styles['Body']),
+    ]
+    t_sim_layout = Table([[sim_left, sim_right_text]], colWidths=[60*mm, usable_w - 60*mm])
+    t_sim_layout.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 0),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+        ('TOPPADDING', (0, 0), (-1, -1), 0),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+    ]))
+    story.append(t_sim_layout)
+    story.append(Spacer(1, 6))
+
     story.append(Paragraph("6. Tidligvarsler og Risikoanalyse (Early Warnings)", styles['H1']))
     story.append(Paragraph(
-        "KOM-G har automatisk avviksdeteksjon som flagger poster med unormal run-rate eller lovmessig risiko:",
+        "Panelet flagger automatisk kritiske avvik med anbefalte controller-tiltak:",
         styles['Body']
     ))
+    
+    # PREVIEW 5: Warnings
+    story.append(make_ui_figure("03_warning_panel.png", width=usable_w*0.98, height=44*mm, caption="Tidligvarsler: Kritiske risikovarsler for vikarbyrå, fastlønn og overtid med lovhjemler."))
+    story.append(Spacer(1, 4))
 
-    warn_rows = [
-        [Paragraph("Risikovarsel", styles['TH']), Paragraph("Berørt Art / Funksjon", styles['TH']), Paragraph("Avvik August", styles['THRight']), Paragraph("Anbefalt Controller-Tiltak", styles['TH'])],
-        [
-            Paragraph("<b>🚨 Kritisk: Vikarbyrå</b>", styles['TD']),
-            Paragraph("Art 127040 / Funksjon 2540", styles['TD']),
-            Paragraph("<font color='#dc2626'><b>-253,2 k</b></font>", styles['TDRight']),
-            Paragraph("Iverksett umiddelbar administrativ godkjenningsplikt for ekstern innleie over avdelingsledernivå. Årskostnad passerer 1,4 MNOK uten tiltak.", styles['TD'])
-        ],
-        [
-            Paragraph("<b>⚠️ Betydelig: Fastlønn</b>", styles['TD']),
-            Paragraph("Art 101000 (Skole & Helse)", styles['TD']),
-            Paragraph("<font color='#dc2626'><b>-196,8 k</b></font>", styles['TDRight']),
-            Paragraph("Juster periodisert budsjettramme i tertialrapport T2 for å reflektere 01.05-oppgjøret. Unngå panikk-kutting i undervisning.", styles['TD'])
-        ],
-        [
-            Paragraph("<b>⚠️ Moderat: Overtid</b>", styles['TD']),
-            Paragraph("Art 104000 & 102031", styles['TD']),
-            Paragraph("<font color='#dc2626'><b>-88,9 k</b></font>", styles['TDRight']),
-            Paragraph("Gjennomgå turnusplaner for høstsemesteret. AML § 10-6 setter en grense på maks 10 timer overtid per uke og 200 timer per år.", styles['TD'])
-        ]
-    ]
-    t_warn = Table(warn_rows, colWidths=[usable_w*0.25, usable_w*0.25, usable_w*0.16, usable_w*0.34])
-    t_warn.setStyle(TableStyle([
-        ('LINEBELOW', (0, 0), (-1, 0), 1.2, C_PRIMARY),
-        ('LINEBELOW', (0, 1), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 3),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
-    ]))
-    story.append(t_warn)
-    story.append(Spacer(1, 8))
-
-    # --- KAPITTEL 7 ---
+    # --- SIDE 5: AI CONTROLLER & API-NØKKEL VELGER ---
+    story.append(PageBreak())
     story.append(Paragraph("7. AI Controller Rådgiver & Valg av AI-Leverandør (NYTT)", styles['H1']))
     story.append(Paragraph(
         "KOM-G har integrert en multi-LLM AI Controller som gir sanntids rådgivning om KOSTRA-tall, avviksårsaker og "
-        "juridiske rammer. Brukere kan velge mellom skybaserte modeller og 100 % lokale LLM-er:",
+        "juridiske rammer. Brukere kan konfigurere sin foretrukne modell via modalen eller styre chatten direkte i widgeten:",
         styles['Body']
     ))
+
+    # Two column layout for AI previews: Left = Modal, Right = Chatbot Window
+    ai_modal_fig = make_ui_figure("06_ai_modal.png", width=86*mm, height=72*mm, caption="AI Konfigurasjonsmodal: Dropdown for leverandør, modell, API-nøkkel og tilkoblingstest.")
+    ai_chat_fig = make_ui_figure("07_ai_chatbot.png", width=58*mm, height=79*mm, caption="AI Chatbot Widget: Quick-select, inline nøkkelskuff og hurtigknapper.")
+    
+    t_ai_previews = Table([[ai_modal_fig, ai_chat_fig]], colWidths=[92*mm, usable_w - 92*mm])
+    t_ai_previews.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 0),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+        ('TOPPADDING', (0, 0), (-1, -1), 0),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+    ]))
+    story.append(t_ai_previews)
+    story.append(Spacer(1, 6))
 
     ai_prov_table = [
         [Paragraph("AI Leverandør", styles['TH']), Paragraph("Standardmodell", styles['TH']), Paragraph("API-Nøkkel?", styles['TH']), Paragraph("Egenskaper & Bruksområde", styles['TH'])],
@@ -470,22 +535,23 @@ def generate_user_guide(out_path):
     t_ai.setStyle(TableStyle([
         ('LINEBELOW', (0, 0), (-1, 0), 1.2, C_PRIMARY),
         ('LINEBELOW', (0, 1), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
     ]))
     story.append(t_ai)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
-    story.append(Paragraph("<b>Steg-for-steg veiledning for AI-oppsett:</b>", styles['BodyBold']))
-    story.append(Paragraph("1. Klikk <code>🤖 AI: Modell</code> i toppmenyen eller tannhjul-ikonet (⚙️) i chat-vinduet.", styles['BulletItem']))
-    story.append(Paragraph("2. Velg ønsket leverandør fra nedtrekksmenyen. For <i>Ollama</i> trenger du ikke API-nøkkel (sjekk at Ollama kjører lokalt).", styles['BulletItem']))
-    story.append(Paragraph("3. Lim inn API-nøkkelen i nøkkelfeltet. Nøkkelen lagres utelukkende lokalt i nettleseren din (localStorage) og sendes aldri til en mellomserver.", styles['BulletItem']))
-    story.append(Paragraph("4. Klikk <code>🔌 Test Tilkobling</code> for å verifisere at nøkkelen fungerer.", styles['BulletItem']))
-    story.append(Paragraph("5. Klikk <code>💾 Lagre & Aktiver</code>. Statusindikatoren i toppmenyen lyser grønt når nøkkelen er aktiv.", styles['BulletItem']))
-    story.append(Paragraph("6. For raske spørsmål kan du også åpne inline-skuffen rett i chat-vinduet ved å klikke på nøkkel-knappen.", styles['BulletItem']))
-    story.append(Spacer(1, 8))
+    story.append(make_callout(
+        "Sikkerhet: API-nøkkelen lagres utelukkende i din egen nettleser via localStorage (kostra_ai_settings). "
+        "Nøkkelen deles aldri med andre brukere og overføres ikke til serveren.",
+        label="PERSONVERN & NØKKELSIKKERHET",
+        tone="positive",
+        usable_w=usable_w
+    ))
+    story.append(Spacer(1, 4))
 
-    # --- KAPITTEL 8 ---
+    # --- SIDE 6: RAPPORTKATALOG & EKSPORT ---
+    story.append(PageBreak())
     story.append(Paragraph("8. Rapportkatalog (25 Sider), Excel- og Power BI-Integrasjon", styles['H1']))
     story.append(Paragraph(
         "KOM-G inneholder en komplett rapportkatalog med 25 spesialiserte Power BI rapportsider strukturert i tre kategorier:",
@@ -494,13 +560,19 @@ def generate_user_guide(out_path):
     story.append(Paragraph("• <b>Ledelses- og Styringsrapporter (6 sider):</b> Konsolidert hovedrapport, sektorrapporter for Oppvekst og Helse, Tufte S-kurve & prognose, Pareto 80/20 driverfordeling og What-If scenario.", styles['BulletItem']))
     story.append(Paragraph("• <b>Financial Times Visual Guide (9 sider):</b> Diverging bar charts, korrelasjonsmatriser, lollipops, fordelingsanalyser, stepped lines, grupperte søyler, treemaps og allokeringsvannfall.", styles['BulletItem']))
     story.append(Paragraph("• <b>Time-Visuals 60 (10 sider):</b> Linjediagrammer, 3M glidende snitt, kumulative arealer, avviksvekst, S-kurver, toleransegrenser, slopegraphs, sparklines og avviksvannfall mot årsslutt.", styles['BulletItem']))
+    story.append(Spacer(1, 4))
+
+    story.append(Paragraph("<b>Integrasjonsmetoder for Controllere:</b>", styles['BodyBold']))
+    story.append(Paragraph("1. <b>Power BI Desktop (PBIP):</b> Dobbeltklikk på <code>pbi-rep-project.pbip</code> i rotmappen for full tilgang til TMDL-semantisk modell og alle 78 DAX-måltall.", styles['BulletItem']))
+    story.append(Paragraph("2. <b>Excel PivotTables:</b> Kjør <code>.\\run.ps1 -ExportExcel</code> for å hente et ferdig aggregert analyseunderlag i <code>data/excel_ml_input.xlsx</code>.", styles['BulletItem']))
+    story.append(Paragraph("3. <b>DuckDB SQL:</b> Koble direkte til <code>data/database/kostra.duckdb</code> for raske OLAP-spørringer mot <code>fact_data</code> og analytiske visninger.", styles['BulletItem']))
     story.append(Spacer(1, 6))
 
     story.append(make_callout(
-        "For å koble Excel direkte til dataene: Kjør '.\\run.ps1 -ExportExcel' for å generere 'data/excel_ml_input.xlsx', "
-        "eller åpne 'pbi-rep-project.pbip' direkte i Power BI Desktop for full tilgang til TMDL-modellen og 78 DAX-måltall.",
-        label="EXCEL & POWER BI KOPLING",
-        tone="positive",
+        "KOM-G er fullt ut forankret i Kristiansand kommunes økonomiske reglement og SSB KOSTRA 2024. "
+        "Løsningen gir en uovertruffen kombinasjon av lokal-først ytelse, Tufte visualiseringsekspertise og moderne multi-LLM rådgivning.",
+        label="AVSLUTTENDE STYRINGSMERKNAD",
+        tone="accent",
         usable_w=usable_w
     ))
 
@@ -517,11 +589,11 @@ def generate_system_manual(out_path):
     styles = get_tufte_stylesheet()
     story = []
 
-    # --- FORSIDE / TITTEL ---
+    # --- SIDE 1: FORSIDE & SYSTEMARKITEKTUR OVERSIKT ---
     story.append(Paragraph("KOM-G | Kristiansand Kommune", styles['DocBadge']))
     story.append(Paragraph("Teknisk Systemmanual & Arkitektur", styles['DocTitle']))
     story.append(Paragraph("Lokal-Først OLAP, Multi-LLM Integrasjon, ML Tidsserieprognoser og Power BI Developer Mode", styles['DocSubtitle']))
-    story.append(HRFlowable(width="100%", thickness=1.5, color=C_PRIMARY, spaceBefore=0, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1.5, color=C_PRIMARY, spaceBefore=0, spaceAfter=6))
 
     meta_rows = [
         ["Systemnavn", "KOM-G (KomKostra) Platform", "Arkitekturparadigme", "Local-First High Performance OLAP"],
@@ -530,9 +602,8 @@ def generate_system_manual(out_path):
         ["AI Stack", "Gemini, OpenAI, Claude, Ollama, Groq", "CLI Orkestrering", "PowerShell 7 (`run.ps1`)"]
     ]
     story.append(build_metadata_box(meta_rows, usable_w))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
-    # --- KAPITTEL 1 ---
     story.append(Paragraph("1. Arkitektoniske Kjerneprinsipper og Systemoversikt", styles['H1']))
     story.append(Paragraph(
         "KOM-G er bygget med utgangspunkt i en <b>Local-First</b> filosofi. Dette sikrer at kommunale finansdata "
@@ -540,13 +611,17 @@ def generate_system_manual(out_path):
         "gir sub-millisekund responstider for controllere:",
         styles['Body']
     ))
-    story.append(Paragraph("• <b>Local-First OLAP:</b> All datalagring og aggregering foregår i en lokal in-process DuckDB-fil (<code>data/database/kostra.duckdb</code>). Dette eliminerer behovet for tunge databaseservere som MS SQL eller PostgreSQL, og muliggjør offline-arbeid på bærbare maskiner.", styles['BulletItem']))
-    story.append(Paragraph("• <b>Zero-Framework Frontend:</b> Brukergrensesnittet er skrevet i ren, semantisk HTML5, modulær Vanilla CSS3 og moderne ES2022 JavaScript uten Node-byggekrav (ingen Webpack/Vite/React). Dette gir umiddelbar oppstart i enhver nettleser.", styles['BulletItem']))
-    story.append(Paragraph("• <b>Power BI Developer Mode (PBIP):</b> Semantisk datamodell er lagret som ren tekst i Tabular Model Definition Language (TMDL). Dette muliggjør Git branch-styring, pull request-gjennomgang av DAX-måltall og CI/CD pipelines.", styles['BulletItem']))
-    story.append(Paragraph("• <b>Multi-LLM Integrasjonslag:</b> Klientsiden støtter både direkte sky-REST-kall (Gemini, OpenAI, Claude, Groq) og 100 % lokale LLM-er via Ollama uten ekstern trafikk.", styles['BulletItem']))
-    story.append(Spacer(1, 6))
+    story.append(Paragraph("• <b>Local-First OLAP:</b> All datalagring og aggregering foregår i en lokal in-process DuckDB-fil (<code>data/database/kostra.duckdb</code>). Dette eliminerer behovet for tunge databaseservere som MS SQL eller PostgreSQL.", styles['BulletItem']))
+    story.append(Paragraph("• <b>Zero-Framework Frontend:</b> Brukergrensesnittet er skrevet i ren, semantisk HTML5, modulær Vanilla CSS3 og moderne ES2022 JavaScript uten Node-byggekrav. Umiddelbar oppstart i nettleser.", styles['BulletItem']))
+    story.append(Paragraph("• <b>Power BI Developer Mode (PBIP):</b> Semantisk datamodell er lagret som ren tekst i TMDL for Git branch-styring og CI/CD.", styles['BulletItem']))
+    story.append(Spacer(1, 4))
 
-    # --- KAPITTEL 2 ---
+    # DIAGRAM 1: 4-Tier Architecture
+    story.append(make_diagram_figure("arch_system_overview.png", width=usable_w*0.98, height=104*mm, caption="KOM-G Teknisk Systemarkitektur: Firelags modell med Web Cockpit, Multi-LLM Gateway, DuckDB OLAP og SSB/Power BI integrasjon."))
+    story.append(Spacer(1, 4))
+
+    # --- SIDE 2: KOMPONENTER & MULTI-LLM ARKITEKTUR ---
+    story.append(PageBreak())
     story.append(Paragraph("2. Systemkomponenter og Datagrunnlag", styles['H1']))
     comp_data = [
         [Paragraph("Komponent", styles['TH']), Paragraph("Teknologi / Fil", styles['TH']), Paragraph("Rolle i Arkitekturen", styles['TH']), Paragraph("Integrasjonspunkt", styles['TH'])],
@@ -561,34 +636,23 @@ def generate_system_manual(out_path):
     t_comp.setStyle(TableStyle([
         ('LINEBELOW', (0, 0), (-1, 0), 1.2, C_PRIMARY),
         ('LINEBELOW', (0, 1), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
     ]))
     story.append(t_comp)
     story.append(Spacer(1, 6))
 
-    # --- KAPITTEL 3 ---
-    story.append(PageBreak())
-    story.append(Paragraph("3. Multi-LLM Integrasjonsarkitektur (Klient- og Server-side)", styles['H1']))
+    story.append(Paragraph("3. Multi-LLM Integrasjonsarkitektur & Personvernsisolasjon", styles['H1']))
     story.append(Paragraph(
         "KOM-G har implementert en fleksibel multi-LLM dispatcher i <code>assets/js/dashboard.js</code>. "
-        "Dette gir controllere frihet til å velge motor etter sikkerhets- og kostnadsbehov:",
+        "Dette gir controllere frihet til å velge motor etter sikkerhets- og forvaltningsbehov:",
         styles['Body']
     ))
+    # DIAGRAM 2: AI Routing & Privacy
+    story.append(make_diagram_figure("arch_ai_routing.png", width=usable_w*0.98, height=66*mm, caption="Multi-LLM Integrasjonsarkitektur: Klientside nøkkelkontroll, anonymisering og lokal Ollama inferens uten datalekkasje."))
+    story.append(Spacer(1, 4))
 
-    story.append(Paragraph("<b>Dispatcher-arkitektur:</b>", styles['BodyBold']))
-    story.append(Paragraph("1. <b>Google Gemini (GenerativeLanguage REST API v1beta):</b> Kaller <code>generateContent</code> med Google AI Studio nøkkel. Støtter <code>gemini-1.5-flash</code> og <code>gemini-2.0-flash</code>.", styles['BulletItem']))
-    story.append(Paragraph("2. <b>OpenAI-kompatible endepunkter:</b> En felles klientfunksjon håndterer OpenAI (<code>api.openai.com/v1/chat/completions</code>), Groq (<code>api.groq.com/openai/v1/chat/completions</code>), Mistral (<code>api.mistral.ai/v1/chat/completions</code>) og DeepSeek (<code>api.deepseek.com/chat/completions</code>).", styles['BulletItem']))
-    story.append(Paragraph("3. <b>Ollama (Lokal Inferens):</b> Kaller <code>http://localhost:11434/api/chat</code>. Ingen API-nøkkel påkrevd, null nettverkstrafikk ut av maskinen, 100 % konfidensiell forvaltning.", styles['BulletItem']))
-    story.append(Paragraph("4. <b>Innebygd regelmotor (Offline):</b> Ved manglende nøkkel eller nettverksbrudd slår systemet umiddelbart over til regelbasert controller-logikk uten feilmeldinger til bruker.", styles['BulletItem']))
-    story.append(Spacer(1, 6))
-
-    story.append(Paragraph("<b>Kontekstinjeksjon for KOSTRA:</b>", styles['BodyBold']))
-    story.append(Paragraph(
-        "Før en prompt sendes til valgt AI-modell, bygger funksjonen <code>buildControllerContext()</code> en strukturert finansiell rapport "
-        "basert på de gjeldende tallene i cockpiten:",
-        styles['Body']
-    ))
+    story.append(Paragraph("<b>Kontekstinjeksjon for KOSTRA (buildControllerContext):</b>", styles['BodyBold']))
     code_ctx = (
         "KRISTIANSAND KOMMUNE – KOSTRA VIRKSOMHETSSTYRING 2024 (STATUS MÅNED 08 / AUGUST):\n"
         "• Konsolidert YTD Regnskap: 31 524,9 kNOK vs Budsjett 29 295,2 kNOK (Avvik -2 229,6 kNOK / 107,6 %)\n"
@@ -602,16 +666,26 @@ def generate_system_manual(out_path):
     t_ctx.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), C_BG_CODE),
         ('BOX', (0, 0), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
-        ('LEFTPADDING', (0, 0), (-1, -1), 6),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 3),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+        ('LEFTPADDING', (0, 0), (-1, -1), 5),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 5),
     ]))
     story.append(t_ctx)
-    story.append(Spacer(1, 8))
 
-    # --- KAPITTEL 4 ---
-    story.append(Paragraph("4. Maskinlæringspipeline og Drift-Overvåking", styles['H1']))
+    # --- SIDE 3: CONTROLLER WORKFLOW & ML PIPELINE ---
+    story.append(PageBreak())
+    story.append(Paragraph("4. Operativ Controller-Workflow & Månedssyklus", styles['H1']))
+    story.append(Paragraph(
+        "Styringsarbeidet følger en fast månedlig syklus i henhold til Kommuneloven § 14-6. "
+        "Prosessen sikrer tidlig varsling av økonomisk ubalanse før tertialrapportering:",
+        styles['Body']
+    ))
+    # DIAGRAM 3: Controller Workflow
+    story.append(make_diagram_figure("arch_workflow_controller.png", width=usable_w*0.98, height=53*mm, caption="Operativ Controller-Workflow: Månedlig styringssyklus fra Agresso-avstemming til What-If simulering og formannskapsnotat."))
+    story.append(Spacer(1, 6))
+
+    story.append(Paragraph("5. Maskinlæringspipeline og Drift-Overvåking", styles['H1']))
     story.append(Paragraph(
         "I <code>src/retrain_pipeline.py</code> trenes en <b>Random Forest Regressor</b> for månedlig tidsserieprognostisering. "
         "Modellen predikerer forventet regnskapsforbruk per måned basert på historiske mønstre:",
@@ -621,11 +695,18 @@ def generate_system_manual(out_path):
     story.append(Paragraph("• <b>Ytelsestall:</b> Test-R² = <b>0.9657</b>, Test-MAE = <b>4,3 kNOK</b> (over 96 % treffsikkerhet mot faktisk regnskap).", styles['BulletItem']))
     story.append(Paragraph("• <b>Model Drift Deteksjon:</b> Dersom gjennomsnittlig test-MAE for nye månedstall overstiger baseline-MAE med mer enn <b>20 %</b>, flagges det automatisk i MLflow og controllere varsles om å rekalibrere sesongvektene i Framsikt.", styles['BulletItem']))
     story.append(Paragraph("• <b>Modellagring:</b> Beste modell serialiseres til <code>models/kostra_forecast_latest.pkl</code> for gjenbruk i Streamlit og DuckDB.", styles['BulletItem']))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
-    # --- KAPITTEL 5 ---
+    story.append(make_callout(
+        "Modell-metrics logges til MLflow på localhost:5000. Ved avvik varsles controllerteamet via terminal og e-postnotat.",
+        label="ML-OVERVÅKING & DRIFT",
+        tone="accent",
+        usable_w=usable_w
+    ))
+
+    # --- SIDE 4: CLI DRIFT, SIKKERHET & FEILSØKING ---
     story.append(PageBreak())
-    story.append(Paragraph("5. Driftsrutiner og PowerShell CLI (`run.ps1`)", styles['H1']))
+    story.append(Paragraph("6. Driftsrutiner og PowerShell CLI (`run.ps1`)", styles['H1']))
     story.append(Paragraph(
         "All drift og automatisering i prosjektet orkestreres via rotmappens PowerShell-grensesnitt <code>run.ps1</code>:",
         styles['Body']
@@ -639,33 +720,26 @@ def generate_system_manual(out_path):
         [Paragraph("<code>.\\run.ps1 -Mlflow</code>", styles['TD']), Paragraph("Starter lokal MLflow dashboard-server for overvåking av modell-metrics", styles['TD']), Paragraph("<code>http://localhost:5000</code>", styles['TD'])],
         [Paragraph("<code>.\\run.ps1 -Streamlit</code>", styles['TD']), Paragraph("Starter interaktiv Streamlit AI Controller Workbench med RAG", styles['TD']), Paragraph("<code>http://localhost:8501</code>", styles['TD'])],
         [Paragraph("<code>.\\run.ps1 -Reports</code>", styles['TD']), Paragraph("Genererer alle tre formelle saksutredninger for ledelsen", styles['TD']), Paragraph("<code>reports/*.pdf</code>", styles['TD'])],
-        [Paragraph("<code>.\\run.ps1 -Test</code>", styles['TD']), Paragraph("Kjører automatiserte tester av relasjoner, DuckDB og API-integrasjoner", styles['TD']), Paragraph("Konsoll output / Testrapport", styles['TD'])],
+        [Paragraph("<code>.\\run.ps1 -Manuals</code>", styles['TD']), Paragraph("Genererer PDF Brukermanual, Systemmanual og Datamodell i rotmappe", styles['TD']), Paragraph("Rotmappe (*.pdf)", styles['TD'])],
+        [Paragraph("<code>.\\run.ps1 -All</code>", styles['TD']), Paragraph("Bygg database, generer manualer, kjør tester og start systemet", styles['TD']), Paragraph("Fullverdig oppsett", styles['TD'])],
     ]
     t_cmd = Table(cmd_data, colWidths=[usable_w*0.28, usable_w*0.44, usable_w*0.28])
     t_cmd.setStyle(TableStyle([
         ('LINEBELOW', (0, 0), (-1, 0), 1.2, C_PRIMARY),
         ('LINEBELOW', (0, 1), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
     ]))
     story.append(t_cmd)
-    story.append(Spacer(1, 8))
-
-    # --- KAPITTEL 6 ---
-    story.append(Paragraph("6. Sikkerhetsarkitektur, Personvern og Revisjonsspor", styles['H1']))
-    story.append(Paragraph(
-        "I henhold til Offentleglova § 3, Forvaltningsloven og GDPR er KOM-G bygget for å sikre full sporbarhet "
-        "og beskyttelse av sensitive opplysninger:",
-        styles['Body']
-    ))
-    story.append(Paragraph("• <b>Null Personsensitiv Informasjon:</b> Datamodellen inneholder kun aggregerte kontotall per art og funksjon. Ingen personnavn, pasientopplysninger eller elevdata lagres i basen.", styles['BulletItem']))
-    story.append(Paragraph("• <b>Audit Trail i DuckDB:</b> Alle AI-genererte vurderinger og anbefalinger logges til tabellen <code>audit_log</code> med <code>Audit_Log_ID</code>, tidsstempel, saksbehandler, filtrert kontekst og svar for etterprøvbarhet i kommunerevisjonen.", styles['BulletItem']))
-    story.append(Paragraph("• <b>Lokal Nøkkelsikkerhet:</b> API-nøkler for eksterne skytjenester lagres utelukkende i brukerens klientside <code>localStorage</code> under <code>kostra_ai_settings</code>. Ingen nøkler committes til Git eller deles mellom brukere.", styles['BulletItem']))
-    story.append(Paragraph("• <b>Arkivintegrasjon:</b> PDF-generatoren produserer ISO-standardiserte dokumenter klare for arkivering i Public 360 / Elements og publisering på eInnsyn.", styles['BulletItem']))
     story.append(Spacer(1, 6))
 
-    # --- KAPITTEL 7 ---
-    story.append(Paragraph("7. Feilsøking og Driftsfeil (Troubleshooting Guide)", styles['H1']))
+    story.append(Paragraph("7. Sikkerhetsarkitektur, Personvern og Revisjonsspor", styles['H1']))
+    story.append(Paragraph("• <b>Null Personsensitiv Informasjon:</b> Datamodellen inneholder kun aggregerte kontotall per art og funksjon. Ingen personnavn, pasientopplysninger eller elevdata lagres i basen.", styles['BulletItem']))
+    story.append(Paragraph("• <b>Audit Trail i DuckDB:</b> Alle AI-genererte vurderinger logges til tabellen <code>audit_log</code> for etterprøvbarhet i kommunerevisjonen.", styles['BulletItem']))
+    story.append(Paragraph("• <b>Lokal Nøkkelsikkerhet:</b> API-nøkler lagres utelukkende i brukerens klientside <code>localStorage</code> under <code>kostra_ai_settings</code>.", styles['BulletItem']))
+    story.append(Spacer(1, 4))
+
+    story.append(Paragraph("8. Feilsøking og Driftsfeil (Troubleshooting Guide)", styles['H1']))
     trouble_data = [
         [Paragraph("Symptom / Feilmelding", styles['TH']), Paragraph("Sannsynlig Årsak", styles['TH']), Paragraph("Korrigerende Tiltak", styles['TH'])],
         [Paragraph("DuckDB locked / Resource busy", styles['TD']), Paragraph("Flere prosesser åpner DuckDB i skrivemodus", styles['TD']), Paragraph("Bruk skrivebeskyttet modus i spørreskript: <code>duckdb.connect(read_only=True)</code>", styles['TD'])],
@@ -677,8 +751,8 @@ def generate_system_manual(out_path):
     t_trouble.setStyle(TableStyle([
         ('LINEBELOW', (0, 0), (-1, 0), 1.2, C_PRIMARY),
         ('LINEBELOW', (0, 1), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
     ]))
     story.append(t_trouble)
 
@@ -695,11 +769,11 @@ def generate_data_model_manual(out_path):
     styles = get_tufte_stylesheet()
     story = []
 
-    # --- FORSIDE / TITTEL ---
+    # --- SIDE 1: FORSIDE & KONSEPTUELL MODELL (ERD) ---
     story.append(Paragraph("KOM-G | Kristiansand Kommune", styles['DocBadge']))
     story.append(Paragraph("Datamodell & Begrepskatalog (KOSTRA Dictionary)", styles['DocTitle']))
     story.append(Paragraph("Stjerneskjema, DuckDB Tabellspesifikasjon, TMDL Semantisk Modell og DAX Måltallskatalog", styles['DocSubtitle']))
-    story.append(HRFlowable(width="100%", thickness=1.5, color=C_PRIMARY, spaceBefore=0, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1.5, color=C_PRIMARY, spaceBefore=0, spaceAfter=6))
 
     meta_rows = [
         ["Modellnavn", "KOM-G Stjerneskjema (Star Schema)", "Standard", "SSB KOSTRA 2024 / Kontoplan"],
@@ -708,23 +782,24 @@ def generate_data_model_manual(out_path):
         ["Granularitet", "Månedlig per ansvar, funksjon og art 6-siffer", "Valuta / Enhet", "NOK i base / kNOK i presentasjon"]
     ]
     story.append(build_metadata_box(meta_rows, usable_w))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
-    # --- KAPITTEL 1 ---
-    story.append(Paragraph("1. Konseptuell Datamodell og Stjerneskjema (Star Schema)", styles['H1']))
+    story.append(Paragraph("1. Konseptuell Datamodell og Stjerneskjema (ERD)", styles['H1']))
     story.append(Paragraph(
         "KOM-G benytter et standardisert stjerneskjema for å sikre maksimal spørreytelse og konsistens på tvers av "
         "Power BI Desktop, DuckDB og Excel. Modellen har én sentral faktatabell omgitt av fire dimensjonstabeller:",
         styles['Body']
     ))
-    story.append(Paragraph("• <b><code>fact_data</code>:</b> Inneholder alle økonomiske transaksjoner (budsjett og regnskap) brutt ned per måned, ansvar, funksjon og art.", styles['BulletItem']))
-    story.append(Paragraph("• <b><code>dim_date</code> (1:N mot fact_data):</b> Finansiell kalender med månedsnavn, kvartaler, tertialer og sesongfaktorer.", styles['BulletItem']))
-    story.append(Paragraph("• <b><code>dim_ansvar</code> (1:N mot fact_data):</b> Kommunens organisasjonsstruktur (Oppvekst KomSkole vs. Helse Bomiljø).", styles['BulletItem']))
-    story.append(Paragraph("• <b><code>dim_kostra_funksjon</code> (1:N mot fact_data):</b> SSB KOSTRA 4-sifrede funksjoner (2020 Grunnskole, 2540 Pleie og omsorg osv.).", styles['BulletItem']))
-    story.append(Paragraph("• <b><code>dim_kostra_kontoplan</code> (1:N mot fact_data):</b> SSB KOSTRA 6-sifrede artskontokoder (101000 Fastlønn, 127040 Vikarbyrå osv.).", styles['BulletItem']))
-    story.append(Spacer(1, 6))
+    story.append(Paragraph("• <b>fact_data:</b> Inneholder alle økonomiske transaksjoner (budsjett og regnskap) brutt ned per måned, ansvar, funksjon og art.", styles['BulletItem']))
+    story.append(Paragraph("• <b>dim_ansvar, dim_kostra_funksjon, dim_kostra_kontoplan, dim_date:</b> Dimensjoner med 1:N kardinalitet mot faktatabellen.", styles['BulletItem']))
+    story.append(Spacer(1, 4))
 
-    # --- KAPITTEL 2 ---
+    # DIAGRAM 4: ERD / Star Schema
+    story.append(make_diagram_figure("datamodel_erd_star_schema.png", width=usable_w*0.98, height=72*mm, caption="KOM-G Entity-Relationship Diagram (ERD): Stjerneskjema med fact_data og dimensjoner (1:N kardinalitet)."))
+    story.append(Spacer(1, 4))
+
+    # --- SIDE 2: FAKTATABELL & DIMENSJONSSPESIFIKASJON ---
+    story.append(PageBreak())
     story.append(Paragraph("2. Faktatabell Spesifikasjon (`fact_data`)", styles['H1']))
     story.append(Paragraph(
         "Faktatabellen har 827 rader som dekker perioden januar til august 2024. Nedenfor følger den fullstendige feltoversikten:",
@@ -748,58 +823,51 @@ def generate_data_model_manual(out_path):
     t_fact.setStyle(TableStyle([
         ('LINEBELOW', (0, 0), (-1, 0), 1.2, C_PRIMARY),
         ('LINEBELOW', (0, 1), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
     ]))
     story.append(t_fact)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
-    # --- KAPITTEL 3 ---
-    story.append(PageBreak())
     story.append(Paragraph("3. Dimensjonstabeller og KOSTRA Kontoplan", styles['H1']))
-    story.append(Paragraph(
-        "Dimensjonstabellene sikrer konsistens med nasjonal KOSTRA-standard og kommunens økonomiplan i Framsikt:",
-        styles['Body']
-    ))
-
     dim_tab_data = [
         [Paragraph("Dimensjon", styles['TH']), Paragraph("Nøkkel", styles['TH']), Paragraph("Sentrale Attributter", styles['TH']), Paragraph("Beskrivelse & Eksempler", styles['TH'])],
         [
             Paragraph("<b>dim_ansvar</b>", styles['TD']),
             Paragraph("Ansvar_Kode", styles['TD']),
             Paragraph("Ansvar_Navn, Sektor, Enhetsleder, Org_Nivaa", styles['TD']),
-            Paragraph("Definerer organisasjonsansvar. Sektorer: Oppvekst og Utdanning (KomSkole) og Helse og Omsorg (Bomiljø).", styles['TD'])
+            Paragraph("Definerer organisasjonsansvar: Oppvekst (KomSkole) og Helse (Bomiljø).", styles['TD'])
         ],
         [
             Paragraph("<b>dim_kostra_funksjon</b>", styles['TD']),
             Paragraph("Funksjon_Kode", styles['TD']),
             Paragraph("Funksjon_Navn, Tjenestegruppe, Lovhjemmel", styles['TD']),
-            Paragraph("Funksjoner: 2020 Grunnskole, 2140 SFO, 2210 PPT, 2130 Voksenopplæring, 2230 Spesialpedagogikk, 2540 Pleie og omsorg.", styles['TD'])
+            Paragraph("Funksjoner: 2020 Grunnskole, 2140 SFO, 2210 PPT, 2130 Voksenopplæring, 2540 Pleie og omsorg.", styles['TD'])
         ],
         [
             Paragraph("<b>dim_kostra_kontoplan</b>", styles['TD']),
             Paragraph("Kontokode_6Siffer", styles['TD']),
             Paragraph("Kontonavn, Hovedart, Gruppe, Kostnadstype", styles['TD']),
-            Paragraph("Arter: 101000 Fastlønn, 102013 Vikar korttid, 102031 Vikar turnus, 104000 Overtid, 127040 Vikarbyråinnleie.", styles['TD'])
+            Paragraph("Arter: 101000 Fastlønn, 102013 Vikar, 104000 Overtid, 127040 Vikarbyråinnleie.", styles['TD'])
         ],
         [
             Paragraph("<b>dim_date</b>", styles['TD']),
             Paragraph("Dato", styles['TD']),
             Paragraph("Aar, Maaned_Nr, Maaned_Navn, Kvartal, Tertial", styles['TD']),
-            Paragraph("Finansiell kalender med kobling til tertialrapportering (T1: Jan-Apr, T2: Mai-Aug, T3: Sep-Des).", styles['TD'])
+            Paragraph("Finansiell kalender med tertialer (T1: Jan-Apr, T2: Mai-Aug, T3: Sep-Des).", styles['TD'])
         ]
     ]
     t_dim_spec = Table(dim_tab_data, colWidths=[usable_w*0.22, usable_w*0.18, usable_w*0.30, usable_w*0.30])
     t_dim_spec.setStyle(TableStyle([
         ('LINEBELOW', (0, 0), (-1, 0), 1.2, C_PRIMARY),
         ('LINEBELOW', (0, 1), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
     ]))
     story.append(t_dim_spec)
-    story.append(Spacer(1, 8))
 
-    # --- KAPITTEL 4 ---
+    # --- SIDE 3: DAX MÅLTALLSKATALOG ---
+    story.append(PageBreak())
     story.append(Paragraph("4. DAX Måltallskatalog (TMDL Semantisk Modell)", styles['H1']))
     story.append(Paragraph(
         "Den semantiske modellen i <code>pbi-rep-project.SemanticModel</code> inneholder 78 forhåndsdefinerte DAX-måltall "
@@ -859,73 +927,70 @@ def generate_data_model_manual(out_path):
     t_dax_spec.setStyle(TableStyle([
         ('LINEBELOW', (0, 0), (-1, 0), 1.2, C_PRIMARY),
         ('LINEBELOW', (0, 1), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
     ]))
     story.append(t_dax_spec)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
-    # --- KAPITTEL 5 ---
-    story.append(PageBreak())
-    story.append(Paragraph("5. Analytiske SQL Visninger i DuckDB OLAP", styles['H1']))
-    story.append(Paragraph(
-        "I <code>kostra.duckdb</code> oppretter <code>src/db_manager.py</code> tre optimaliserte analytiske visninger "
-        "som fungerer som datakilde for dashboardet og rapportgeneratorene:",
-        styles['Body']
+    story.append(make_callout(
+        "TMDL-formatet muliggjør direkte Git-versjonskontroll av alle 78 DAX-måltall i pbi-rep-project.SemanticModel/definition/tables/.",
+        label="POWER BI DEVELOPER MODE",
+        tone="accent",
+        usable_w=usable_w
     ))
 
+    # --- SIDE 4: DATALINJE, SQL VISNINGER & DQA ---
+    story.append(PageBreak())
+    story.append(Paragraph("5. Datalinje og ETL Medallion Pipeline (Bronze → Silver → Gold)", styles['H1']))
+    story.append(Paragraph(
+        "Dataflyten fra kommunale forsystemer til ferdig analysert datamodell følger en strukturert medallion-pipeline:",
+        styles['Body']
+    ))
+    # DIAGRAM 5: Data Lineage / Pipeline
+    story.append(make_diagram_figure("datamodel_lineage_pipeline.png", width=usable_w*0.98, height=62*mm, caption="Datalinje & ETL Medallion Pipeline: Fra rå Agresso/SSB kildedata via DuckDB til analytisk gullag og BI."))
+    story.append(Spacer(1, 4))
+
+    story.append(Paragraph("6. Analytiske SQL Visninger i DuckDB OLAP", styles['H1']))
     sql_views = (
         "-- 1. KPI-sammendrag per sektor og konsolidert\n"
         "CREATE VIEW vw_kpi_summary AS\n"
-        "SELECT Ansvar_Kode, \n"
-        "       SUM(Budsjett_Kr)/1000.0 AS Budsjett_kNOK,\n"
+        "SELECT Ansvar_Kode, SUM(Budsjett_Kr)/1000.0 AS Budsjett_kNOK,\n"
         "       SUM(Regnskap_Kr)/1000.0 AS Regnskap_kNOK,\n"
         "       (SUM(Budsjett_Kr) - SUM(Regnskap_Kr))/1000.0 AS Avvik_kNOK,\n"
         "       ROUND(SUM(Regnskap_Kr)*100.0 / NULLIF(SUM(Budsjett_Kr),0), 1) AS Forbruk_Pct\n"
-        "FROM fact_data\n"
-        "GROUP BY Ansvar_Kode;\n\n"
+        "FROM fact_data GROUP BY Ansvar_Kode;\n\n"
         "-- 2. Akkumulert Tufte S-kurve med vindufunksjoner\n"
         "CREATE VIEW vw_monthly_scurve AS\n"
-        "SELECT Maaned_Nr, \n"
-        "       SUM(Regnskap_Kr)/1000.0 AS Regnskap_Mnd,\n"
+        "SELECT Maaned_Nr, SUM(Regnskap_Kr)/1000.0 AS Regnskap_Mnd,\n"
         "       SUM(SUM(Regnskap_Kr)/1000.0) OVER (ORDER BY Maaned_Nr) AS Regnskap_Akk,\n"
         "       SUM(Budsjett_Kr)/1000.0 AS Budsjett_Mnd,\n"
         "       SUM(SUM(Budsjett_Kr)/1000.0) OVER (ORDER BY Maaned_Nr) AS Budsjett_Akk\n"
-        "FROM fact_data\n"
-        "GROUP BY Maaned_Nr;\n\n"
+        "FROM fact_data GROUP BY Maaned_Nr;\n\n"
         "-- 3. Topp kostnadsdrivere sortert på absolutt avvik\n"
         "CREATE VIEW vw_top_drivers AS\n"
         "SELECT Kontokode_6Siffer, KOSTRA_Funksjon, Ansvar_Kode,\n"
-        "       SUM(Budsjett_Kr)/1000.0 AS Budsjett,\n"
-        "       SUM(Regnskap_Kr)/1000.0 AS Regnskap,\n"
+        "       SUM(Budsjett_Kr)/1000.0 AS Budsjett, SUM(Regnskap_Kr)/1000.0 AS Regnskap,\n"
         "       (SUM(Budsjett_Kr) - SUM(Regnskap_Kr))/1000.0 AS Avvik_kNOK\n"
-        "FROM fact_data\n"
-        "WHERE Maaned_Nr = 8\n"
-        "GROUP BY Kontokode_6Siffer, KOSTRA_Funksjon, Ansvar_Kode\n"
-        "ORDER BY Avvik_kNOK ASC;"
+        "FROM fact_data WHERE Maaned_Nr = 8\n"
+        "GROUP BY Kontokode_6Siffer, KOSTRA_Funksjon, Ansvar_Kode ORDER BY Avvik_kNOK ASC;"
     )
     t_sql = Table([[Paragraph(f"<pre>{sql_views}</pre>", styles['CodeSnippet'])]], colWidths=[usable_w])
     t_sql.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), C_BG_CODE),
         ('BOX', (0, 0), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
-        ('LEFTPADDING', (0, 0), (-1, -1), 6),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 3),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+        ('LEFTPADDING', (0, 0), (-1, -1), 5),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 5),
     ]))
     story.append(t_sql)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 4))
 
-    # --- KAPITTEL 6 ---
-    story.append(Paragraph("6. Datakvalitet, Avstemmingsregler og KOSTRA-Validering", styles['H1']))
-    story.append(Paragraph(
-        "Datamodellen valideres månedlig mot reglene i <code>docs/07_Data_Quality_and_Assurance_Rapport.md</code>:",
-        styles['Body']
-    ))
-    story.append(Paragraph("• <b>Balansekontroll:</b> Summen av alle 827 faktarader avstemmes krone for krone mot kommunens offisielle månedsregnskap i Agresso/Unit4.", styles['BulletItem']))
-    story.append(Paragraph("• <b>KOSTRA Funksjon/Art Matrise:</b> Validering av at kun tillatte kombinasjoner forekommer (f.eks. at funksjon 2020 kun belastes med skolerelaterte lønns- og driftsarter).", styles['BulletItem']))
-    story.append(Paragraph("• <b>Nullverdi- og Duplikatsjekk:</b> Ingen transaksjoner tillates uten gyldig <code>TransaksjonsID</code> eller med negative budsjettrammer.", styles['BulletItem']))
-    story.append(Spacer(1, 6))
+    story.append(Paragraph("7. Datakvalitet, Avstemmingsregler og KOSTRA-Validering", styles['H1']))
+    story.append(Paragraph("• <b>Balansekontroll:</b> Alle 827 faktarader avstemmes krone for krone mot kommunens offisielle månedsregnskap i Agresso/Unit4.", styles['BulletItem']))
+    story.append(Paragraph("• <b>KOSTRA Funksjon/Art Matrise:</b> Validering av at kun tillatte kombinasjoner forekommer.", styles['BulletItem']))
+    story.append(Spacer(1, 4))
 
     story.append(make_callout(
         "Avstemmingsrapporten per 31.08.2024 viser 0 feil og 100 % samsvar mellom fact_data, DuckDB OLAP og "
@@ -943,13 +1008,11 @@ def generate_data_model_manual(out_path):
 # MAIN EXECUTION
 # ==============================================================================
 if __name__ == "__main__":
-    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    p1 = os.path.join(ROOT_DIR, "KOM-G_User_Guide.pdf")
+    p2 = os.path.join(ROOT_DIR, "KOM-G_System_Manual_and_Architecture.pdf")
+    p3 = os.path.join(ROOT_DIR, "KOM-G_Data_Model_and_Dictionary.pdf")
     
-    p1 = os.path.join(root_dir, "KOM-G_User_Guide.pdf")
-    p2 = os.path.join(root_dir, "KOM-G_System_Manual_and_Architecture.pdf")
-    p3 = os.path.join(root_dir, "KOM-G_Data_Model_and_Dictionary.pdf")
-    
-    print(f"Starting generation of 3 comprehensive PDF manuals in {root_dir}...")
+    print(f"Starting generation of 3 comprehensive PDF manuals in {ROOT_DIR}...")
     generate_user_guide(p1)
     generate_system_manual(p2)
     generate_data_model_manual(p3)

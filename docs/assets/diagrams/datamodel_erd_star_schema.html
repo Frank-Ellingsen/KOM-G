@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #ffffff;
+    color: #1e293b;
+    -webkit-font-smoothing: antialiased;
+}
+.diagram-container {
+    width: 1040px;
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin: 0 auto;
+}
+.diag-header {
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+.diag-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.3px;
+    text-transform: uppercase;
+}
+.diag-subtitle {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 2px;
+}
+.diag-badge {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #0284c7;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 12px 14px;
+}
+.card-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.card-pill {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background: #e2e8f0;
+    color: #334155;
+}
+.pill-blue { background: #e0f2fe; color: #0369a1; }
+.pill-amber { background: #fef3c7; color: #b45309; }
+.pill-green { background: #dcfce7; color: #15803d; }
+.pill-slate { background: #f1f5f9; color: #475569; }
+
+.erd-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr 280px;
+    grid-template-rows: auto auto;
+    gap: 16px;
+    align-items: center;
+}
+.erd-entity {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.erd-entity.fact {
+    border: 2px solid #0f172a;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+.entity-header {
+    background: #f1f5f9;
+    padding: 8px 12px;
+    border-bottom: 1px solid #cbd5e1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.erd-entity.fact .entity-header {
+    background: #0f172a;
+    color: #ffffff;
+    border-bottom: none;
+}
+.entity-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.erd-entity.fact .entity-title { color: #ffffff; }
+.entity-rows {
+    padding: 6px 0;
+}
+.field-row {
+    display: grid;
+    grid-template-columns: 36px 1fr 90px;
+    padding: 3px 12px;
+    font-size: 9px;
+    align-items: center;
+    border-bottom: 1px solid #f8fafc;
+}
+.field-row:last-child { border-bottom: none; }
+.key-badge {
+    font-size: 8px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 2px;
+    text-align: center;
+    display: inline-block;
+}
+.pk { background: #fef3c7; color: #b45309; }
+.fk { background: #e0f2fe; color: #0369a1; }
+.fn { font-family: monospace; font-weight: 600; color: #1e293b; }
+.ft { font-family: monospace; color: #64748b; font-size: 8px; text-align: right; }
+
+.center-col {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    padding: 0 10px;
+}
+.rel-tag {
+    display: inline-block;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    font-size: 8.5px;
+    font-weight: 600;
+    color: #475569;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-bottom: 4px;
+}
+.erd-legend {
+    margin-top: 16px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9.5px;
+    color: #475569;
+}
+</style>
+</head>
+<body>
+<div class="diagram-container">
+    <div class="diag-header">
+        <div>
+            <div class="diag-title">KOM-G Datamodell & Stjerneskjema (ERD)</div>
+            <div class="diag-subtitle">Relasjonsmodell mellom sentral faktatabell (fact_data) og KOSTRA-dimensjoner med kardinalitet 1:N</div>
+        </div>
+        <div class="diag-badge">SSB KOSTRA 2024 / Star Schema</div>
+    </div>
+
+    <div class="erd-grid">
+        <!-- Left Top: dim_ansvar -->
+        <div class="erd-entity">
+            <div class="entity-header">
+                <span class="entity-title">dim_ansvar</span>
+                <span class="card-pill pill-blue">1 : N (PK)</span>
+            </div>
+            <div class="entity-rows">
+                <div class="field-row"><span class="key-badge pk">PK</span><span class="fn">Ansvar_Kode</span><span class="ft">VARCHAR(16)</span></div>
+                <div class="field-row"><span></span><span class="fn">Ansvar_Navn</span><span class="ft">VARCHAR(64)</span></div>
+                <div class="field-row"><span></span><span class="fn">Sektor</span><span class="ft">VARCHAR(32)</span></div>
+                <div class="field-row"><span></span><span class="fn">Enhetsleder</span><span class="ft">VARCHAR(64)</span></div>
+                <div class="field-row"><span></span><span class="fn">Org_Nivaa</span><span class="ft">INTEGER</span></div>
+            </div>
+        </div>
+
+        <!-- Center: fact_data -->
+        <div class="center-col">
+            <div class="erd-entity fact">
+                <div class="entity-header">
+                    <div>
+                        <div class="entity-title">fact_data (Faktatabell)</div>
+                        <div style="font-size: 9px; color: #94a3b8; margin-top: 1px;">827 rader · Periodisert regnskap & budsjett 2024</div>
+                    </div>
+                    <span class="card-pill pill-amber" style="background:#b45309; color:#fff;">Sentral Faktatabell</span>
+                </div>
+                <div class="entity-rows">
+                    <div class="field-row"><span class="key-badge pk">PK</span><span class="fn">TransaksjonsID</span><span class="ft">VARCHAR(32)</span></div>
+                    <div class="field-row"><span class="key-badge fk">FK</span><span class="fn">Dato</span><span class="ft">DATE</span></div>
+                    <div class="field-row"><span></span><span class="fn">Maaned_Nr</span><span class="ft">INTEGER</span></div>
+                    <div class="field-row"><span></span><span class="fn">Aar</span><span class="ft">INTEGER</span></div>
+                    <div class="field-row"><span class="key-badge fk">FK</span><span class="fn">Ansvar_Kode</span><span class="ft">VARCHAR(16)</span></div>
+                    <div class="field-row"><span class="key-badge fk">FK</span><span class="fn">KOSTRA_Funksjon</span><span class="ft">VARCHAR(8)</span></div>
+                    <div class="field-row"><span class="key-badge fk">FK</span><span class="fn">Kontokode_6Siffer</span><span class="ft">VARCHAR(16)</span></div>
+                    <div class="field-row"><span></span><span class="fn">Budsjett_Kr</span><span class="ft">DOUBLE</span></div>
+                    <div class="field-row"><span></span><span class="fn">Regnskap_Kr</span><span class="ft">DOUBLE</span></div>
+                    <div class="field-row"><span></span><span class="fn">Avvik_Kr</span><span class="ft">DOUBLE</span></div>
+                    <div class="field-row"><span></span><span class="fn">Kommentar</span><span class="ft">VARCHAR(255)</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Top: dim_kostra_funksjon -->
+        <div class="erd-entity">
+            <div class="entity-header">
+                <span class="entity-title">dim_kostra_funksjon</span>
+                <span class="card-pill pill-blue">1 : N (PK)</span>
+            </div>
+            <div class="entity-rows">
+                <div class="field-row"><span class="key-badge pk">PK</span><span class="fn">Funksjon_Kode</span><span class="ft">VARCHAR(8)</span></div>
+                <div class="field-row"><span></span><span class="fn">Funksjon_Navn</span><span class="ft">VARCHAR(64)</span></div>
+                <div class="field-row"><span></span><span class="fn">Tjenestegruppe</span><span class="ft">VARCHAR(64)</span></div>
+                <div class="field-row"><span></span><span class="fn">Lovhjemmel</span><span class="ft">VARCHAR(64)</span></div>
+                <div class="field-row"><span></span><span class="fn">SSB_Krav</span><span class="ft">VARCHAR(16)</span></div>
+            </div>
+        </div>
+
+        <!-- Left Bottom: dim_date -->
+        <div class="erd-entity">
+            <div class="entity-header">
+                <span class="entity-title">dim_date (Kalender)</span>
+                <span class="card-pill pill-blue">1 : N (PK)</span>
+            </div>
+            <div class="entity-rows">
+                <div class="field-row"><span class="key-badge pk">PK</span><span class="fn">Dato</span><span class="ft">DATE</span></div>
+                <div class="field-row"><span></span><span class="fn">Aar</span><span class="ft">INTEGER</span></div>
+                <div class="field-row"><span></span><span class="fn">Maaned_Nr</span><span class="ft">INTEGER</span></div>
+                <div class="field-row"><span></span><span class="fn">Maaned_Navn</span><span class="ft">VARCHAR(16)</span></div>
+                <div class="field-row"><span></span><span class="fn">Kvartal</span><span class="ft">VARCHAR(4)</span></div>
+                <div class="field-row"><span></span><span class="fn">Tertial</span><span class="ft">VARCHAR(4)</span></div>
+            </div>
+        </div>
+
+        <!-- Right Bottom: dim_kostra_kontoplan -->
+        <div class="erd-entity">
+            <div class="entity-header">
+                <span class="entity-title">dim_kostra_kontoplan</span>
+                <span class="card-pill pill-blue">1 : N (PK)</span>
+            </div>
+            <div class="entity-rows">
+                <div class="field-row"><span class="key-badge pk">PK</span><span class="fn">Kontokode_6Siffer</span><span class="ft">VARCHAR(16)</span></div>
+                <div class="field-row"><span></span><span class="fn">Kontonavn</span><span class="ft">VARCHAR(64)</span></div>
+                <div class="field-row"><span></span><span class="fn">Hovedart</span><span class="ft">VARCHAR(32)</span></div>
+                <div class="field-row"><span></span><span class="fn">Gruppe</span><span class="ft">VARCHAR(32)</span></div>
+                <div class="field-row"><span></span><span class="fn">Kostnadstype</span><span class="ft">VARCHAR(32)</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="erd-legend">
+        <span><strong>Kardinalitet:</strong> Alle dimensjoner har <code>1:N</code> relasjon mot <code>fact_data</code> (én oppføring i dimensjon knyttes til mange faktaposter).</span>
+        <span><strong>Integritet:</strong> Referensiell integritet håndheves ved databaseopprettelse i <code>src/db_manager.py</code>.</span>
+    </div>
+</div>
+</body>
+</html>

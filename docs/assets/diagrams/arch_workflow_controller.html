@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #ffffff;
+    color: #1e293b;
+    -webkit-font-smoothing: antialiased;
+}
+.diagram-container {
+    width: 1040px;
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin: 0 auto;
+}
+.diag-header {
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+.diag-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.3px;
+    text-transform: uppercase;
+}
+.diag-subtitle {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 2px;
+}
+.diag-badge {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #0284c7;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 12px 14px;
+}
+.card-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.card-pill {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background: #e2e8f0;
+    color: #334155;
+}
+.pill-blue { background: #e0f2fe; color: #0369a1; }
+.pill-amber { background: #fef3c7; color: #b45309; }
+.pill-green { background: #dcfce7; color: #15803d; }
+.pill-slate { background: #f1f5f9; color: #475569; }
+
+.workflow-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    position: relative;
+}
+.step-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-top: 4px solid #0f172a;
+    border-radius: 6px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.step-card.step-1 { border-top-color: #0284c7; }
+.step-card.step-2 { border-top-color: #059669; }
+.step-card.step-3 { border-top-color: #dc2626; }
+.step-card.step-4 { border-top-color: #d97706; }
+.step-card.step-5 { border-top-color: #8b5cf6; }
+.step-num {
+    font-size: 10px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+.step-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+    line-height: 1.25;
+}
+.step-desc {
+    font-size: 9.5px;
+    color: #475569;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+.step-deliverable {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 8.5px;
+    color: #1e293b;
+}
+.step-deliverable strong {
+    display: block;
+    color: #0f172a;
+    font-size: 9px;
+    margin-bottom: 2px;
+}
+.footer-note {
+    margin-top: 18px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: #475569;
+}
+</style>
+</head>
+<body>
+<div class="diagram-container">
+    <div class="diag-header">
+        <div>
+            <div class="diag-title">Operativ Controller-Workflow & Månedssyklus</div>
+            <div class="diag-subtitle">Femtrinns styringsprosess: Fra regnskapsavslutning til What-If tiltak og formannskapsrapportering</div>
+        </div>
+        <div class="diag-badge">M01–M12 Forvaltningssyklus</div>
+    </div>
+
+    <div class="workflow-row">
+        <!-- Step 1 -->
+        <div class="step-card step-1">
+            <div>
+                <div class="step-num">Fase 1 · Dag 1–3</div>
+                <div class="step-title">Inndata & Avstemming</div>
+                <div class="step-desc">
+                    Månedsregnskap eksporteres fra Agresso/Unit4. Filer leases inn i DuckDB. Kontroll mot SSB KOSTRA kontoplan.
+                </div>
+            </div>
+            <div class="step-deliverable">
+                <strong>Leveranse:</strong>
+                <code>fact_data</code> (827 rader)<br>0 avstemmingsdifferanser
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-card step-2">
+            <div>
+                <div class="step-num">Fase 2 · Dag 4–5</div>
+                <div class="step-title">DuckDB Aggregering</div>
+                <div class="step-desc">
+                    Generering av Tufte S-kurve, 3M glidende snitt og avviksberegning YTD fordelt på ansvarsområder og KOSTRA-funksjon.
+                </div>
+            </div>
+            <div class="step-deliverable">
+                <strong>Leveranse:</strong>
+                <code>vw_monthly_scurve</code><br>Avvik Jan–Aug: -2 229,6 k
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-card step-3">
+            <div>
+                <div class="step-num">Fase 3 · Dag 6–7</div>
+                <div class="step-title">Avviksdeteksjon & Triage</div>
+                <div class="step-desc">
+                    Tidligvarselpanelet flagger avvik over 5 %. Automatisk isolering av Art 127040 (vikarbyrå) og Art 101000 (fastlønn).
+                </div>
+            </div>
+            <div class="step-deliverable">
+                <strong>Leveranse:</strong>
+                Røde/Gule risikovarsler<br>Tiltaksforslag per funksjon
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-card step-4">
+            <div>
+                <div class="step-num">Fase 4 · Dag 8–9</div>
+                <div class="step-title">What-If Simulering</div>
+                <div class="step-desc">
+                    Controllere tester tiltak i simulatoren: 50 % vikarbyråkutt + ansettelsesstopp gir estimert innsparing på 1 127 kNOK.
+                </div>
+            </div>
+            <div class="step-deliverable">
+                <strong>Leveranse:</strong>
+                Justert EAC 31.12<br>Dokumenterte tiltakskalkyler
+            </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step-card step-5">
+            <div>
+                <div class="step-num">Fase 5 · Dag 10</div>
+                <div class="step-title">AI Rådgivning & Rapporter</div>
+                <div class="step-desc">
+                    Multi-LLM genererer saksutredning med lovhjemler. Automatisk kompilering av styringsnotater til Formannskapet.
+                </div>
+            </div>
+            <div class="step-deliverable">
+                <strong>Leveranse:</strong>
+                Styringsnotat (PDF)<br>Loggført i <code>audit_log</code>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        <span><strong>Tidslinje:</strong> Syklusen gjentas månedlig ved tertial- og månedsslutt iht. Kommuneloven § 14-6.</span>
+        <span><strong>Kommando:</strong> <code>.\run.ps1 -All</code> kjører hele pipelinen autonomt.</span>
+    </div>
+</div>
+</body>
+</html>
