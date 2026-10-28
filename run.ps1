@@ -19,6 +19,7 @@ param(
     [switch]$BuildDB,
     [switch]$ExportExcel,
     [switch]$Reports,
+    [switch]$Manuals,
     [switch]$DispatchPDF,
     [switch]$SendEmail,
     [string]$Recipient = "postmottak@kristiansand.kommune.no",
@@ -50,13 +51,14 @@ function Write-Info ($text) {
 }
 
 # Hjelpemeny dersom ingen parametere er oppgitt
-if (-not ($BuildDB -or $ExportExcel -or $Reports -or $DispatchPDF -or $SendEmail -or $Retrain -or $Up -or $Down -or $Logs -or $Mlflow -or $Streamlit -or $GitPush -or $All)) {
+if (-not ($BuildDB -or $ExportExcel -or $Reports -or $Manuals -or $DispatchPDF -or $SendEmail -or $Retrain -or $Up -or $Down -or $Logs -or $Mlflow -or $Streamlit -or $GitPush -or $All)) {
     Write-Header "ANTIGRAVITY KOSTRA AI WORKBENCH - POWERSHELL MENY"
     Write-Host "Bruk: .\run.ps1 [parameter]" -ForegroundColor White
     Write-Host ""
     Write-Host "  -BuildDB       : Bygg DuckDB-databasen (data/database/kostra.duckdb) fra CSV-filer"
     Write-Host "  -ExportExcel   : Eksporter ferdige Excel-ark for ML-modellering"
     Write-Host "  -Reports       : Generer publiseringsklare executive PDF-månedsrapporter"
+    Write-Host "  -Manuals       : Generer PDF Brukermanual, Systemmanual og Datamodell i rotmappe"
     Write-Host "  -DispatchPDF   : Klargjør seneste PDF-saksutredning med NOARK 5 metadata for eInnsyn"
     Write-Host "  -SendEmail     : Send PDF som saksnotat via e-post (Bruk -Recipient <adresse>)"
     Write-Host "  -Retrain       : Om-tren ML-prognosemodellen og sjekk Model Drift"
@@ -88,6 +90,12 @@ if ($Reports -or $All) {
     Write-Header "Genererer Executive PDF-Månedsrapporter..."
     python src/generate_executive_reports.py
     Write-Success "Månedsrapporter generert i reports/!"
+}
+
+if ($Manuals -or $All) {
+    Write-Header "Genererer PDF Systemmanualer, Brukerveileder og Datamodell..."
+    python src/generate_all_manuals.py
+    Write-Success "3 PDF-manualer generert i rotmappen!"
 }
 
 if ($DispatchPDF) {
