@@ -1979,11 +1979,649 @@ document.addEventListener("DOMContentLoaded", () => {
     if (el) el.addEventListener("input", updateWhatIfSimulator);
   });
 
-  // AI Chatbot Widget
+  // AI Controller & Provider Management
+  initAiProviderManager();
   initChatbot();
 });
 
-// 17. Floating AI Controller Chatbot Logic
+// ==========================================================================
+// 17. AI Provider Configuration & Multi-LLM Integration Engine
+// ==========================================================================
+
+const AI_PROVIDERS = {
+  gemini: {
+    name: "Google Gemini",
+    defaultModel: "gemini-1.5-flash",
+    type: "cloud",
+    typeLabel: "Skytjeneste (Google AI)",
+    keyPlaceholder: "AIzaSy...",
+    keyLink: "https://aistudio.google.com/app/apikey",
+    hint: "Google Gemini 1.5 Flash gir lynrask, kostnadseffektiv og presis analyse.",
+    requiresKey: true
+  },
+  openai: {
+    name: "OpenAI",
+    defaultModel: "gpt-4o-mini",
+    type: "cloud",
+    typeLabel: "Skytjeneste (OpenAI)",
+    keyPlaceholder: "sk-proj-...",
+    keyLink: "https://platform.openai.com/api-keys",
+    hint: "GPT-4o-mini eller GPT-4o for avansert resonnering og analyse.",
+    requiresKey: true
+  },
+  anthropic: {
+    name: "Anthropic Claude",
+    defaultModel: "claude-3-5-sonnet-20241022",
+    type: "cloud",
+    typeLabel: "Skytjeneste (Anthropic)",
+    keyPlaceholder: "sk-ant-...",
+    keyLink: "https://console.anthropic.com/settings/keys",
+    hint: "Claude 3.5 Sonnet for dype forklaringer og controller-rapportering.",
+    requiresKey: true
+  },
+  ollama: {
+    name: "Ollama (Lokal LLM)",
+    defaultModel: "llama3:latest",
+    type: "local",
+    typeLabel: "Lokal LLM (Privat & Gratis)",
+    defaultEndpoint: "http://localhost:11434",
+    hint: "100 % lokal inferens på maskinen din. Null data sendes ut. Krever ingen API-nøkkel.",
+    requiresKey: false
+  },
+  groq: {
+    name: "Groq",
+    defaultModel: "llama-3.1-70b-versatile",
+    type: "cloud",
+    typeLabel: "Skytjeneste (Groq LPU)",
+    keyPlaceholder: "gsk_...",
+    keyLink: "https://console.groq.com/keys",
+    hint: "Groq LPU leverer tilnærmet umiddelbare svar med Llama 3.1 70B.",
+    requiresKey: true
+  },
+  mistral: {
+    name: "Mistral AI",
+    defaultModel: "mistral-large-latest",
+    type: "cloud",
+    typeLabel: "Skytjeneste (Mistral)",
+    keyPlaceholder: "...",
+    keyLink: "https://console.mistral.ai/api-keys",
+    hint: "Europeisk AI-plattform med Mistral Large eller Codestral.",
+    requiresKey: true
+  },
+  deepseek: {
+    name: "DeepSeek",
+    defaultModel: "deepseek-chat",
+    type: "cloud",
+    typeLabel: "Skytjeneste (DeepSeek)",
+    keyPlaceholder: "sk-...",
+    keyLink: "https://platform.deepseek.com/api_keys",
+    hint: "DeepSeek-V3 for analytiske beregninger og resonnering.",
+    requiresKey: true
+  },
+  offline: {
+    name: "Innebygd Controller",
+    defaultModel: "rule-based-v2",
+    type: "offline",
+    typeLabel: "Regelbasert (Offline)",
+    hint: "Innebygd controller-logikk og KOSTRA-analyse uten eksterne API-kall.",
+    requiresKey: false
+  }
+};
+
+function getAiSettings() {
+  const defaultSettings = {
+    activeProvider: "gemini",
+    providers: {
+      gemini: { key: "", model: "gemini-1.5-flash", endpoint: "" },
+      openai: { key: "", model: "gpt-4o-mini", endpoint: "" },
+      anthropic: { key: "", model: "claude-3-5-sonnet-20241022", endpoint: "" },
+      ollama: { key: "", model: "llama3:latest", endpoint: "http://localhost:11434" },
+      groq: { key: "", model: "llama-3.1-70b-versatile", endpoint: "" },
+      mistral: { key: "", model: "mistral-large-latest", endpoint: "" },
+      deepseek: { key: "", model: "deepseek-chat", endpoint: "" },
+      offline: { key: "", model: "rule-based-v2", endpoint: "" }
+    }
+  };
+
+  try {
+    const raw = localStorage.getItem("kostra_ai_settings");
+    if (!raw) return defaultSettings;
+    const parsed = JSON.parse(raw);
+    return {
+      activeProvider: parsed.activeProvider || defaultSettings.activeProvider,
+      providers: { ...defaultSettings.providers, ...(parsed.providers || {}) }
+    };
+  } catch (e) {
+    return defaultSettings;
+  }
+}
+
+function saveAiSettings(settings) {
+  try {
+    localStorage.setItem("kostra_ai_settings", JSON.stringify(settings));
+  } catch (e) {
+    console.error("Feil ved lagring av AI-innstillinger", e);
+  }
+  updateAiUIState();
+}
+
+function updateAiUIState() {
+  const settings = getAiSettings();
+  const activeId = settings.activeProvider || "gemini";
+  const providerMeta = AI_PROVIDERS[activeId] || AI_PROVIDERS.gemini;
+  const currentProviderConfig = settings.providers[activeId] || {};
+  const hasKey = !providerMeta.requiresKey || !!(currentProviderConfig.key && currentProviderConfig.key.trim().length > 0);
+
+  // 1. Top Navigation Button
+  const topLabel = document.getElementById("top-ai-provider-label");
+  const topDot = document.getElementById("top-ai-dot");
+  if (topLabel) {
+    const shortName = activeId === "offline" ? "Offline" : providerMeta.name.replace("Google ", "").replace(" (Lokal LLM)", "");
+    topLabel.innerText = `🤖 AI: ${shortName}`;
+  }
+  if (topDot) {
+    topDot.className = "ai-provider-dot " + (hasKey ? "active" : "missing");
+  }
+
+  // 2. Chatbot Quick Select & Key Indicator
+  const chatQuickSelect = document.getElementById("chat-quick-provider");
+  if (chatQuickSelect && chatQuickSelect.value !== activeId) {
+    chatQuickSelect.value = activeId;
+  }
+  const chatStatusDot = document.getElementById("chat-provider-status-dot");
+  const chatKeyBadge = document.getElementById("chat-key-badge-text");
+  if (chatStatusDot && chatKeyBadge) {
+    if (!providerMeta.requiresKey) {
+      chatStatusDot.className = "provider-status-dot offline";
+      chatKeyBadge.innerText = activeId === "ollama" ? "Lokal LLM" : "Offline";
+    } else if (hasKey) {
+      chatStatusDot.className = "provider-status-dot active";
+      chatKeyBadge.innerText = "Aktiv nøkkel";
+    } else {
+      chatStatusDot.className = "provider-status-dot missing";
+      chatKeyBadge.innerText = "Mangler nøkkel";
+    }
+  }
+
+  // 3. Modal Form Elements
+  const modalSelect = document.getElementById("modal-ai-provider-select");
+  if (modalSelect && modalSelect.value !== activeId) {
+    modalSelect.value = activeId;
+  }
+  syncModalFieldsToProvider(activeId);
+}
+
+function syncModalFieldsToProvider(providerId) {
+  const settings = getAiSettings();
+  const providerMeta = AI_PROVIDERS[providerId] || AI_PROVIDERS.gemini;
+  const config = settings.providers[providerId] || {};
+
+  const modelInput = document.getElementById("modal-ai-model-input");
+  const keyInput = document.getElementById("modal-ai-key-input");
+  const keyGroup = document.getElementById("modal-key-group");
+  const endpointGroup = document.getElementById("modal-endpoint-group");
+  const endpointInput = document.getElementById("modal-ai-endpoint-input");
+  const tagPill = document.getElementById("modal-provider-tag");
+  const keyLink = document.getElementById("modal-key-link");
+  const keyHelp = document.getElementById("modal-key-help");
+
+  if (modelInput) modelInput.value = config.model || providerMeta.defaultModel || "";
+  if (keyInput) {
+    keyInput.value = config.key || "";
+    keyInput.placeholder = providerMeta.keyPlaceholder || "Skriv inn API-nøkkel...";
+  }
+  if (tagPill) tagPill.innerText = providerMeta.typeLabel;
+
+  if (keyLink) {
+    if (providerMeta.keyLink) {
+      keyLink.href = providerMeta.keyLink;
+      keyLink.style.display = "inline";
+    } else {
+      keyLink.style.display = "none";
+    }
+  }
+
+  if (keyHelp) keyHelp.innerText = providerMeta.hint || "";
+
+  if (providerId === "ollama") {
+    if (keyGroup) keyGroup.style.display = "none";
+    if (endpointGroup) endpointGroup.style.display = "flex";
+    if (endpointInput) endpointInput.value = config.endpoint || providerMeta.defaultEndpoint || "http://localhost:11434";
+  } else if (providerId === "offline") {
+    if (keyGroup) keyGroup.style.display = "none";
+    if (endpointGroup) endpointGroup.style.display = "none";
+  } else {
+    if (keyGroup) keyGroup.style.display = "flex";
+    if (endpointGroup) endpointGroup.style.display = "none";
+  }
+}
+
+function initAiProviderManager() {
+  const openModalBtn = document.getElementById("btn-open-ai-modal");
+  const chatOpenModalBtn = document.getElementById("chat-open-modal-btn");
+  const closeModalBtn = document.getElementById("btn-close-ai-modal");
+  const modal = document.getElementById("ai-settings-modal");
+  const modalSelect = document.getElementById("modal-ai-provider-select");
+  const modalSaveBtn = document.getElementById("btn-save-modal-config");
+  const modalClearBtn = document.getElementById("btn-clear-modal-key");
+  const modalTestBtn = document.getElementById("btn-test-modal-connection");
+  const modalToggleEye = document.getElementById("modal-toggle-key-eye");
+  const modalFeedback = document.getElementById("modal-test-feedback");
+
+  const chatQuickSelect = document.getElementById("chat-quick-provider");
+  const chatToggleKeyDrawer = document.getElementById("chat-toggle-key-drawer");
+  const chatInlineDrawer = document.getElementById("chat-inline-key-drawer");
+  const chatInlineInput = document.getElementById("chat-inline-key-input");
+  const chatSaveKeyBtn = document.getElementById("chat-save-key-btn");
+  const chatToggleEye = document.getElementById("chat-toggle-key-eye");
+
+  const insightAiBtn = document.getElementById("btn-generate-ai-insight");
+
+  // Open & Close Modal
+  const openModal = () => {
+    if (!modal) return;
+    const settings = getAiSettings();
+    modal.classList.remove("hidden");
+    if (modalSelect) modalSelect.value = settings.activeProvider;
+    syncModalFieldsToProvider(settings.activeProvider);
+    if (modalFeedback) {
+      modalFeedback.className = "ai-feedback-box hidden";
+      modalFeedback.innerText = "";
+    }
+  };
+
+  const closeModal = () => {
+    if (modal) modal.classList.add("hidden");
+  };
+
+  openModalBtn?.addEventListener("click", openModal);
+  chatOpenModalBtn?.addEventListener("click", openModal);
+  closeModalBtn?.addEventListener("click", closeModal);
+
+  modal?.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Modal Provider dropdown change
+  modalSelect?.addEventListener("change", (e) => {
+    syncModalFieldsToProvider(e.target.value);
+  });
+
+  // Toggle eye visibility
+  modalToggleEye?.addEventListener("click", () => {
+    const keyInput = document.getElementById("modal-ai-key-input");
+    if (!keyInput) return;
+    keyInput.type = keyInput.type === "password" ? "text" : "password";
+  });
+
+  // Save Modal Settings
+  modalSaveBtn?.addEventListener("click", () => {
+    const settings = getAiSettings();
+    const providerId = modalSelect ? modalSelect.value : "gemini";
+    const modelInput = document.getElementById("modal-ai-model-input");
+    const keyInput = document.getElementById("modal-ai-key-input");
+    const endpointInput = document.getElementById("modal-ai-endpoint-input");
+
+    settings.activeProvider = providerId;
+    if (!settings.providers[providerId]) settings.providers[providerId] = {};
+    if (modelInput) settings.providers[providerId].model = modelInput.value.trim();
+    if (keyInput) settings.providers[providerId].key = keyInput.value.trim();
+    if (endpointInput) settings.providers[providerId].endpoint = endpointInput.value.trim();
+
+    saveAiSettings(settings);
+
+    if (modalFeedback) {
+      modalFeedback.className = "ai-feedback-box success";
+      modalFeedback.innerText = `✓ Innstillinger for ${AI_PROVIDERS[providerId]?.name || providerId} er lagret lokalt!`;
+    }
+
+    setTimeout(() => {
+      closeModal();
+    }, 900);
+  });
+
+  // Clear Key
+  modalClearBtn?.addEventListener("click", () => {
+    const settings = getAiSettings();
+    const providerId = modalSelect ? modalSelect.value : "gemini";
+    if (settings.providers[providerId]) {
+      settings.providers[providerId].key = "";
+    }
+    const keyInput = document.getElementById("modal-ai-key-input");
+    if (keyInput) keyInput.value = "";
+    saveAiSettings(settings);
+
+    if (modalFeedback) {
+      modalFeedback.className = "ai-feedback-box success";
+      modalFeedback.innerText = `✓ API-nøkkel for ${AI_PROVIDERS[providerId]?.name} ble slettet.`;
+    }
+  });
+
+  // Test Connection
+  modalTestBtn?.addEventListener("click", async () => {
+    if (!modalFeedback) return;
+    const providerId = modalSelect ? modalSelect.value : "gemini";
+    const modelInput = document.getElementById("modal-ai-model-input");
+    const keyInput = document.getElementById("modal-ai-key-input");
+    const endpointInput = document.getElementById("modal-ai-endpoint-input");
+
+    const key = keyInput ? keyInput.value.trim() : "";
+    const model = modelInput ? modelInput.value.trim() : "";
+    const endpoint = endpointInput ? endpointInput.value.trim() : "";
+
+    modalFeedback.className = "ai-feedback-box loading";
+    modalFeedback.innerText = `⏳ Tester tilkobling mot ${AI_PROVIDERS[providerId]?.name}...`;
+
+    try {
+      const reply = await executeAiCall({
+        provider: providerId,
+        key: key,
+        model: model,
+        endpoint: endpoint,
+        prompt: "Svar med nøyaktig ett ord: 'Tilkobling_OK'",
+        contextText: "Testkall"
+      });
+      modalFeedback.className = "ai-feedback-box success";
+      modalFeedback.innerText = `✓ Tilkobling vellykket mot ${AI_PROVIDERS[providerId]?.name}! Respons: ${reply.slice(0, 80)}`;
+    } catch (err) {
+      modalFeedback.className = "ai-feedback-box error";
+      modalFeedback.innerText = `✕ Kunne ikke koble til ${AI_PROVIDERS[providerId]?.name}: ${err.message}`;
+    }
+  });
+
+  // Chatbot Quick Selector
+  chatQuickSelect?.addEventListener("change", (e) => {
+    const settings = getAiSettings();
+    settings.activeProvider = e.target.value;
+    saveAiSettings(settings);
+
+    // Sync inline drawer if open
+    if (chatInlineInput) {
+      const provConfig = settings.providers[e.target.value] || {};
+      chatInlineInput.value = provConfig.key || "";
+    }
+  });
+
+  // Chatbot Inline Key Drawer Toggle
+  chatToggleKeyDrawer?.addEventListener("click", () => {
+    if (!chatInlineDrawer) return;
+    chatInlineDrawer.classList.toggle("hidden");
+    if (!chatInlineDrawer.classList.contains("hidden") && chatInlineInput) {
+      const settings = getAiSettings();
+      const currentConfig = settings.providers[settings.activeProvider] || {};
+      chatInlineInput.value = currentConfig.key || "";
+      chatInlineInput.placeholder = AI_PROVIDERS[settings.activeProvider]?.keyPlaceholder || "Skriv inn API-nøkkel...";
+      chatInlineInput.focus();
+    }
+  });
+
+  chatToggleEye?.addEventListener("click", () => {
+    if (!chatInlineInput) return;
+    chatInlineInput.type = chatInlineInput.type === "password" ? "text" : "password";
+  });
+
+  // Save Inline Key
+  chatSaveKeyBtn?.addEventListener("click", () => {
+    if (!chatInlineInput) return;
+    const settings = getAiSettings();
+    const activeId = settings.activeProvider;
+    if (!settings.providers[activeId]) settings.providers[activeId] = {};
+    settings.providers[activeId].key = chatInlineInput.value.trim();
+    saveAiSettings(settings);
+    chatInlineDrawer?.classList.add("hidden");
+  });
+
+  // Dynamic Controller Insight Deep AI Action
+  insightAiBtn?.addEventListener("click", async () => {
+    const rootEl = document.getElementById("insight-root-cause");
+    const recEl = document.getElementById("insight-recommendations");
+    const sectorTag = document.getElementById("insight-sector-tag");
+    const origRoot = rootEl ? rootEl.innerText : "";
+    const origRec = recEl ? recEl.innerText : "";
+
+    if (rootEl) rootEl.innerHTML = `<span class="chat-typing"><span class="chat-typing-dot"></span><span class="chat-typing-dot"></span><span class="chat-typing-dot"></span> Analyserer rotårsak med AI...</span>`;
+    if (recEl) recEl.innerHTML = `<span class="chat-typing"><span class="chat-typing-dot"></span><span class="chat-typing-dot"></span><span class="chat-typing-dot"></span> Utarbeider controller-tiltak...</span>`;
+
+    const settings = getAiSettings();
+    const activeId = settings.activeProvider;
+    const cfg = settings.providers[activeId] || {};
+    const sectorName = activeFilters.sector === "all" ? "Konsolidert (Alle sektorer)" : activeFilters.sector;
+
+    const prompt = `Gjør en konsis controller-analyse for ${sectorName} i Kristiansand kommune per august 2024.
+Strukturer svaret NØYAKTIG i to deler adskilt med '---':
+FØRSTE DEL (Rotårsak): Maks 3 setninger om de underliggende årsakene til avviket (lønnsoppgjør, vikarbyrå, sesong/skolestart).
+ANDRE DEL (Tiltak): Maks 3 kulepunkter med konkrete controller-tiltak iht. Kommuneloven § 13-1/14-6 og AML § 10-6.`;
+
+    try {
+      const response = await executeAiCall({
+        provider: activeId,
+        key: cfg.key,
+        model: cfg.model,
+        endpoint: cfg.endpoint,
+        prompt: prompt,
+        contextText: buildControllerContext()
+      });
+
+      const parts = response.split("---");
+      if (parts.length >= 2) {
+        if (rootEl) rootEl.innerHTML = formatMarkdownToHtml(parts[0].trim());
+        if (recEl) recEl.innerHTML = formatMarkdownToHtml(parts[1].trim());
+      } else {
+        if (rootEl) rootEl.innerHTML = formatMarkdownToHtml(response);
+        if (recEl) recEl.innerHTML = formatMarkdownToHtml(origRec);
+      }
+      if (sectorTag) sectorTag.innerText = `${sectorName} (⚡ ${AI_PROVIDERS[activeId]?.name || 'AI'})`;
+    } catch (e) {
+      if (rootEl) rootEl.innerText = origRoot;
+      if (recEl) recEl.innerText = origRec;
+      alert(`Kunne ikke fullføre AI-analyse: ${e.message}`);
+    }
+  });
+
+  // Initial Sync on load
+  updateAiUIState();
+}
+
+// Build live KOSTRA financial context string for LLM prompts
+function buildControllerContext() {
+  const totalYtd = latestAggregates?.totalYtd || 31524.9;
+  const totalBudget = latestAggregates?.totalBudgetYtd || 29295.2;
+  const variance = totalBudget - totalYtd;
+  const pct = totalBudget ? ((totalYtd / totalBudget) * 100).toFixed(1) : "107.6";
+
+  return `KRISTIANSAND KOMMUNE – KOSTRA VIRKSOMHETSSTYRING 2024 (STATUS MÅNED 08 / AUGUST):
+• Konsolidert YTD Regnskap: ${totalYtd.toLocaleString("no-NO", { minimumFractionDigits: 1 })} kNOK
+• Konsolidert YTD Budsjett: ${totalBudget.toLocaleString("no-NO", { minimumFractionDigits: 1 })} kNOK
+• Samlet avvik YTD: ${variance.toLocaleString("no-NO", { minimumFractionDigits: 1 })} kNOK (${pct} % forbruk)
+• Oppvekst og Utdanning YTD: Regnskap 18 902,0 kNOK vs Budsjett 17 958,0 kNOK (Avvik -944,0 kNOK / 105,3 %)
+• Helse og Omsorg YTD: Regnskap 12 622,9 kNOK vs Budsjett 11 337,2 kNOK (Avvik -1 285,6 kNOK / 111,3 %)
+• August isolert: 4 120,8 kNOK vs Budsjett 3 770,1 kNOK (Avvik -350,7 kNOK)
+• Hoveddriver 1: Art 127040 Vikarbyråinnleie – 382,7 kNOK YTD (hvorav 253,2 kNOK kom i august alene i institusjon funksjon 2540). Prognose uten tiltak: >1,4 MNOK.
+• Hoveddriver 2: Art 101000 Fastlønn – Avvik -1 888,9 kNOK YTD pga. helårseffekt av lønnsoppgjøret per 01.05 som ikke var periodisert.
+• Hoveddriver 3: Art 104000 Overtid & Art 102031 Turnustillegg – -88,9 kNOK i august. Nærmer seg Arbeidsmiljølovens 200-timers grense for nøkkelpersonell.
+• Lovmessige rammer: Opplæringsloven § 8-2 (lærernorm), Helse- og omsorgstjenesteloven § 4-1 (forsvarlighetskrav), Arbeidsmiljøloven § 10-6 (overtidsgrenser), Kommuneloven § 14-6 (rammejustering).`;
+}
+
+// Low-level API Dispatcher for Multi-Provider
+async function executeAiCall({ provider, key, model, endpoint, prompt, contextText }) {
+  const systemPrompt = `Du er Frank Ellingsens AI Project Controller for Kristiansand kommune.
+Du har dyp ekspertise i KOSTRA, kommunal økonomistyring, Framsikt, DuckDB og Edward Tufte datavisualisering.
+Svar presist, profesjonelt og velbegrunnet på norsk.
+Benytt formelle finansielle begreper (EAC, ETC, periodisering, run-rate, rammekutt, vikarstopp).
+
+${contextText || buildControllerContext()}`;
+
+  // 1. Innebygd / Offline
+  if (provider === "offline") {
+    return generateControllerAiResponse(prompt);
+  }
+
+  // 2. Google Gemini
+  if (provider === "gemini") {
+    if (!key) throw new Error("API-nøkkel mangler for Google Gemini. Legg inn nøkkel i AI-oppsettet.");
+    const modelName = model || "gemini-1.5-flash";
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelName)}:generateContent?key=${encodeURIComponent(key)}`;
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              { text: `${systemPrompt}\n\nSpørsmål fra controller:\n${prompt}` }
+            ]
+          }
+        ],
+        generationConfig: {
+          temperature: 0.25,
+          maxOutputTokens: 800
+        }
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || "Feil fra Gemini API");
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!reply) throw new Error("Mottok tomt svar fra Gemini");
+    return reply;
+  }
+
+  // 3. OpenAI & OpenAI-kompatible APIer (Groq, Mistral, DeepSeek)
+  if (["openai", "groq", "mistral", "deepseek"].includes(provider)) {
+    if (!key) throw new Error(`API-nøkkel mangler for ${AI_PROVIDERS[provider]?.name}. Legg inn nøkkel i AI-oppsettet.`);
+
+    let endpointUrl = "https://api.openai.com/v1/chat/completions";
+    let defaultModel = "gpt-4o-mini";
+
+    if (provider === "groq") {
+      endpointUrl = "https://api.groq.com/openai/v1/chat/completions";
+      defaultModel = "llama-3.1-70b-versatile";
+    } else if (provider === "mistral") {
+      endpointUrl = "https://api.mistral.ai/v1/chat/completions";
+      defaultModel = "mistral-large-latest";
+    } else if (provider === "deepseek") {
+      endpointUrl = "https://api.deepseek.com/chat/completions";
+      defaultModel = "deepseek-chat";
+    }
+
+    const res = await fetch(endpointUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${key}`
+      },
+      body: JSON.stringify({
+        model: model || defaultModel,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: prompt }
+        ],
+        temperature: 0.25
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || `Feil fra ${provider}`);
+    const reply = data.choices?.[0]?.message?.content;
+    if (!reply) throw new Error(`Tomt svar fra ${provider}`);
+    return reply;
+  }
+
+  // 4. Ollama (Lokal LLM)
+  if (provider === "ollama") {
+    const base = (endpoint || "http://localhost:11434").replace(/\/$/, "");
+    const res = await fetch(`${base}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: model || "llama3:latest",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: prompt }
+        ],
+        stream: false
+      })
+    });
+
+    if (!res.ok) {
+      throw new Error(`Ollama svarte med status ${res.status}. Sjekk at Ollama kjører på ${base}`);
+    }
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    return data.message?.content || "Tomt svar fra Ollama";
+  }
+
+  // 5. Anthropic Claude
+  if (provider === "anthropic") {
+    if (!key) throw new Error("API-nøkkel mangler for Anthropic Claude.");
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+        "dangerously-allow-browser": "true"
+      },
+      body: JSON.stringify({
+        model: model || "claude-3-5-sonnet-20241022",
+        system: systemPrompt,
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 800
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || "Anthropic API feil");
+    return data.content?.[0]?.text || "Tomt svar fra Claude";
+  }
+
+  // Fallback
+  return generateControllerAiResponse(prompt);
+}
+
+// Convert common markdown elements to clean HTML
+function formatMarkdownToHtml(mdText) {
+  if (!mdText) return "";
+  let html = mdText
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  // Bold **text**
+  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  // Inline `code`
+  html = html.replace(/`(.*?)`/g, "<code>$1</code>");
+
+  // Lists
+  const lines = html.split("\n");
+  let inList = false;
+  let formatted = [];
+
+  for (let line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith("• ") || trimmed.startsWith("* ") || trimmed.startsWith("- ")) {
+      if (!inList) {
+        formatted.push("<ul style='margin:0.35rem 0 0.35rem 1.2rem; padding:0;'>");
+        inList = true;
+      }
+      formatted.push(`<li>${trimmed.substring(2)}</li>`);
+    } else {
+      if (inList) {
+        formatted.push("</ul>");
+        inList = false;
+      }
+      if (trimmed.length > 0) {
+        formatted.push(trimmed);
+      }
+    }
+  }
+  if (inList) formatted.push("</ul>");
+
+  return formatted.join("<br>");
+}
+
+// 18. Floating AI Controller Chatbot Logic
 function initChatbot() {
   const toggleBtn = document.getElementById("chatbot-toggle-btn");
   const closeBtn = document.getElementById("chatbot-close-btn");
@@ -2015,7 +2653,7 @@ function initChatbot() {
     });
   });
 
-  form?.addEventListener("submit", (e) => {
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const query = input.value.trim();
     if (!query) return;
@@ -2023,35 +2661,62 @@ function initChatbot() {
     appendChatMessage("user", query);
     input.value = "";
 
-    setTimeout(() => {
-      const response = generateControllerAiResponse(query);
-      appendChatMessage("bot", response);
-    }, 450);
+    // Show typing indicator
+    const typingId = "typing-" + Date.now();
+    appendChatMessage("bot", `<span class="chat-typing"><span class="chat-typing-dot"></span><span class="chat-typing-dot"></span><span class="chat-typing-dot"></span> Tenker...</span>`, typingId);
+
+    const settings = getAiSettings();
+    const activeId = settings.activeProvider || "gemini";
+    const cfg = settings.providers[activeId] || {};
+
+    try {
+      let responseText = "";
+      // If configured or offline, call the active provider
+      if (activeId === "offline") {
+        responseText = generateControllerAiResponse(query);
+      } else if (!cfg.key && activeId !== "ollama") {
+        // No key provided for cloud provider
+        const mockResp = generateControllerAiResponse(query);
+        responseText = `<div style="font-size:0.75rem; color:var(--accent-amber); margin-bottom:0.35rem; padding:0.25rem 0.45rem; background:rgba(245,158,11,0.1); border-radius:3px; border:1px solid rgba(245,158,11,0.25);">
+          ℹ️ <strong>Tips:</strong> Legg inn din API-nøkkel for <em>${AI_PROVIDERS[activeId]?.name}</em> ovenfor for direkte AI-generering. Viser forhåndsberegnet controller-svar:
+        </div>${mockResp}`;
+      } else {
+        const aiResult = await executeAiCall({
+          provider: activeId,
+          key: cfg.key,
+          model: cfg.model,
+          endpoint: cfg.endpoint,
+          prompt: query,
+          contextText: buildControllerContext()
+        });
+        responseText = `<div style="font-size:0.72rem; color:var(--accent-cyan); margin-bottom:0.35rem;">⚡ Generert av ${AI_PROVIDERS[activeId]?.name} (${cfg.model || AI_PROVIDERS[activeId]?.defaultModel})</div>` + formatMarkdownToHtml(aiResult);
+      }
+
+      removeChatMessage(typingId);
+      appendChatMessage("bot", responseText);
+    } catch (err) {
+      removeChatMessage(typingId);
+      const fallback = generateControllerAiResponse(query);
+      appendChatMessage("bot", `<div style="font-size:0.75rem; color:var(--variance-neg); margin-bottom:0.35rem; padding:0.25rem 0.45rem; background:var(--variance-neg-bg); border-radius:3px; border:1px solid var(--variance-neg-border);">
+        ⚠️ <strong>${AI_PROVIDERS[activeId]?.name || 'AI'}-feil:</strong> ${err.message}<br>
+        <em>Viser innebygd controller-innsikt:</em>
+      </div>${fallback}`);
+    }
   });
 
-  function appendChatMessage(sender, htmlText) {
+  function appendChatMessage(sender, htmlText, messageId) {
     if (!messages) return;
     const msgDiv = document.createElement("div");
     msgDiv.className = `chat-message ${sender}`;
+    if (messageId) msgDiv.id = messageId;
     msgDiv.innerHTML = `<div class="chat-bubble">${htmlText}</div>`;
     messages.appendChild(msgDiv);
     messages.scrollTop = messages.scrollHeight;
   }
 
-  function generateControllerAiResponse(q) {
-    const lower = q.toLowerCase();
-    if (lower.includes("august") || lower.includes("stort avvik")) {
-      return "I august isolert er avviket <strong>-350,7 kNOK</strong>. Hovedårsaken er ferieavvikling og akutt innleie av vikarbyrå i institusjon (Funksjon 2540) på 253,2 kNOK, samt overtidstillegg ved skolestart.";
-    }
-    if (lower.includes("vikarbyrå") || lower.includes("vikar")) {
-      return "Vikarbyrå (Art 127040) har kostet <strong>382,7 kNOK</strong> YTD, hvorav 253,2 kNOK kom i august alene. Uten godkjenningsplikt vil årskostnaden passere 1,4 MNOK.";
-    }
-    if (lower.includes("arbeidsmiljøloven") || lower.includes("overtid")) {
-      return "Arbeidsmiljøloven § 10-6 setter en grense på maks 10 timer overtid per uke og 200 timer per år. Flere nøkkelpersoner i døgnturnus nærmer seg denne grensen.";
-    }
-    if (lower.includes("eac") || lower.includes("prognose") || lower.includes("årsslutt")) {
-      return "Uten tiltak er prognosert årssluttavvik (EAC) beregnet til <strong>-3 344,4 kNOK</strong>. Med 25 % vikarkutt og 10 % overtidskutt kan avviket reduseres med ca. 540 kNOK.";
-    }
-    return "Som Project Controller anbefaler jeg å prioritere de to største driverne: <strong>Fastlønn (Art 101000)</strong> gjennom budsjettjustering i T2, og <strong>Vikarbyrå (Art 127040)</strong> gjennom administrativ godkjenningsplikt.";
+  function removeChatMessage(messageId) {
+    if (!messages) return;
+    const el = document.getElementById(messageId);
+    if (el) el.remove();
   }
 }

@@ -41,6 +41,12 @@
         </a>
       </div>
 
+      <!-- AI Provider Setup Button in Header -->
+      <button id="btn-open-ai-modal" class="btn btn-ai-config" aria-label="AI Leverandør & API-nøkkel" title="Velg AI-leverandør og oppgi API-nøkkel">
+        <span class="ai-provider-dot" id="top-ai-dot"></span>
+        <span id="top-ai-provider-label">🤖 AI: Gemini</span>
+      </button>
+
       <button id="btn-theme-toggle" class="btn" aria-label="Endre fargetema">
         ☀️ Papir
       </button>
@@ -305,8 +311,13 @@
         <!-- Dynamic Controller Insight & Root Cause / Action Matrix -->
         <div id="visual-controller-insight" class="visual-insight-panel">
           <div class="insight-header">
-            <span class="insight-badge">🔍 CONTROLLER INNSIKT & ROTÅRSAKSANALYSE</span>
-            <span id="insight-sector-tag" class="insight-tag">Konsolidert status</span>
+            <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+              <span class="insight-badge">🔍 CONTROLLER INNSIKT & ROTÅRSAKSANALYSE</span>
+              <span id="insight-sector-tag" class="insight-tag">Konsolidert status</span>
+            </div>
+            <button id="btn-generate-ai-insight" class="btn-pill" style="font-size:0.75rem; padding:0.25rem 0.65rem;" title="Generer dyp AI-analyse med valgt AI-modell for gjeldende utvalg">
+              ⚡ AI Dypanalyse
+            </button>
           </div>
           <div class="insight-grid">
             <div class="insight-col">
@@ -611,7 +622,43 @@
           <div class="brand-logo-badge" style="font-size:0.68rem; padding:0.15rem 0.4rem;">AI CONTROLLER</div>
           <span style="font-size:0.85rem; font-weight:600;">KOSTRA Rådgiver</span>
         </div>
-        <button id="chatbot-close-btn" class="chatbot-close" title="Lukk chat">✕</button>
+        <div style="display:flex; align-items:center; gap:0.35rem;">
+          <button id="chat-open-modal-btn" class="chatbot-close" title="Konfigurer AI-leverandør og API-nøkkel" aria-label="AI Innstillinger">⚙️</button>
+          <button id="chatbot-close-btn" class="chatbot-close" title="Lukk chat" aria-label="Lukk">✕</button>
+        </div>
+      </div>
+
+      <!-- Chatbot AI Provider Quick Bar -->
+      <div class="chatbot-provider-bar">
+        <div class="chatbot-provider-row">
+          <div class="chatbot-provider-select-wrap">
+            <label for="chat-quick-provider" class="chatbot-provider-label">Modell:</label>
+            <select id="chat-quick-provider" class="chatbot-quick-select" aria-label="Velg aktiv AI-leverandør">
+              <option value="gemini">Google Gemini (Flash)</option>
+              <option value="openai">OpenAI (GPT-4o-mini)</option>
+              <option value="anthropic">Anthropic Claude</option>
+              <option value="ollama">Ollama (Lokal LLM)</option>
+              <option value="groq">Groq (Llama-3.1 70B)</option>
+              <option value="mistral">Mistral AI</option>
+              <option value="deepseek">DeepSeek (V3/R1)</option>
+              <option value="offline">Innebygd (Offline)</option>
+            </select>
+          </div>
+          <button type="button" id="chat-toggle-key-drawer" class="btn-chat-key" title="Angi eller endre API-nøkkel">
+            <span class="provider-status-dot" id="chat-provider-status-dot"></span>
+            <span id="chat-key-badge-text">API-nøkkel</span>
+          </button>
+        </div>
+
+        <!-- Inline Key Drawer (collapsible) -->
+        <div id="chat-inline-key-drawer" class="chat-inline-key-drawer hidden">
+          <div class="chat-key-input-wrap">
+            <input type="password" id="chat-inline-key-input" class="chat-key-input" placeholder="Lim inn API-nøkkel..." autocomplete="off">
+            <button type="button" id="chat-toggle-key-eye" class="btn-eye" title="Vis/skjul nøkkel">👁️</button>
+            <button type="button" id="chat-save-key-btn" class="btn btn-primary btn-xs">Lagre</button>
+          </div>
+          <div id="chat-key-hint" class="chat-key-hint">Lagres trygt lokalt i din nettleser (localStorage).</div>
+        </div>
       </div>
 
       <div class="chatbot-body" id="chatbot-messages">
@@ -636,6 +683,94 @@
         <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Still et spørsmål om tallene eller KOSTRA..." autocomplete="off">
         <button type="submit" class="chatbot-send-btn" title="Send melding">➤</button>
       </form>
+    </div>
+  </div>
+
+  <!-- 4. AI Provider & API Key Configuration Modal Dialog -->
+  <div id="ai-settings-modal" class="ai-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title">
+    <div class="ai-modal-card">
+      <div class="ai-modal-header">
+        <div class="ai-modal-title-wrap">
+          <div class="brand-logo-badge" style="font-size:0.7rem; padding:0.2rem 0.5rem;">AI MOTOR</div>
+          <h2 id="ai-modal-title">Konfigurer AI-Leverandør & API-Nøkkel</h2>
+        </div>
+        <button id="btn-close-ai-modal" class="chatbot-close" title="Lukk innstillinger">✕</button>
+      </div>
+
+      <div class="ai-modal-body">
+        <p class="ai-modal-desc">
+          Velg din foretrukne AI-modell og legg inn din API-nøkkel for direkte tilgang til avansert kontrolleranalyse, årsaksforklaringer og prognoser. 
+          Nøkkelen din forblir <strong>100 % privat</strong> og lagres utelukkende lokalt i din egen nettleser (<code>localStorage</code>).
+        </p>
+
+        <div class="ai-modal-fields">
+          <!-- Dropdown: Provider -->
+          <div class="ai-field-group">
+            <label for="modal-ai-provider-select" class="ai-field-label">
+              <span>AI-Leverandør (Provider)</span>
+              <span id="modal-provider-tag" class="ai-tag-pill">Skytjeneste</span>
+            </label>
+            <select id="modal-ai-provider-select" class="slicer-select">
+              <option value="gemini" selected>Google Gemini (Gemini 1.5 Flash / 2.0 – Anbefalt)</option>
+              <option value="openai">OpenAI (GPT-4o-mini / GPT-4o)</option>
+              <option value="anthropic">Anthropic Claude (Claude 3.5 Sonnet / Haiku)</option>
+              <option value="ollama">Ollama (Lokal LLM – localhost:11434, 100% lokal & gratis)</option>
+              <option value="groq">Groq (Llama-3.1 70B – Lynrask inferens)</option>
+              <option value="mistral">Mistral AI (Mistral Large / Codestral)</option>
+              <option value="deepseek">DeepSeek (DeepSeek-V3 / R1)</option>
+              <option value="offline">Innebygd Controller (Offline simulering / Ingen API-nøkkel)</option>
+            </select>
+          </div>
+
+          <!-- Model Identifier -->
+          <div class="ai-field-group">
+            <label for="modal-ai-model-input" class="ai-field-label">
+              <span>Modell-identifikator (Model ID)</span>
+              <span class="ai-label-subtext">Kan tilpasses ved behov</span>
+            </label>
+            <input type="text" id="modal-ai-model-input" class="chatbot-input" value="gemini-1.5-flash" autocomplete="off" spellcheck="false">
+          </div>
+
+          <!-- API Key Input -->
+          <div class="ai-field-group" id="modal-key-group">
+            <label for="modal-ai-key-input" id="modal-key-label" class="ai-field-label">
+              <span>API-Nøkkel (API Key)</span>
+              <a href="https://aistudio.google.com/app/apikey" id="modal-key-link" target="_blank" rel="noopener noreferrer" class="ai-link-out">Hent API-nøkkel ↗</a>
+            </label>
+            <div class="ai-input-with-addon">
+              <input type="password" id="modal-ai-key-input" class="chatbot-input" placeholder="Lim inn din API-nøkkel her..." autocomplete="off">
+              <button type="button" id="modal-toggle-key-eye" class="btn btn-icon" title="Vis/skjul nøkkel">👁️</button>
+            </div>
+            <div class="ai-field-help" id="modal-key-help">Nøkkelen lagres kun i din nettleser og sendes direkte til leverandøren.</div>
+          </div>
+
+          <!-- Endpoint URL (for Ollama or custom proxy) -->
+          <div class="ai-field-group" id="modal-endpoint-group" style="display:none;">
+            <label for="modal-ai-endpoint-input" class="ai-field-label">
+              <span>Lokal Base URL / Endpoint</span>
+            </label>
+            <input type="text" id="modal-ai-endpoint-input" class="chatbot-input" value="http://localhost:11434" autocomplete="off" spellcheck="false">
+            <div class="ai-field-help">Standard URL for lokal Ollama. Krever ingen API-nøkkel.</div>
+          </div>
+        </div>
+
+        <!-- Connection Test Feedback Alert -->
+        <div id="modal-test-feedback" class="ai-feedback-box hidden"></div>
+      </div>
+
+      <div class="ai-modal-footer">
+        <button type="button" id="btn-test-modal-connection" class="btn">
+          🔌 Test Tilkobling
+        </button>
+        <div style="display:flex; gap:0.5rem;">
+          <button type="button" id="btn-clear-modal-key" class="btn" style="color:var(--variance-neg); border-color:var(--variance-neg-border);">
+            Slett nøkkel
+          </button>
+          <button type="button" id="btn-save-modal-config" class="btn btn-primary">
+            💾 Lagre & Aktiver
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
