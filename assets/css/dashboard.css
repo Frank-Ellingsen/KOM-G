@@ -456,6 +456,69 @@ body {
   background: var(--variance-pos-bg);
 }
 
+.variance-pill.neutral {
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.kpi-sparkline-wrap {
+  width: 100%;
+  height: 36px;
+  margin: 0.25rem 0 0.1rem;
+  display: flex;
+  align-items: center;
+}
+
+.kpi-sparkline-svg {
+  width: 100%;
+  height: 36px;
+  overflow: visible;
+  display: block;
+}
+
+.tufte-table tbody tr.clickable-row {
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.tufte-table tbody tr.clickable-row:hover td {
+  background-color: rgba(56, 189, 248, 0.08);
+}
+
+.tufte-table tbody tr.active-filter-row td {
+  background-color: rgba(56, 189, 248, 0.14);
+}
+
+.tufte-table tfoot td {
+  border-top: 2px solid var(--border-prominent);
+  border-bottom: none;
+  font-weight: 600;
+  background-color: var(--bg-surface-elevated);
+  font-size: 0.8rem;
+}
+
+.warning-card.pos {
+  border-color: var(--variance-pos-border);
+  background: linear-gradient(180deg, var(--variance-pos-bg) 0%, var(--bg-surface-elevated) 100%);
+}
+
+.warning-badge.pos {
+  background: var(--variance-pos);
+  color: #ffffff;
+}
+
+.card-live-metric {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.08);
+  padding: 0.2rem 0.45rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 /* Two Column Financial Section */
 .content-grid-2col {
   display: grid;

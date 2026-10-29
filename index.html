@@ -18,8 +18,8 @@
         <span style="opacity: 0.7; font-weight: 400;">v2.4</span>
       </div>
       <div class="brand-title-wrap">
-        <h1>Kristiansand Kommune – KOSTRA Cockpit</h1>
-        <div class="brand-subtitle">Finansiell Virksomhetsstyring & Månedsrapport per August (Måned 08 / 2024)</div>
+        <h1 id="brand-main-title">Kristiansand Kommune – KOSTRA Cockpit</h1>
+        <div class="brand-subtitle" id="brand-subtitle">Finansiell Virksomhetsstyring & Månedsrapport per August (Måned 08 / 2024)</div>
       </div>
     </div>
 
@@ -139,144 +139,89 @@
 
     <!-- KPI Metrics Row (Edward Tufte Data-Ink High Precision Cards) -->
     <section class="kpi-grid" aria-label="Hovednøkkeltall">
-      <!-- KPI 1 -->
-      <article class="kpi-card">
+      <!-- KPI 1: Budsjett -->
+      <article class="kpi-card" id="kpi-card-1">
         <div class="kpi-header">
-          <span class="kpi-title" id="kpi1-title">Konsolidert YTD Regnskap</span>
-          <span class="kpi-tag" id="kpi1-tag">Måneder 01–08</span>
+          <span class="kpi-title" id="kpi1-title">Periodisert Budsjett</span>
+          <span class="kpi-tag" id="kpi1-tag">YTD M01–M08</span>
         </div>
         <div class="kpi-value-row">
-          <span class="kpi-value" id="kpi1-value">31 524,9</span>
-          <span class="kpi-unit">kNOK</span>
+          <span class="kpi-value" id="kpi1-value">29 295,2</span>
+          <span class="kpi-unit" id="kpi1-unit">kNOK</span>
         </div>
+        <div class="kpi-sparkline-wrap" id="kpi1-sparkline" aria-label="Budsjettutvikling"></div>
         <div class="kpi-subtext">
-          <span id="kpi1-budget">Budsjett: <strong>29 295,2 k</strong></span>
-          <span class="variance-pill neg" id="kpi1-variance">-2 229,6 k (107,6 %)</span>
+          <span id="kpi1-subtext">Snitt/mnd: <strong>3 661,9 k</strong></span>
+          <span class="variance-pill neutral" id="kpi1-pill">100,0 % av ramme</span>
         </div>
       </article>
 
-      <!-- KPI 2 -->
-      <article class="kpi-card">
+      <!-- KPI 2: Regnskap -->
+      <article class="kpi-card" id="kpi-card-2">
         <div class="kpi-header">
-          <span class="kpi-title" id="kpi2-title">Oppvekst & Utdanning</span>
-          <span class="kpi-tag" id="kpi2-tag">KomSkole</span>
+          <span class="kpi-title" id="kpi2-title">Faktisk Regnskap</span>
+          <span class="kpi-tag" id="kpi2-tag">Konsolidert</span>
         </div>
         <div class="kpi-value-row">
-          <span class="kpi-value" id="kpi2-value">18 902,0</span>
-          <span class="kpi-unit">kNOK</span>
+          <span class="kpi-value" id="kpi2-value">31 524,9</span>
+          <span class="kpi-unit" id="kpi2-unit">kNOK</span>
         </div>
+        <div class="kpi-sparkline-wrap" id="kpi2-sparkline" aria-label="Regnskapsutvikling"></div>
         <div class="kpi-subtext">
-          <span id="kpi2-budget">Budsjett: <strong>17 958,0 k</strong></span>
-          <span class="variance-pill neg" id="kpi2-variance">-944,0 k (105,3 %)</span>
+          <span id="kpi2-subtext">Snitt/mnd: <strong>3 940,6 k</strong></span>
+          <span class="variance-pill neg" id="kpi2-pill">107,6 % forbruk</span>
         </div>
       </article>
 
-      <!-- KPI 3 -->
-      <article class="kpi-card">
+      <!-- KPI 3: Avvik -->
+      <article class="kpi-card" id="kpi-card-3">
         <div class="kpi-header">
-          <span class="kpi-title" id="kpi3-title">Helse & Omsorg</span>
-          <span class="kpi-tag" id="kpi3-tag">Bomiljø</span>
+          <span class="kpi-title" id="kpi3-title">Avvik (Budsjett − Regnskap)</span>
+          <span class="kpi-tag" id="kpi3-tag">Merforbruk</span>
         </div>
         <div class="kpi-value-row">
-          <span class="kpi-value" id="kpi3-value">12 622,9</span>
-          <span class="kpi-unit">kNOK</span>
+          <span class="kpi-value" id="kpi3-value">-2 229,6</span>
+          <span class="kpi-unit" id="kpi3-unit">kNOK</span>
         </div>
+        <div class="kpi-sparkline-wrap" id="kpi3-sparkline" aria-label="Månedlig avvik"></div>
         <div class="kpi-subtext">
-          <span id="kpi3-budget">Budsjett: <strong>11 337,2 k</strong></span>
-          <span class="variance-pill neg" id="kpi3-variance">-1 285,6 k (111,3 %)</span>
+          <span id="kpi3-subtext">Prognose EAC: <strong>-3 344,4 k</strong></span>
+          <span class="variance-pill neg" id="kpi3-pill">-7,6 % avvik</span>
         </div>
       </article>
 
-      <!-- KPI 4 -->
-      <article class="kpi-card">
+      <!-- KPI 4: MoM (Siste Måned Endring) & Sparkline Avvik YTD -->
+      <article class="kpi-card" id="kpi-card-4">
         <div class="kpi-header">
-          <span class="kpi-title" id="kpi4-title">Måned 08 (August Isolert)</span>
-          <span class="kpi-tag" id="kpi4-tag">Siste Måned</span>
+          <span class="kpi-title" id="kpi4-title">MoM Endring & Avvik YTD</span>
+          <span class="kpi-tag" id="kpi4-tag">M08 vs M07</span>
         </div>
         <div class="kpi-value-row">
-          <span class="kpi-value" id="kpi4-value">4 120,8</span>
-          <span class="kpi-unit">kNOK</span>
+          <span class="kpi-value" id="kpi4-value">+142,3</span>
+          <span class="kpi-unit" id="kpi4-unit">kNOK MoM</span>
         </div>
+        <div class="kpi-sparkline-wrap" id="kpi4-sparkline" aria-label="Sparkline Avvik YTD"></div>
         <div class="kpi-subtext">
-          <span id="kpi4-budget">Budsjett: <strong>3 770,1 k</strong></span>
-          <span class="variance-pill neg" id="kpi4-variance">-350,7 k (109,3 %)</span>
-        </div>
-      </article>
-
-      <!-- KPI 5 -->
-      <article class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-title">ML Tidsserie-Modell</span>
-          <span class="kpi-tag">Random Forest</span>
-        </div>
-        <div class="kpi-value-row">
-          <span class="kpi-value" id="kpi5-value">4,3</span>
-          <span class="kpi-unit">kNOK MAE</span>
-        </div>
-        <div class="kpi-subtext">
-          <span>Modell R²: <strong>0.9657</strong></span>
-          <span class="variance-pill pos" id="kpi5-status">Ingen Drift (OK)</span>
+          <span id="kpi4-subtext">Avvik M08: <strong>-350,7 k</strong></span>
+          <span class="variance-pill neg" id="kpi4-pill">YTD Avvik: -2 229,6 k</span>
         </div>
       </article>
     </section>
 
     <!-- Early Warnings & Risk Alert Panel -->
-    <section class="panel warning-panel" aria-label="Tidligvarsler og Risikoanalyse">
+    <section class="panel warning-panel" id="warning-panel-section" aria-label="Tidligvarsler og Risikoanalyse">
       <div class="panel-header">
         <div class="panel-title-wrap">
-          <h2>🚨 Tidligvarsler & Risikoalarmer (Early Warnings)</h2>
-          <div class="panel-subtitle">Automatisk avviksdeteksjon for budsjettrammer, run-rate og sesongvariasjoner</div>
+          <h2 id="warnings-main-title">🚨 Tidligvarsler & Risikoalarmer (Early Warnings)</h2>
+          <div class="panel-subtitle" id="warnings-main-subtitle">Automatisk avviksdeteksjon for budsjettrammer, run-rate og sesongvariasjoner</div>
         </div>
-        <div class="status-indicator">
+        <div class="status-indicator" id="warnings-status-badge">
           <span class="pulse-dot"></span> 3 Aktive Risikovarsler
         </div>
       </div>
 
-      <div class="warnings-grid">
-        <!-- Warning 1: Kritisk Vikarbyrå -->
-        <article class="warning-card crit">
-          <div class="warning-header">
-            <span class="warning-badge crit">KRITISK RISIKO</span>
-            <span class="warning-code">Art 127040</span>
-          </div>
-          <h3 class="warning-title">Eksplosjon i vikarbyråinnleie (Helse og omsorg)</h3>
-          <p class="warning-text">
-            Ubudsjettert innleie har nådd <strong>253,2 kNOK</strong> i august alene (382,7 kNOK YTD). Uten umiddelbar innleiestopp vil årssluttkostnaden passere <strong>1 400 kNOK</strong>.
-          </p>
-          <div class="warning-action">
-            <strong>Anbefalt Controller-tiltak:</strong> Iverksett administrativ godkjenningsplikt for ekstern innleie over avdelingsledernivå.
-          </div>
-        </article>
-
-        <!-- Warning 2: Fastlønnsavvik ved Skolestart -->
-        <article class="warning-card warn">
-          <div class="warning-header">
-            <span class="warning-badge warn">BETYDELIG AVVIK</span>
-            <span class="warning-code">Art 101000</span>
-          </div>
-          <h3 class="warning-title">Helårsvirkning av lønnsoppgjøret & bemanningsfaktor</h3>
-          <p class="warning-text">
-            Fastlønnsavviket er akkumulert til <strong>-1 414,0 kNOK</strong> i Oppvekst og <strong>-474,9 kNOK</strong> i Helse. Periodiseringen reflekterer ikke tariffendringen per 01.05.
-          </p>
-          <div class="warning-action">
-            <strong>Anbefalt Controller-tiltak:</strong> Juster periodisert ramme i tertial 2 for å unngå feilaktig panikk-kutting i kjerneundervisning.
-          </div>
-        </article>
-
-        <!-- Warning 3: Overtid og kveldstillegg -->
-        <article class="warning-card warn">
-          <div class="warning-header">
-            <span class="warning-badge warn">MODERAT RISIKO</span>
-            <span class="warning-code">Art 104000 & 102031</span>
-          </div>
-          <h3 class="warning-title">Overtidstopp og ubudsjetterte turnustillegg ved skolestart</h3>
-          <p class="warning-text">
-            Overtid og turnustillegg for vikarer overskred budsjett med <strong>-88,9 kNOK</strong> i august. Arbeidsmiljølovens 200-timers grense for overtid nærmer seg for nøkkelpersonell.
-          </p>
-          <div class="warning-action">
-            <strong>Anbefalt Controller-tiltak:</strong> Gjennomgå vaktplaner og turnus for høstsemesteret for å redusere overtidstillegg.
-          </div>
-        </article>
+      <div class="warnings-grid" id="warnings-grid">
+        <!-- Dynamically injected by assets/js/dashboard.js based on active slicers -->
       </div>
     </section>
 
@@ -340,8 +285,8 @@
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title-wrap">
-            <h2>⚖️ What-If Scenariosimulator</h2>
-            <div class="panel-subtitle">Simuler tiltak for å gjenopprette balanse før 31.12.2024</div>
+            <h2 id="sim-main-title">⚖️ What-If Scenariosimulator</h2>
+            <div class="panel-subtitle" id="sim-main-subtitle">Simuler tiltak for å gjenopprette balanse før 31.12.2024</div>
           </div>
           <div id="sim-status-badge" class="status-indicator">
             <span class="pulse-dot"></span> Betydelig Merforbruk
@@ -349,28 +294,28 @@
         </div>
 
         <div class="simulator-controls">
-          <!-- Slider 1: Vikarbyrå -->
+          <!-- Slider 1: Primary Driver / Vikarbyrå -->
           <div class="slider-group">
             <div class="slider-label-row">
-              <span>Reduksjon i Vikarbyråinnleie (Art 127040)</span>
+              <span id="sim-label-1">Reduksjon i Vikarbyråinnleie (Art 127040)</span>
               <span id="val-vikar" class="slider-value-badge">0 %</span>
             </div>
-            <input type="range" id="slider-vikar" class="custom-slider" min="0" max="100" value="0" step="5" aria-label="Vikarbyrå reduksjon prosent">
+            <input type="range" id="slider-vikar" class="custom-slider" min="0" max="100" value="0" step="5" aria-label="Driver 1 reduksjon prosent">
           </div>
 
-          <!-- Slider 2: Overtid -->
+          <!-- Slider 2: Secondary Driver / Overtid -->
           <div class="slider-group">
             <div class="slider-label-row">
-              <span>Reduksjon i Overtid (Art 104000)</span>
+              <span id="sim-label-2">Reduksjon i Overtid (Art 104000)</span>
               <span id="val-overtid" class="slider-value-badge">0 %</span>
             </div>
-            <input type="range" id="slider-overtid" class="custom-slider" min="0" max="100" value="0" step="5" aria-label="Overtid reduksjon prosent">
+            <input type="range" id="slider-overtid" class="custom-slider" min="0" max="100" value="0" step="5" aria-label="Driver 2 reduksjon prosent">
           </div>
 
           <!-- Slider 3: Omdisponering -->
           <div class="slider-group">
             <div class="slider-label-row">
-              <span>Generelt Rammekutt / Omdisponering</span>
+              <span id="sim-label-3">Generelt Rammekutt / Omdisponering</span>
               <span id="val-omdisp" class="slider-value-badge">0 %</span>
             </div>
             <input type="range" id="slider-omdisp" class="custom-slider" min="0" max="10" value="0" step="0.5" aria-label="Generell omdisponering prosent">
@@ -380,16 +325,16 @@
         <!-- Calculated Live Result Box -->
         <div class="simulator-result-box">
           <div class="sim-row">
-            <span class="label">Månedlig innsparingseffekt:</span>
+            <span class="label" id="sim-monthly-label">Månedlig innsparingseffekt:</span>
             <span id="sim-monthly-save" class="val" style="color:var(--accent-cyan);">0,0 kNOK</span>
           </div>
           <div class="sim-row">
-            <span class="label">Restårsgevinst (Sep–Des, 4 mnd):</span>
+            <span class="label" id="sim-restar-label">Restårsgevinst (Sep–Des, 4 mnd):</span>
             <span id="sim-restar-save" class="val" style="color:var(--variance-pos);">0,0 kNOK</span>
           </div>
           <div class="sim-divider"></div>
           <div class="sim-row" style="font-size:0.9rem;">
-            <span class="label"><strong>Prognosert Årssluttavvik (EAC):</strong></span>
+            <span class="label"><strong id="sim-eoy-label">Prognosert Årssluttavvik (EAC):</strong></span>
             <span id="sim-eoy-result" class="val" style="font-size:1.05rem; color:var(--variance-neg);">-3 344,4 kNOK</span>
           </div>
         </div>
@@ -399,17 +344,17 @@
     <!-- Two-Column Financial Tables: Drivers & Kostra Functions -->
     <section class="content-grid-2col">
       
-      <!-- Table 1: Største Kostnadsdrivere i August -->
+      <!-- Table 1: Største Kostnadsdrivere -->
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title-wrap">
-            <h2>⚠️ Topp Kostnadsdrivere i Måned 08 (August)</h2>
-            <div class="panel-subtitle">De 6 største avvikspostene basert på KOSTRA Art 6-siffer (kNOK)</div>
+            <h2 id="drivers-table-title">⚠️ Topp Kostnadsdrivere (YTD M01–M08)</h2>
+            <div class="panel-subtitle" id="drivers-table-subtitle">De største avvikspostene basert på KOSTRA Art 6-siffer (kNOK) – Klikk rad for å filtrere kategori</div>
           </div>
         </div>
 
         <div class="tufte-table-wrap">
-          <table class="tufte-table" aria-label="Topp kostnadsdrivere i august">
+          <table class="tufte-table" aria-label="Topp kostnadsdrivere">
             <thead>
               <tr>
                 <th>Art</th>
@@ -423,6 +368,7 @@
             <tbody id="drivers-table-body">
               <!-- Injected by assets/js/dashboard.js -->
             </tbody>
+            <tfoot id="drivers-table-foot"></tfoot>
           </table>
         </div>
       </div>
@@ -431,8 +377,8 @@
       <div class="panel">
         <div class="panel-header">
           <div class="panel-title-wrap">
-            <h2>🏛️ KOSTRA Funksjonsfordeling (August)</h2>
-            <div class="panel-subtitle">Driftsresultat per KOSTRA-funksjon 4-siffer (kNOK)</div>
+            <h2 id="functions-table-title">🏛️ KOSTRA Funksjonsfordeling (YTD M01–M08)</h2>
+            <div class="panel-subtitle" id="functions-table-subtitle">Driftsresultat per KOSTRA-funksjon 4-siffer (kNOK) – Klikk rad for å filtrere funksjon</div>
           </div>
         </div>
 
@@ -451,6 +397,7 @@
             <tbody id="functions-table-body">
               <!-- Injected by assets/js/dashboard.js -->
             </tbody>
+            <tfoot id="functions-table-foot"></tfoot>
           </table>
         </div>
       </div>
@@ -460,8 +407,8 @@
     <section class="catalog-section">
       <div class="panel-header" style="margin-bottom:0.5rem;">
         <div class="panel-title-wrap">
-          <h2>📑 Power BI Rapportkatalog (25 Spesialiserte Rapportsider)</h2>
-          <div class="panel-subtitle">Konfigurert i <a href="pbi-rep-project.zip" download="pbi-rep-project.zip" style="color:var(--accent-cyan);text-decoration:none;font-weight:600;">pbi-rep-project.zip (Last ned komplett prosjektmappe)</a> med TMDL semantisk modell og PBIR visuelt format</div>
+          <h2 id="catalog-main-title">📑 Power BI Rapportkatalog (25 Spesialiserte Rapportsider)</h2>
+          <div class="panel-subtitle" id="catalog-main-subtitle">Konfigurert i <a href="pbi-rep-project.zip" download="pbi-rep-project.zip" style="color:var(--accent-cyan);text-decoration:none;font-weight:600;">pbi-rep-project.zip (Last ned komplett prosjektmappe)</a> med TMDL semantisk modell og PBIR visuelt format</div>
         </div>
       </div>
 
@@ -481,82 +428,13 @@
     <section class="panel faq-panel" aria-label="Ofte Stilte Spørsmål">
       <div class="panel-header">
         <div class="panel-title-wrap">
-          <h2>❓ Ofte Stilte Spørsmål (FAQ for Controllere & Ledelse)</h2>
-          <div class="panel-subtitle">Nøkkelinnsikt om avvik, KOSTRA-regler, ML-prognoser og juridiske rammer</div>
+          <h2 id="faq-main-title">❓ Ofte Stilte Spørsmål (FAQ for Controllere & Ledelse)</h2>
+          <div class="panel-subtitle" id="faq-main-subtitle">Dynamisk nøkkelinnsikt om avvik, KOSTRA-regler, ML-prognoser og juridiske rammer for valgt filter</div>
         </div>
       </div>
 
-      <div class="faq-list">
-        <!-- Q1 -->
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false">
-            <span>1. Hvorfor har Kristiansand kommune et samlet merforbruk på -2 229,6 kNOK per august 2024?</span>
-            <span class="faq-chevron">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>Merforbruket drives primært av to hovedfaktorer:</p>
-            <ul>
-              <li><strong>Helårsvirkning av lønnsoppgjøret (Art 101000):</strong> Utgjør et samlet avvik på <strong>-1 888,9 kNOK</strong> (-1 414,0 kNOK i skole og -474,9 kNOK i helse). Budsjettet ble periodisert lineært før tariffendringene fra 1. mai trådte i kraft.</li>
-              <li><strong>Akutt innleie av vikarbyrå (Art 127040):</strong> Pleie og omsorg i institusjon/bolig (funksjon 2540) har hatt et ubudsjettert merforbruk på <strong>382,7 kNOK</strong> YTD (hvorav 253,2 kNOK kom i august) pga. rekrutteringsutfordringer og ferieavvikling.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Q2 -->
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false">
-            <span>2. Hva er de største forskjellene i forbruksmønster mellom Oppvekst og Helse?</span>
-            <span class="faq-chevron">+</span>
-          </button>
-          <div class="faq-answer">
-            <p><strong>Oppvekst og Utdanning (105,3 % forbruk):</strong> Avvikene er konsentrert rundt fastlønn og korttidsvikarer ved skolestart (august), men sektoren har stabil grunnbemanning og lav ekstern innleie.</p>
-            <p><strong>Helse og Omsorg (111,3 % forbruk):</strong> Har kontinuerlig 24/7 døgnturnus. Vikarbyrå og turnustillegg utgjør over 40 % av avviket, noe som gir betydelig høyere operasjonell og økonomisk volatilitet.</p>
-          </div>
-        </div>
-
-        <!-- Q3 -->
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false">
-            <span>3. Hva sier regelverket (Arbeidsmiljøloven) om akutte kutt i overtid og vikarer?</span>
-            <span class="faq-chevron">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>Kutt i overtid og vikarer må balanseres mot lovpålagte bemanningsnormer:</p>
-            <ul>
-              <li><strong>Opplæringsloven § 8-2:</strong> Lærernormen setter absolutte krav til lærertetthet i grunnskolen (maks 15 elever per lærer på 1.–4. trinn). Vikarkutt kan ikke bryte denne normen.</li>
-              <li><strong>Helse- og omsorgstjenesteloven § 4-1:</strong> Kommunen har plikt til å yte forsvarlige helsetjenester. Total innleiestopp uten intern omdisponering kan være uforsvarlig.</li>
-              <li><strong>Arbeidsmiljøloven § 10-6:</strong> Maks 10 timer overtid per uke (25 timer per 4 uker). Høyt overtidspress øker risikoen for lovbrudd og sykefravær.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Q4 -->
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false">
-            <span>4. Hvordan fungerer maskinlæringsmodellen (Random Forest) og når utløses drift-alarm?</span>
-            <span class="faq-chevron">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>Modellen i <code>src/retrain_pipeline.py</code> trenes på måned, kvartal, KOSTRA-funksjon, kontokode og budsjettramme. Den oppnår en <strong>R² på 0.9657</strong> og test-MAE på <strong>4,3 kNOK</strong>.</p>
-            <p><strong>Model Drift:</strong> Hvis gjennomsnittlig prediksjonsfeil for nye måneder øker med over <strong>20 %</strong> mot baseline, genereres en automatisk <em>Drift Alert</em> i MLflow, og controllere varsles om å rekalibrere sesongvektene.</p>
-          </div>
-        </div>
-
-        <!-- Q5 -->
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false">
-            <span>5. Hvordan kan controllere koble Excel eller Power BI Desktop til denne løsningen?</span>
-            <span class="faq-chevron">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>Det finnes tre direkte integrasjonsmetoder (se <a href="docs/POWERBI_TO_EXCEL_INTEGRATION.md" style="color:var(--accent-cyan);">integrasjonsguiden</a>):</p>
-            <ul>
-              <li><strong>Power BI PBIP:</strong> Dobbeltklikk på <code>pbi-rep-project.pbip</code> for direkte tilgang til TMDL-modellen og 78 DAX-måltall.</li>
-              <li><strong>DuckDB SQL / Python:</strong> Koble direkte til <code>data/database/kostra.duckdb</code> for lynraske OLAP-spørringer.</li>
-              <li><strong>Excel Eksport:</strong> Kjør <code>.\run.ps1 -ExportExcel</code> for å få et ferdig PivotTable-underlag i <code>data/excel_ml_input.xlsx</code>.</li>
-            </ul>
-          </div>
-        </div>
+      <div class="faq-list" id="faq-list-container">
+        <!-- Dynamically injected by assets/js/dashboard.js based on active slicers -->
       </div>
     </section>
 
@@ -664,7 +542,7 @@
       <div class="chatbot-body" id="chatbot-messages">
         <!-- Initial welcome message from bot -->
         <div class="chat-message bot">
-          <div class="chat-bubble">
+          <div class="chat-bubble" id="chatbot-welcome-bubble">
             Hei Frank! Jeg er din <strong>AI Project Controller</strong> for Kristiansand kommune. Jeg har sanntidstilgang til tallene i <code>kostra.duckdb</code>.
             <br><br>Hva vil du undersøke i august-regnskapet?
           </div>
@@ -672,9 +550,9 @@
       </div>
 
       <!-- Quick Prompt Suggestions -->
-      <div class="chatbot-prompts">
-        <button class="chat-prompt-pill" data-prompt="Hvorfor er avviket så stort i august?">Hvorfor stort avvik i aug?</button>
-        <button class="chat-prompt-pill" data-prompt="Hvor mye koster vikarbyrå i helse?">Hva koster vikarbyrå?</button>
+      <div class="chatbot-prompts" id="chatbot-prompts">
+        <button class="chat-prompt-pill" data-prompt="Hvorfor er avviket så stort i valgt utvalg?">Hvorfor avvik i utvalg?</button>
+        <button class="chat-prompt-pill" data-prompt="Hva er de største kostnadsdriverne og MoM-endringene?">Største drivere & MoM?</button>
         <button class="chat-prompt-pill" data-prompt="Hva sier arbeidsmiljøloven om overtidskutt?">Arbeidsmiljøloven & overtid?</button>
         <button class="chat-prompt-pill" data-prompt="Hva er prognosert EAC for årsslutt?">Hva er prognosert EAC?</button>
       </div>
@@ -776,7 +654,7 @@
 
   <!-- 4. Footer -->
   <footer class="footer">
-    <div>
+    <div id="footer-dynamic-summary">
       <strong>Kristiansand Kommune</strong> – KOSTRA Finansiell Virksomhetsstyring 2024. Siste faktiske periode: Måned 08.
     </div>
     <div class="footer-links">
